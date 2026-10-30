@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DB Concept (10 คะแนน) — เว็บติวสอบ Final DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style> :root { --accent:#0284c7; } </style>
+</head>
+<body>
+<div id="progressBar"></div>
+<div class="backdrop"></div>
+
+<header class="topbar">
+  <button class="hamburger" aria-label="เปิดเมนู">☰</button>
+  <div class="topbar-title">📘 DB Concept — 10 คะแนน</div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="เมนูหลัก">
+    <div class="side-brand">🎓 DB Final Prep<small>Database Systems • 120 คะแนน</small></div>
+    <div class="side-note">💡 <b>เคล็ดลับรุ่นพี่:</b> ทำข้อ SQL ให้เสร็จก่อน เพราะใช้เวลาเยอะมาก!</div>
+    <a class="nav-link" href="index.html"><span class="nav-emoji">🏠</span> หน้าแรก + แผนอ่าน</a>
+    <a class="nav-link" href="db-concept.html"><span class="nav-emoji">📘</span> DB Concept <span class="nav-pts">10</span></a>
+    <a class="nav-link" href="normalization.html"><span class="nav-emoji">🧮</span> Normalization <span class="nav-pts">40</span></a>
+    <a class="nav-link" href="recovery.html"><span class="nav-emoji">🔄</span> Recovery Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="concurrency.html"><span class="nav-emoji">🔀</span> Concurrency Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="data-warehouse.html"><span class="nav-emoji">🏢</span> Data Warehouse <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="sql.html"><span class="nav-emoji">💾</span> SQL <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="critique.html"><span class="nav-emoji">⚖️</span> วิพากษ์ Data Model <span class="nav-pts">10</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="content">
+
+      <header class="page-head">
+        <p class="crumb"><a href="index.html">หน้าแรก</a> / DB Concept</p>
+        <h1>📘 DB Concept — ความรู้พื้นฐานด้านฐานข้อมูล</h1>
+        <div class="head-meta">
+          <span class="badge">คะแนน 10</span>
+          <span class="badge">โจทย์เขียนตอบ: นิยาม + ตัวอย่าง</span>
+          <span class="badge gold">อ่านก่อนบทอื่น เพราะเป็นฐานของทุกหัวข้อ</span>
+        </div>
+      </header>
+
+      <div class="box box-exam">
+        <p class="box-title">📝 หัวข้อนี้ออกสอบยังไง</p>
+        <p>จากรีวิวรุ่นพี่ ข้อสอบพื้นฐานมักเป็นคำถามสั้น ๆ ประมาณ <strong>"X คืออะไร จงอธิบายพร้อมยกตัวอย่าง"</strong>
+        สูตรตอบให้คะแนนเต็มคือ <strong>นิยาม 1–2 บรรทัด → ยกตัวอย่างจริง 1 ตัว</strong> เท่านั้น ไม่ต้องเขียนยาว</p>
+      </div>
+
+      <h2>1. ฐานข้อมูล (Database) คืออะไร</h2>
+      <p><strong>ฐานข้อมูล (Database)</strong> คือ คลังหรือกลุ่มของข้อมูลที่มีความสัมพันธ์กัน (Related Data)
+      ซึ่งถูกนำมารวบรวมและจัดเก็บไว้<strong>อย่างเป็นระบบ</strong>ในสื่อจัดเก็บข้อมูลถาวร
+      เพื่อให้ผู้ใช้หรือแอปพลิเคชันสามารถเข้าถึง จัดการ ค้นหา และดึงข้อมูลไปใช้ได้อย่างมีประสิทธิภาพ</p>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>ฐานข้อมูลเหมือน <strong>ตู้เอกสารของสำนักงาน</strong> — ข้อมูลไม่ได้ทิ้งกองรวม ๆ ไว้ในกล่องเดียว
+        แต่ถูกแยกเป็นแฟ้ม (ตาราง) ตามหมวดหมู่ เช่น แฟ้มนักศึกษา แฟ้มอาจารย์ แฟ้มวิชาเรียน
+        และแต่ละแฟ้มอ้างอิงถึงกันได้ (รหัสวิชาในใบลงทะเบียน ชี้ไปยังแฟ้มวิชา)</p>
+      </div>
+
+      <h3>ข้อมูลที่จัดเก็บมี 3 แบบ</h3>
+      <div class="grid grid-3">
+        <div class="card">
+          <h4>🧱 Structured Data</h4>
+          <p>โครงสร้างชัดเจน แน่นอน เก็บเป็นตาราง (แถว/คอลัมน์) เช่น รหัสนักศึกษา ชื่อ เงินเดือน</p>
+        </div>
+        <div class="card">
+          <h4>📄 Unstructured Data</h4>
+          <p>ไม่มีโครงสร้างแน่นอน เช่น คอมเมนต์ข้อความ รูปภาพ เสียง วิดีโอ</p>
+        </div>
+        <div class="card">
+          <h4>🧩 Semi-Structured</h4>
+          <p>โครงสร้างยืดหยุ่น เช่น ไฟล์ JSON, XML — มีโครงแต่ปรับได้</p>
+        </div>
+      </div>
+
+      <p><strong>ตัวอย่างฐานข้อมูลที่ใช้ตอบข้อสอบได้:</strong> ระบบลงทะเบียนเรียนของนักศึกษา, ระบบจองตั๋วหนัง,
+      ระบบประวัติพนักงาน, ระบบสต็อกสินค้า</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 720 300" width="720" role="img" aria-label="องค์ประกอบของตารางฐานข้อมูล" class="svg-text">
+          <style>
+            .tt{font-size:15px;fill:#1d2333;font-weight:600}
+            .ts{font-size:12.5px;fill:#5b6474}
+            .th{font-size:13px;fill:#fff;font-weight:700}
+            .td{font-size:12.5px;fill:#333}
+          </style>
+          <!-- table -->
+          <g transform="translate(150,50)">
+            <text x="120" y="-18" text-anchor="middle" style="font-size:16px;font-weight:700;fill:#0284c7">ตาราง STUDENT</text>
+            <rect x="0" y="0" width="240" height="40" rx="8" fill="#0284c7"/>
+            <rect x="250" y="0" width="160" height="40" rx="8" fill="#38bdf8"/>
+            <rect x="410" y="0" width="120" height="40" rx="8" fill="#38bdf8"/>
+            <text x="120" y="25" text-anchor="middle" class="th">Std_ID</text>
+            <text x="330" y="25" text-anchor="middle" class="th">Name</text>
+            <text x="470" y="25" text-anchor="middle" class="th">Major</text>
+            <g fill="#fff" stroke="#dbe6f2">
+              <rect x="0" y="42" width="240" height="34"/><rect x="250" y="42" width="160" height="34"/><rect x="410" y="42" width="120" height="34"/>
+              <rect x="0" y="78" width="240" height="34"/><rect x="250" y="78" width="160" height="34"/><rect x="410" y="78" width="120" height="34"/>
+              <rect x="0" y="114" width="240" height="34"/><rect x="250" y="114" width="160" height="34"/><rect x="410" y="114" width="120" height="34"/>
+            </g>
+            <text x="120" y="64" text-anchor="middle" class="td">6501001</text><text x="330" y="64" text-anchor="middle" class="td">สมชาย</text><text x="470" y="64" text-anchor="middle" class="td">CS</text>
+            <text x="120" y="100" text-anchor="middle" class="td">6501002</text><text x="330" y="100" text-anchor="middle" class="td">สมหญิง</text><text x="470" y="100" text-anchor="middle" class="td">IT</text>
+            <text x="120" y="136" text-anchor="middle" class="td">6501003</text><text x="330" y="136" text-anchor="middle" class="td">สมศักดิ์</text><text x="470" y="136" text-anchor="middle" class="td">CS</text>
+            <!-- row label -->
+            <text x="-14" y="64" text-anchor="end" class="ts">แถว</text>
+            <text x="-14" y="100" text-anchor="end" class="ts">แถว</text>
+            <text x="-14" y="136" text-anchor="end" class="ts">แถว</text>
+            <path d="M-10 59 h-4" stroke="#5b6474" stroke-width="0"/>
+            <!-- column label -->
+            <text x="120" y="172" text-anchor="middle" class="ts">คอลัมน์ (Attribute)</text>
+            <text x="330" y="172" text-anchor="middle" class="ts">คอลัมน์</text>
+            <text x="470" y="172" text-anchor="middle" class="ts">คอลัมน์</text>
+          </g>
+          <text x="60" y="285" class="ts" style="font-size:13px">✏️ 1 แถว = 1 Record/Tuple • 1 คอลัมน์ = 1 Attribute • จุดตัด 1 ช่อง = 1 Field</text>
+        </svg>
+        <figcaption>ภาพที่ 1: กายวิภาคของตารางฐานข้อมูล — แถว (Record) และคอลัมน์ (Attribute)</figcaption>
+      </figure>
+
+      <h2>2. ระบบจัดการฐานข้อมูล (DBMS) คืออะไร</h2>
+      <p><strong>DBMS (Database Management System)</strong> คือ ซอฟต์แวร์ที่ทำหน้าที่เป็น<strong>ตัวกลาง</strong>
+      ในการบริหารจัดการฐานข้อมูล — ควบคุมการเข้าถึง จัดเก็บ แก้ไข ค้นหาข้อมูล และรักษาความปลอดภัยของข้อมูล
+      ระหว่างผู้ใช้/แอปพลิเคชันกับไฟล์ฐานข้อมูลจริงในดิสก์</p>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>ถ้าฐานข้อมูลคือ <strong>ตู้เอกสาร</strong> DBMS ก็คือ <strong>นายทะเบียน/ภารโรงเจ้าของตู้</strong> —
+        เราไม่ได้เข้าไปจับแฟ้มเอง แต่ยื่นคำขอให้เขาหยิบ เพิ่ม แก้ หรือลบให้ พร้อมตรวจว่าเรามีสิทธิ์หรือไม่
+        และเก็บประวัติการทำงานทุกอย่างไว้เสมอ</p>
+      </div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 720 260" width="720" role="img" aria-label="ตำแหน่งของ DBMS" class="svg-text">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#5b6474"/>
+            </marker>
+          </defs>
+          <rect x="20" y="70" width="180" height="110" rx="14" fill="#eef6ff" stroke="#b9dcff"/>
+          <text x="110" y="115" text-anchor="middle" style="font-size:30px">👤👥</text>
+          <text x="110" y="145" text-anchor="middle" class="tt">ผู้ใช้ / แอปพลิเคชัน</text>
+          <text x="110" y="165" text-anchor="middle" class="ts">ส่งคำสั่ง SQL</text>
+
+          <rect x="280" y="60" width="200" height="130" rx="14" fill="#0284c7"/>
+          <text x="380" y="105" text-anchor="middle" style="font-size:26px">🧑‍💼</text>
+          <text x="380" y="132" text-anchor="middle" style="font-size:15px;fill:#fff;font-weight:800">DBMS</text>
+          <text x="380" y="152" text-anchor="middle" style="font-size:11.5px;fill:#dbeafe">ตรวจสิทธิ์ • รันคำสั่ง</text>
+          <text x="380" y="170" text-anchor="middle" style="font-size:11.5px;fill:#dbeafe">เก็บ Log • คุมความถูกต้อง</text>
+
+          <rect x="540" y="70" width="160" height="110" rx="14" fill="#f6f0ff" stroke="#ddc9ff"/>
+          <text x="620" y="112" text-anchor="middle" style="font-size:28px">🗄️</text>
+          <text x="620" y="142" text-anchor="middle" class="tt">ฐานข้อมูลจริง</text>
+          <text x="620" y="162" text-anchor="middle" class="ts">บน Hard Disk</text>
+
+          <line x1="204" y1="112" x2="274" y2="112" stroke="#5b6474" stroke-width="2" marker-end="url(#ar)"/>
+          <line x1="484" y1="112" x2="534" y2="112" stroke="#5b6474" stroke-width="2" marker-end="url(#ar)"/>
+          <text x="712" y="245" text-anchor="end" class="ts">ตัวอย่าง DBMS: Oracle, SQL Server, MySQL, PostgreSQL, MongoDB</text>
+        </svg>
+        <figcaption>ภาพที่ 2: DBMS ทำหน้าที่เป็นตัวกลางระหว่างผู้ใช้กับไฟล์ข้อมูลจริง</figcaption>
+      </figure>
+
+      <h3>ตัวอย่างซอฟต์แวร์ DBMS (จำพอใช้ตอบข้อสอบ)</h3>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>กลุ่ม</th><th>ตัวอย่าง</th></tr>
+        <tr><td>ระดับองค์กรใหญ่ (Enterprise)</td><td>Oracle Database, IBM DB2, SAP HANA</td></tr>
+        <tr><td>ระดับกลาง / Open Source</td><td>Microsoft SQL Server, MySQL, PostgreSQL, MariaDB</td></tr>
+        <tr><td>ระดับเล็ก (Desktop)</td><td>Microsoft Access</td></tr>
+        <tr><td>NoSQL (ข้อมูลไม่มีโครงสร้าง / Big Data)</td><td>MongoDB, Redis, Cassandra</td></tr>
+      </table></div>
+
+      <h2>3. Key ทุกชนิด — หัวใจของตาราง</h2>
+      <p>Key ใช้สำหรับ <strong>ระบุแถวข้อมูลให้เจาะจงไม่ซ้ำ</strong> และ <strong>สร้างความสัมพันธ์ระหว่างตาราง</strong>
+      ซึ่งเป็นพื้นฐานที่ Normalization (40 คะแนน) ต้องใช้เยอะมาก</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 330" width="760" role="img" aria-label="ลำดับชั้นของ Key" class="svg-text">
+          <defs>
+            <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#0284c7"/>
+            </marker>
+          </defs>
+          <rect x="40" y="20" width="680" height="66" rx="12" fill="#f6f0ff" stroke="#ddc9ff"/>
+          <text x="380" y="48" text-anchor="middle" class="tt">🔑 Super Key</text>
+          <text x="380" y="70" text-anchor="middle" class="ts">กลุ่มคอลัมน์ใด ๆ ที่ระบุแถวได้ไม่ซ้ำ เช่น Std_ID, (Std_ID, Name), (Citizen_ID, Tel)</text>
+
+          <line x1="380" y1="86" x2="380" y2="112" stroke="#0284c7" stroke-width="2" marker-end="url(#ar2)"/>
+          <text x="395" y="105" class="ts">คัดให้เหลือ "น้อยที่สุด" (ตัดของเกิน)</text>
+
+          <rect x="120" y="118" width="520" height="60" rx="12" fill="#eef6ff" stroke="#b9dcff"/>
+          <text x="380" y="143" text-anchor="middle" class="tt">🔑 Candidate Key</text>
+          <text x="380" y="163" text-anchor="middle" class="ts">Super Key แบบมินิมอล เช่น Std_ID หรือ Citizen_ID (มีได้หลายตัว)</text>
+
+          <line x1="240" y1="178" x2="180" y2="210" stroke="#0284c7" stroke-width="2" marker-end="url(#ar2)"/>
+          <line x1="520" y1="178" x2="580" y2="210" stroke="#0284c7" stroke-width="2" marker-end="url(#ar2)"/>
+
+          <rect x="40" y="216" width="320" height="88" rx="12" fill="#0284c7"/>
+          <text x="200" y="243" text-anchor="middle" style="font-size:15px;fill:#fff;font-weight:800">⭐ Primary Key (PK)</text>
+          <text x="200" y="264" text-anchor="middle" class="ts" style="fill:#e0f2fe">Candidate Key ที่ "ถูกเลือก" 1 ตัว</text>
+          <text x="200" y="284" text-anchor="middle" class="ts" style="fill:#e0f2fe">กฎเหล็ก: Unique + Not Null</text>
+
+          <rect x="400" y="216" width="320" height="88" rx="12" fill="#eef6ff" stroke="#b9dcff"/>
+          <text x="560" y="243" text-anchor="middle" class="tt">Alternate Key</text>
+          <text x="560" y="264" text-anchor="middle" class="ts">Candidate Key ตัวที่เหลือ ไม่ได้เป็น PK</text>
+          <text x="560" y="284" text-anchor="middle" class="ts">เช่น เลือก Std_ID เป็น PK → Citizen_ID เป็น AK</text>
+        </svg>
+        <figcaption>ภาพที่ 3: ลำดับชั้น Super Key → Candidate Key → Primary/Alternate Key</figcaption>
+      </figure>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🧩 Composite Key</h4>
+          <p>PK ที่ใช้ <strong>ตั้งแต่ 2 คอลัมน์ขึ้นไปรวมกัน</strong> เช่น ตาราง Work_On ใช้ (Emp_ID, Proj_ID)
+          เพราะตัวใดตัวเดียวไม่พอระบุแถว (พนักงาน 1 คนทำได้หลายโปรเจกต์)</p>
+        </div>
+        <div class="card">
+          <h4>🔗 Foreign Key (FK)</h4>
+          <p>คอลัมน์ในตาราง A ที่ <strong>อ้างอิงไปยัง PK ของตาราง B</strong> เพื่อสร้างความสัมพันธ์และคุมกฎความถูกต้อง
+          (Referential Integrity) เช่น Dept_ID ในตารางพนักงาน → ชี้ไปที่ตารางแผนก</p>
+        </div>
+      </div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 720 250" width="720" role="img" aria-label="Foreign Key เชื่อมสองตาราง" class="svg-text">
+          <defs>
+            <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/>
+            </marker>
+          </defs>
+          <g transform="translate(40,40)">
+            <rect x="0" y="0" width="250" height="160" rx="10" fill="#fff" stroke="#b9dcff" stroke-width="1.5"/>
+            <rect x="0" y="0" width="250" height="34" rx="10" fill="#0284c7"/>
+            <text x="125" y="23" text-anchor="middle" class="th">EMPLOYEE</text>
+            <text x="12" y="58" style="font-size:13px;fill:#0b6bcb;font-weight:700">🔑 Emp_ID (PK)</text>
+            <text x="12" y="82" class="td">Emp_Name</text>
+            <text x="12" y="106" style="font-size:13px;fill:#c62a30;font-weight:700">🔗 Dept_ID (FK)</text>
+            <text x="12" y="130" class="td">Salary</text>
+          </g>
+          <g transform="translate(430,40)">
+            <rect x="0" y="0" width="250" height="160" rx="10" fill="#fff" stroke="#b9dcff" stroke-width="1.5"/>
+            <rect x="0" y="0" width="250" height="34" rx="10" fill="#059669"/>
+            <text x="125" y="23" text-anchor="middle" class="th">DEPARTMENT</text>
+            <text x="12" y="58" style="font-size:13px;fill:#047857;font-weight:700">🔑 Dept_ID (PK)</text>
+            <text x="12" y="82" class="td">Dept_Name</text>
+            <text x="12" y="106" class="td">Location</text>
+          </g>
+          <path d="M300 150 C 350 150, 380 92, 424 92" fill="none" stroke="#e5484d" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ar3)"/>
+          <text x="360" y="175" text-anchor="middle" class="ts">Dept_ID อ้างอิง → PK ของ DEPARTMENT</text>
+          <text x="60" y="235" class="ts">💡 กฎ Referential Integrity: ค่า FK ต้องมีอยู่จริงใน PK ฝั่งต้นทาง — ห้ามชี้ไปที่ไม่มีจริง</text>
+        </svg>
+        <figcaption>ภาพที่ 4: Foreign Key คือ "สะพาน" เชื่อมตารางลูกกลับไปหาตารางแม่</figcaption>
+      </figure>
+
+      <h2>4. ความซ้ำซ้อน (Redundancy) และ Anomalies 3 ปัญหา</h2>
+      <p><strong>Data Redundancy</strong> คือ การเก็บข้อมูลเรื่องเดียวกัน<strong>ซ้ำ ๆ หลายแห่ง</strong>
+      ทำให้เสียพื้นที่ และเกิดความผิดปกติ (Anomalies) 3 ประการ:</p>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <h4>➕ Insertion Anomaly</h4>
+          <p><strong>เพิ่มไม่ได้</strong> — จะเพิ่มแผนกใหม่ได้ยังไง ถ้ายังไม่มีพนักงานสังกัดเลย (คอลัมน์ PK พนักงานต้องมีค่า)</p>
+        </div>
+        <div class="card">
+          <h4>➖ Deletion Anomaly</h4>
+          <p><strong>ลบแล้วเสียข้อมูลอื่น</strong> — ลบพนักงานคนสุดท้ายของแผนก A ทิ้ง ข้อมูลแผนก A ก็หายไปด้วยเลย</p>
+        </div>
+        <div class="card">
+          <h4>✏️ Update Anomaly</h4>
+          <p><strong>แก้หลายจุด</strong> — ชื่อแผนกซ้ำอยู่ 50 แถว ต้องแก้ 50 จุด แก้ไม่ครบข้อมูลขัดแย้งกันทันที</p>
+        </div>
+      </div>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 วิธีจำ</p>
+        <p><strong>I-D-U</strong> = <strong>I</strong>nsert เพิ่มไม่ได้ / <strong>D</strong>elete ลบแล้วพัง / <strong>U</strong>pdate แก้ไม่จบ
+        — และทางแก้คือ <strong>Normalization</strong> (แตกตารางให้ข้อมูลแต่ละเรื่องเก็บที่เดียว)</p>
+      </div>
+
+      <h2>5. สถาปัตยกรรมระบบฐานข้อมูล 3-Tier</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 210" width="760" role="img" aria-label="สถาปัตยกรรม 3 Tier" class="svg-text">
+          <defs>
+            <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#5b6474"/>
+            </marker>
+          </defs>
+          <rect x="20" y="35" width="220" height="120" rx="14" fill="#eef6ff" stroke="#b9dcff"/>
+          <text x="130" y="65" text-anchor="middle" style="font-size:24px">🖥️📱</text>
+          <text x="130" y="93" text-anchor="middle" class="tt">Tier 1: Presentation</text>
+          <text x="130" y="115" text-anchor="middle" class="ts">หน้าจอให้ผู้ใช้ เช่น Browser, App</text>
+          <text x="130" y="134" text-anchor="middle" class="ts">(Front-end UI)</text>
+
+          <rect x="270" y="35" width="220" height="120" rx="14" fill="#fff8e8" stroke="#ffe2a3"/>
+          <text x="380" y="65" text-anchor="middle" style="font-size:24px">⚙️</text>
+          <text x="380" y="93" text-anchor="middle" class="tt">Tier 2: Application</text>
+          <text x="380" y="115" text-anchor="middle" class="ts">ประมวลผล logic ธุรกิจ</text>
+          <text x="380" y="134" text-anchor="middle" class="ts">Web/App Server, Backend API</text>
+
+          <rect x="520" y="35" width="220" height="120" rx="14" fill="#effaf3" stroke="#b7e6c8"/>
+          <text x="630" y="65" text-anchor="middle" style="font-size:24px">🗄️</text>
+          <text x="630" y="93" text-anchor="middle" class="tt">Tier 3: Database</text>
+          <text x="630" y="115" text-anchor="middle" class="ts">เก็บข้อมูลจริง + DBMS Server</text>
+          <text x="630" y="134" text-anchor="middle" class="ts">(Data Tier)</text>
+
+          <line x1="244" y1="95" x2="264" y2="95" stroke="#5b6474" stroke-width="2" marker-end="url(#ar4)"/>
+          <line x1="494" y1="95" x2="514" y2="95" stroke="#5b6474" stroke-width="2" marker-end="url(#ar4)"/>
+        </svg>
+        <figcaption>ภาพที่ 5: สถาปัตยกรรม 3-Tier — ผู้ใช้ → โปรแกรมกลาง → ฐานข้อมูล</figcaption>
+      </figure>
+
+      <p><strong>ประโยชน์ของระบบฐานข้อมูล</strong> (ตอบข้อสอบได้): ลดความซ้ำซ้อน (Minimum Redundancy) •
+      รักษาความถูกต้อง (Data Integrity) ด้วย Entity Integrity และ Referential Integrity •
+      ใช้ข้อมูลร่วมกันได้ (Data Sharing &amp; Concurrent Access) • ควบคุมความปลอดภัย (Security &amp; Authorization) •
+      เกิดความเป็นอิสระของข้อมูล (Data Independence)</p>
+
+      <h2>6. Schema vs Instance — คู่ที่สอบชอบถาม</h2>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>ประเด็น</th><th>Database Schema</th><th>Database Instance</th></tr>
+        <tr><td>คืออะไร</td><td>โครงสร้าง/พิมพ์เขียว (Blueprint) — ชื่อตาราง ชื่อคอลัมน์ ชนิดข้อมูล กฎเกณฑ์</td><td>ข้อมูลจริงที่อยู่ในตาราง <strong>ณ เวลาหนึ่ง</strong></td></tr>
+        <tr><td>เปลี่ยนไหม</td><td>แทบไม่เปลี่ยน (ออกแบบครั้งเดียว)</td><td>เปลี่ยนตลอดเวลาเมื่อมี INSERT / UPDATE / DELETE</td></tr>
+        <tr><td>เปรียบเทียบ</td><td>พิมพ์เขียวบ้าน + แบบจัดวางห้อง</td><td>ของจริงที่วางอยู่ในบ้าน ณ วันนี้</td></tr>
+      </table></div>
+
+      <h2>7. Data Independence — ความเป็นอิสระของข้อมูล 2 ระดับ</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🧠 Logical Data Independence</h4>
+          <p>แก้โครงสร้าง<strong>เชิงตรรกะ</strong> (เช่น เพิ่มคอลัมน์ใหม่ในตาราง) โดย<strong>โปรแกรม/มุมมองผู้ใช้ไม่พัง</strong></p>
+        </div>
+        <div class="card">
+          <h4>💾 Physical Data Independence</h4>
+          <p>เปลี่ยนวิธีจัดเก็บ<strong>เชิงกายภาพ</strong> (เช่น เพิ่ม Index, เปลี่ยน Storage) โดย<strong>โครงสร้างตารางเชิงตรรกะไม่กระทบ</strong></p>
+        </div>
+      </div>
+      <div class="box box-mem">
+        <p class="box-title">🧠 วิธีจำไม่สลับ</p>
+        <p><strong>Logical = โครงตารางเปลี่ยน โปรแกรมรอด</strong> | <strong>Physical = ที่เก็บเปลี่ยน โครงตารางรอด</strong>
+        — คำที่อยู่หน้าชื่อ = "สิ่งที่เปลี่ยน"</p>
+      </div>
+
+      <h2>8. ภาษา SQL แบ่งเป็น 4 กลุ่ม</h2>
+      <div class="grid grid-2">
+        <div class="card"><h4>🏗️ DDL — Data Definition Language</h4><p>จัดการ<strong>โครงสร้าง</strong> (สร้าง/แก้/ลบตาราง)<br><span class="chip">CREATE</span><span class="chip">ALTER</span><span class="chip">DROP</span><span class="chip">TRUNCATE</span></p></div>
+        <div class="card"><h4>✏️ DML — Data Manipulation Language</h4><p>จัดการ<strong>ข้อมูลภายใน</strong>ตาราง<br><span class="chip">SELECT</span><span class="chip">INSERT</span><span class="chip">UPDATE</span><span class="chip">DELETE</span></p></div>
+        <div class="card"><h4>🔐 DCL — Data Control Language</h4><p>ควบคุม<strong>สิทธิ์</strong>การเข้าถึง<br><span class="chip">GRANT</span><span class="chip">REVOKE</span></p></div>
+        <div class="card"><h4>⏯️ TCL — Transaction Control Language</h4><p>ควบคุม<strong>Transaction</strong><br><span class="chip">COMMIT</span><span class="chip">ROLLBACK</span><span class="chip">SAVEPOINT</span></p></div>
+      </div>
+      <div class="box box-warn">
+        <p class="box-title">⚠️ ข้อควรระวังที่ข้อสอบชอบหลอก</p>
+        <p><strong>TRUNCATE และ DROP เป็น DDL!</strong> ไม่ใช่ DML — และเพราะเป็น DDL มันจะ <strong>Auto-Commit ทันที</strong>
+        สั่ง ROLLBACK คืนไม่ได้ (เกี่ยวโยงกับบท Recovery ด้วย)</p>
+      </div>
+
+      <hr class="sep">
+
+      <h2>📝 แนวข้อสอบ DB Concept + ตัวอย่างคำตอบ</h2>
+      <p>5 คำถามคลาสสิกที่ออกซ้ำทุกปี — ลองเขียนตอบเองก่อนแล้วกดดูเฉลย</p>
+
+      <details class="sol"><summary>ข้อ 1: ฐานข้อมูล (Database) คืออะไร พร้อมยกตัวอย่าง</summary>
+        <div class="sol-body"><p>ฐานข้อมูล คือ คลัง/กลุ่มของข้อมูลที่มีความสัมพันธ์กัน (Related Data) ซึ่งรวบรวมและจัดเก็บอย่างเป็นระบบในสื่อจัดเก็บถาวร
+        เพื่อให้เข้าถึง จัดการ ค้นหา และใช้งานได้อย่างมีประสิทธิภาพ — <strong>ตัวอย่าง:</strong> ระบบฐานข้อมูลการลงทะเบียนเรียนของมหาวิทยาลัย
+        ซึ่งเก็บข้อมูลนักศึกษา วิชาเรียน และผลการลงทะเบียนที่สัมพันธ์กัน</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 2: ระบบจัดการฐานข้อมูล (DBMS) คืออะไร พร้อมยกตัวอย่าง</summary>
+        <div class="sol-body"><p>DBMS คือ ซอฟต์แวร์ที่ทำหน้าที่เป็นตัวกลางบริหารจัดการฐานข้อมูล — ควบคุมการเข้าถึง จัดเก็บ แก้ไข ค้นหา
+        และรักษาความปลอดภัยของข้อมูลระหว่างผู้ใช้กับไฟล์ฐานข้อมูลจริง — <strong>ตัวอย่าง:</strong> Oracle, MySQL, SQL Server, PostgreSQL, MongoDB</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 3: Transaction คืออะไร พร้อมยกตัวอย่าง</summary>
+        <div class="sol-body"><p>Transaction คือ กลุ่มคำสั่ง DML หลายคำสั่งที่ทำงานต่อเนื่องกันเป็นหน่วยงานเชิงตรรกะเดียว (Logical Unit of Work)
+        ซึ่งต้องสำเร็จ<strong>ทั้งหมด</strong>หรือล้มเหลว<strong>ทั้งหมด</strong> (All or Nothing) — <strong>ตัวอย่าง:</strong> การโอนเงิน 1,000 บาท
+        ประกอบด้วย ตรวจยอด → หักเงินบัญชี A → เพิ่มเงินบัญชี B → บันทึกสลิป ต้องสำเร็จครบทุกขั้น ถ้าพลาดขั้นใดต้องยกเลิกทั้งหมด</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 4: Recovery Control คืออะไร พร้อมยกตัวอย่าง</summary>
+        <div class="sol-body"><p>Recovery Control คือ กลไกของ DBMS ในการคืนสภาพฐานข้อมูลกลับสู่สถานะถูกต้องสมบูรณ์ (Consistent State)
+        เมื่อเกิดความล้มเหลว เช่น ไฟดับ ระบบล่ม — <strong>ตัวอย่าง:</strong> ระบบดับกลางการโอนเงินหลังหักบัญชี A แต่ก่อนเพิ่มบัญชี B
+        เมื่อระบบกลับมา Log จะทำ UNDO คืนเงินเข้าบัญชี A ให้เหมือนไม่เคยทำรายการ</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 5: Concurrency Control คืออะไร พร้อมยกตัวอย่าง</summary>
+        <div class="sol-body"><p>Concurrency Control คือ กลไกของ DBMS ในการควบคุมให้หลาย Transaction ที่ทำงานพร้อมกัน
+        ได้ผลลัพธ์เสมือนทำงานทีละตัวตามลำดับ (Serializable) โดยไม่รบกวนกัน — <strong>ตัวอย่าง:</strong> ระบบจองตั๋วหนังที่มีคนจองที่นั่งเดียวกันพร้อมกัน 200 คน
+        ต้องมีระบบ Lock กันขายที่นั่งเดิมให้สองคน</p></div>
+      </details>
+
+      <h3>🎬 ลองทำแบบทดสอบด่วน</h3>
+      <div class="quiz" data-answer="2">
+        <p class="quiz-q"><span class="qno">Q1</span>ข้อใดคือคุณสมบัติของ Primary Key?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">ซ้ำกันได้ แต่ห้ามเป็นค่าว่าง</button>
+          <button class="quiz-opt">เป็นค่าว่างได้ แต่ห้ามซ้ำ</button>
+          <button class="quiz-opt">ไม่ซ้ำกัน (Unique) และห้ามเป็นค่าว่าง (Not Null)</button>
+          <button class="quiz-opt">ต้องเป็นตัวเลขเท่านั้น</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 3 — PK ต้อง Unique + Not Null เสมอ ส่วนชนิดข้อมูลเป็นอะไรก็ได้ (ตัวเลข ตัวอักษร ฯลฯ)</p>
+      </div>
+      <div class="quiz" data-answer="1">
+        <p class="quiz-q"><span class="qno">Q2</span>คอลัมน์ Dept_ID ในตาราง EMPLOYEE ที่ชี้ไปยัง PK ของตาราง DEPARTMENT เรียกว่าอะไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Candidate Key</button>
+          <button class="quiz-opt">Foreign Key</button>
+          <button class="quiz-opt">Alternate Key</button>
+          <button class="quiz-opt">Super Key</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 2 — คอลัมน์ที่อ้างอิง PK ของตารางอื่นเรียกว่า Foreign Key (FK) ใช้สร้างความสัมพันธ์และคุม Referential Integrity</p>
+      </div>
+      <div class="quiz" data-answer="0">
+        <p class="quiz-q"><span class="qno">Q3</span>ลบพนักงานคนสุดท้ายของแผนกแล้วข้อมูลแผนกหายไปด้วย เป็นปัญหาอะไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Deletion Anomaly</button>
+          <button class="quiz-opt">Insertion Anomaly</button>
+          <button class="quiz-opt">Update Anomaly</button>
+          <button class="quiz-opt">Deadlock</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 1 — การลบแถวหนึ่งแต่ทำให้ข้อมูลสำคัญอื่น (ข้อมูลแผนก) สูญหายไปด้วย คือ Deletion Anomaly ซึ่งแก้ด้วยการทำ Normalization</p>
+      </div>
+
+      <div class="prevnext">
+        <a href="index.html">← หน้าแรก<small>แผนอ่าน + โครงข้อสอบ</small></a>
+        <a class="next" href="normalization.html">บทต่อไป: Normalization →<small>🧮 40 คะแนน — คะแนนเยอะที่สุด</small></a>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

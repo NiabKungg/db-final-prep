@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL: Outer JOIN, Subquery, Correlated Subquery (15 คะแนน) — เว็บติวสอบ Final DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style> :root { --accent:#2563eb; } </style>
+</head>
+<body>
+<div id="progressBar"></div>
+<div class="backdrop"></div>
+
+<header class="topbar">
+  <button class="hamburger" aria-label="เปิดเมนู">☰</button>
+  <div class="topbar-title">💾 SQL — 15 คะแนน</div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="เมนูหลัก">
+    <div class="side-brand">🎓 DB Final Prep<small>Database Systems • 120 คะแนน</small></div>
+    <div class="side-note">💡 <b>เคล็ดลับรุ่นพี่:</b> ทำข้อ SQL ให้เสร็จก่อน เพราะใช้เวลาเยอะมาก!</div>
+    <a class="nav-link" href="index.html"><span class="nav-emoji">🏠</span> หน้าแรก + แผนอ่าน</a>
+    <a class="nav-link" href="db-concept.html"><span class="nav-emoji">📘</span> DB Concept <span class="nav-pts">10</span></a>
+    <a class="nav-link" href="normalization.html"><span class="nav-emoji">🧮</span> Normalization <span class="nav-pts">40</span></a>
+    <a class="nav-link" href="recovery.html"><span class="nav-emoji">🔄</span> Recovery Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="concurrency.html"><span class="nav-emoji">🔀</span> Concurrency Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="data-warehouse.html"><span class="nav-emoji">🏢</span> Data Warehouse <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="sql.html"><span class="nav-emoji">💾</span> SQL <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="critique.html"><span class="nav-emoji">⚖️</span> วิพากษ์ Data Model <span class="nav-pts">10</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="content">
+
+      <header class="page-head">
+        <p class="crumb"><a href="index.html">หน้าแรก</a> / SQL</p>
+        <h1>💾 SQL — Outer JOIN, Subquery &amp; Correlated Subquery</h1>
+        <div class="head-meta">
+          <span class="badge">คะแนน 15</span>
+          <span class="badge">ข้อใหญ่ หลายข้อย่อย</span>
+          <span class="badge gold">⏰ ทำเป็นข้อแรกในห้องสอบ — ใช้เวลาเยอะที่สุด</span>
+        </div>
+      </header>
+
+      <div class="box box-exam">
+        <p class="box-title">📝 รูปแบบข้อสอบ SQL (จากรุ่นพี่)</p>
+        <p>SQL 1 ข้อใหญ่ มี 8 ข้อย่อย (คล้าย Midterm) — เน้น <strong>JOIN เยอะ + Subquery</strong>
+        ปีนี้ประกาศเพิ่มเรื่อง <strong>Outer JOIN, Subquery, Correlated Subquery</strong>
+        ใช้เวลาเยอะมาก จึงต้อง<strong>ทำเป็นข้อแรก</strong>และซ้อมเขียนมือจนคล่อง</p>
+      </div>
+
+      <h2>0. ก่อนเขียนทุกครั้ง — เทคนิค 3 คำถามของอาจารย์</h2>
+      <div class="grid grid-3">
+        <div class="card"><h4>❓ ต้องการดูอะไร?</h4><p>คอลัมน์ที่โจทย์ขอ → ใส่หลัง <code>SELECT</code></p></div>
+        <div class="card"><h4>❓ ข้อมูลอยู่ตารางไหน?</h4><p>ทุกตารางที่เกี่ยว → ใส่หลัง <code>FROM</code> (ถ้าหลายตารางต้อง JOIN)</p></div>
+        <div class="card"><h4>❓ กรองยังไง?</h4><p>เงื่อนไขของแถว → ใส่หลัง <code>WHERE</code></p></div>
+      </div>
+
+      <h2>1. INNER JOIN vs OUTER JOIN</h2>
+      <h3>1.1 นิยาม</h3>
+      <ul>
+        <li><strong>INNER JOIN</strong> — ดึงเฉพาะแถวที่<strong>มีคู่ตรงกันทั้งสองฝั่ง</strong> (Matched Rows) ใครไม่มีคู่โดนตัดทิ้ง</li>
+        <li><strong>OUTER JOIN</strong> — ยอมดึงแถวที่<strong>ไม่มีคู่</strong>มาแสดงด้วย โดยช่องที่ไม่มีข้อมูลเติมด้วย <code>NULL</code>
+          <ul>
+            <li><strong>LEFT OUTER JOIN</strong> — ยึดตาราง<strong>ซ้าย</strong>เป็นหลัก แสดงครบทุกแถวฝั่งซ้าย</li>
+            <li><strong>RIGHT OUTER JOIN</strong> — ยึดตาราง<strong>ขวา</strong>เป็นหลัก แสดงครบทุกแถวฝั่งขวา</li>
+            <li><strong>FULL OUTER JOIN</strong> — แสดงครบ<strong>ทั้งสองฝั่ง</strong>แม้ไม่มีคู่</li>
+          </ul>
+        </li>
+      </ul>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 860 260" width="860" role="img" aria-label="แผนภาพเวนน์ของ JOIN" class="svg-text">
+          <g transform="translate(30,20)">
+            <circle cx="70" cy="80" r="60" fill="#2563eb" opacity=".45"/>
+            <circle cx="160" cy="80" r="60" fill="#e11d48" opacity=".45"/>
+            <text x="55" y="86" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#1e3a8a">A</text>
+            <text x="175" y="86" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#881337">B</text>
+            <text x="115" y="172" text-anchor="middle" style="font-size:12.5px;font-weight:700;fill:#333">INNER = A∩B</text>
+            <text x="115" y="190" text-anchor="middle" class="ts" style="font-size:11px">เฉพาะส่วนทับกัน</text>
+          </g>
+          <g transform="translate(225,20)">
+            <circle cx="70" cy="80" r="60" fill="#2563eb" opacity=".45"/>
+            <circle cx="160" cy="80" r="60" fill="#d1d5db" opacity=".35"/>
+            <text x="55" y="86" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#1e3a8a">A</text>
+            <text x="115" y="172" text-anchor="middle" style="font-size:12.5px;font-weight:700;fill:#333">LEFT = A ทั้งหมด</text>
+            <text x="115" y="190" text-anchor="middle" class="ts" style="font-size:11px">+ จุดที่ตรงกับ B</text>
+          </g>
+          <g transform="translate(420,20)">
+            <circle cx="70" cy="80" r="60" fill="#d1d5db" opacity=".35"/>
+            <circle cx="160" cy="80" r="60" fill="#e11d48" opacity=".45"/>
+            <text x="175" y="86" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#881337">B</text>
+            <text x="115" y="172" text-anchor="middle" style="font-size:12.5px;font-weight:700;fill:#333">RIGHT = B ทั้งหมด</text>
+            <text x="115" y="190" text-anchor="middle" class="ts" style="font-size:11px">+ จุดที่ตรงกับ A</text>
+          </g>
+          <g transform="translate(615,20)">
+            <circle cx="70" cy="80" r="60" fill="#2563eb" opacity=".45"/>
+            <circle cx="160" cy="80" r="60" fill="#e11d48" opacity=".45"/>
+            <text x="55" y="86" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#1e3a8a">A</text>
+            <text x="175" y="86" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#881337">B</text>
+            <text x="115" y="172" text-anchor="middle" style="font-size:12.5px;font-weight:700;fill:#333">FULL = A∪B</text>
+            <text x="115" y="190" text-anchor="middle" class="ts" style="font-size:11px">ทั้งหมดของสองฝั่ง</text>
+          </g>
+          <text x="430" y="248" text-anchor="middle" class="ts">จำจากทฤษฎีเซต: INNER=Intersection • LEFT/RIGHT=ยึดฝั่งใดฝั่งหนึ่ง • FULL=Union</text>
+        </svg>
+        <figcaption>ภาพที่ 1: JOIN ในมุมมองเวนน์ไดอะแกรม (ตามที่อาจารย์อธิบายด้วย Set Theory)</figcaption>
+      </figure>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>INNER JOIN เหมือน<strong>ลิสต์เฉพาะคนที่ลงทะเบียน "และ" จ่ายเงินแล้ว</strong> (ตรงกันทั้งสองระบบ)<br>
+        LEFT JOIN เหมือน<strong>ลิสต์จังหวัดทั้ง 76 จังหวัด</strong> ว่ามีพนักงานสังกัดกี่คน — จังหวัดไหนไม่มีพนักงานก็ต้องโชว์ชื่อจังหวัดออกมาด้วย (ช่องพนักงานว่าง = NULL)</p>
+      </div>
+
+      <h3>1.2 ตัวอย่างโจทย์ที่เคยทำในห้อง</h3>
+      <p><strong>โจทย์ข้อ 1 (INNER JOIN):</strong> แสดงชื่อพนักงาน เพศ และชื่อแผนกของพนักงานทุกคน</p>
+      <p>วิเคราะห์: ชื่อ/เพศอยู่ใน Employee, ชื่อแผนกอยู่ใน Department เชื่อมกันด้วย Dept_Code</p>
+      <pre class="code"><span class="kw">SELECT</span> Employee.Emp_Name, Employee.Sex, Department.Dept_Name
+<span class="kw">FROM</span> Employee
+<span class="kw">INNER JOIN</span> Department <span class="kw">ON</span> Employee.Dept_Code = Department.Dept_Code;
+
+<span class="cm">-- เขียนสไตล์เก่าบน WHERE ก็ถูกต้องเหมือนกัน</span>
+<span class="kw">SELECT</span> E.Emp_Name, E.Sex, D.Dept_Name
+<span class="kw">FROM</span> Employee E, Department D
+<span class="kw">WHERE</span> E.Dept_Code = D.Dept_Code;</pre>
+
+      <p><strong>โจทย์ข้อ 2 (LEFT OUTER JOIN):</strong> แสดงจังหวัดทั้งหมดพร้อมชื่อพนักงานที่สังกัด — จังหวัดที่<strong>ไม่มี</strong>พนักงานก็ต้องแสดง</p>
+      <pre class="code"><span class="kw">SELECT</span> P.SPV_Name, E.Emp_Name
+<span class="kw">FROM</span> Set_Province P
+<span class="kw">LEFT OUTER JOIN</span> Employee E <span class="kw">ON</span> P.SPV_Code = E.SPV_Code;</pre>
+      <div class="box box-warn"><p class="box-title">⚠️ จุดพลาดคลาสสิก</p><p>โจทย์พวก "แสดง<strong>ครบทุกแถว</strong>แม้ไม่มีข้อมูลคู่" หรือ "รวมถึงคนที่ยังไม่มี..." = <strong>สัญญาณของ OUTER JOIN</strong> ถ้าใช้ INNER JOIN แถวไร้คู่จะหายไปเงียบ ๆ (เสียคะแนนโดยไม่รู้ตัว)</p></div>
+
+      <h3>1.3 ลองเห็นผลจริงด้วยข้อมูลจิ๋ว</h3>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Employee</th><th>Dept_Code</th><th style="border-left:2px solid #e3e7f0">Department</th><th>Dept_Code</th></tr>
+        <tr><td>สมชาย</td><td>D01</td><td style="border-left:2px solid #e3e7f0">ขาย</td><td>D01</td></tr>
+        <tr><td>สมหญิง</td><td>D02</td><td style="border-left:2px solid #e3e7f0">บัญชี</td><td>D02</td></tr>
+        <tr><td>สมศักดิ์</td><td><strong style="color:#c62a30">D99 (ไม่มีจริง)</strong></td><td style="border-left:2px solid #e3e7f0">การตลาด</td><td><strong style="color:#c62a30">D03 (ไม่มีใครสังกัด)</strong></td></tr>
+      </table></div>
+      <ul>
+        <li><strong>INNER:</strong> ได้ 2 แถว (สมชาย-ขาย, สมหญิง-บัญชี) — สมศักดิ์กับการตลาดหายไป</li>
+        <li><strong>LEFT (Employee นำ):</strong> ได้ 3 แถว — สมศักดิ์โผล่มา ช่อง Dept_Name เป็น NULL</li>
+        <li><strong>RIGHT (Department นำ):</strong> ได้ 3 แถว — "การตลาด" โผล่มา ช่อง Emp_Name เป็น NULL</li>
+        <li><strong>FULL:</strong> ได้ 4 แถว — ทั้งสมศักดิ์และการตลาดครบ</li>
+      </ul>
+
+      <h2>2. Subquery (คำสั่งสอบถามย่อย)</h2>
+      <p><strong>Subquery</strong> คือ การเขียน <code>SELECT</code> ซ้อนอยู่ใน SELECT อีกชั้น (Inner Query ใน Outer Query)
+      เพื่อ<strong>ประมวลผลหาค่าก่อน</strong>แล้วเอามาใช้เป็นเงื่อนไขแบบไดนามิก — ไม่ต้อง Hard-code ค่าคงที่</p>
+
+      <h3>2.1 อยู่ใน WHERE — ใช้กรองแถว (พบบ่อยสุด)</h3>
+      <p><strong>โจทย์:</strong> หาพนักงานที่เงินเดือนสูงกว่าเงินเดือนเฉลี่ยของบริษัท</p>
+      <pre class="code"><span class="kw">SELECT</span> Emp_Name, Salary
+<span class="kw">FROM</span> Employee
+<span class="kw">WHERE</span> Salary &gt; (
+    <span class="kw">SELECT</span> <span class="fn">AVG</span>(Salary) <span class="kw">FROM</span> Employee   <span class="cm">-- วงในคำนวณค่าเฉลี่ยก่อน (เช่น 25,000)</span>
+);                                      <span class="cm">-- วงนอกค่อยกรอง Salary &gt; 25,000</span></pre>
+      <p>ใช้ร่วมกับ <code>=, &gt;, &lt;, IN, NOT IN, ANY, ALL</code> ได้</p>
+
+      <h3>2.2 อยู่ใน FROM — ทำตารางเสมือน (Derived Table)</h3>
+      <p><strong>โจทย์:</strong> หาแผนกที่ยอดรวมเงินเดือนมากกว่า 100,000 บาท</p>
+      <pre class="code"><span class="kw">SELECT</span> Dept_Summary.Dept_Code, Dept_Summary.Total_Salary
+<span class="kw">FROM</span> (
+    <span class="kw">SELECT</span> Dept_Code, <span class="fn">SUM</span>(Salary) <span class="kw">AS</span> Total_Salary
+    <span class="kw">FROM</span> Employee
+    <span class="kw">GROUP BY</span> Dept_Code
+) Dept_Summary                        <span class="cm">-- ผลลัพธ์วงในถูกมองเป็น "ตารางชั่วคราว"</span>
+<span class="kw">WHERE</span> Dept_Summary.Total_Salary &gt; 100000;</pre>
+
+      <h3>2.3 อยู่ใน SELECT — Scalar Subquery (คืน 1 ค่า)</h3>
+      <p><strong>โจทย์:</strong> แสดงชื่อพนักงาน เงินเดือน และเงินเดือนสูงสุดของบริษัท ไว้ข้างกัน</p>
+      <pre class="code"><span class="kw">SELECT</span> Emp_Name, Salary,
+       (<span class="kw">SELECT</span> <span class="fn">MAX</span>(Salary) <span class="kw">FROM</span> Employee) <span class="kw">AS</span> Max_Company_Salary
+<span class="kw">FROM</span> Employee;</pre>
+
+      <h2>3. Correlated Subquery — วงในอ้างอิงวงนอก</h2>
+      <p><strong>Correlated Subquery</strong> คือ Subquery วงในที่<strong>อ้างอิงคอลัมน์ของตารางวงนอก</strong>
+      ทำให้ต้องรันวงใน<strong>ทีละแถว</strong>ของวงนอก (Row-by-Row)</p>
+
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>ประเด็น</th><th>Subquery ธรรมดา</th><th>Correlated Subquery</th></tr>
+        <tr><td>การทำงาน</td><td>วงในรัน<strong>ครั้งเดียว</strong> ได้ค่ามาส่งต่อ</td><td>วงในรัน<strong>ทีละแถว</strong> ตามจำนวนแถววงนอก</td></tr>
+        <tr><td>การพึ่งพา</td><td>แยกรันวงในเดี่ยว ๆ ได้</td><td><strong>รันเดี่ยวไม่ได้</strong> ต้องรับค่าจากวงนอก</td></tr>
+        <tr><td>ประสิทธิภาพ</td><td>เร็วกว่า</td><td>ใช้ CPU/RAM มากกว่าถ้าตารางใหญ่</td></tr>
+      </table></div>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p><strong>Subquery ธรรมดา</strong> = โทรถามสำนักงานใหญ่ครั้งเดียวว่า "เงินเดือนเฉลี่ยบริษัทเท่าไหร่?" แล้วเอาคำตอบไปเทียบกับทุกคน<br>
+        <strong>Correlated Subquery</strong> = ถาม<strong>รายแผนก</strong>: หันไปดูว่าคนที่กำลังพิจารณาอยู่อยู่แผนกไหน → โทรถามเฉลี่ยของ<strong>แผนกนั้น</strong> → เทียบ
+        → แล้วทำซ้ำแบบนี้กับทุกคน ทีละคน (เพราะแต่ละคนอยู่คนละแผนก ค่าเฉลี่ยที่ต้องเทียบก็ต่างกัน)</p>
+      </div>
+
+      <h3>3.1 ขั้นตอนการทำงาน 5 ขั้น (อธิบายในข้อสอบได้เต็ม)</h3>
+      <ol class="steps">
+        <li><span class="step-title">ดึงแถวที่ 1 จากตารางวงนอก</span><p>Outer Query หยิบแถวแรกออกมา</p></li>
+        <li><span class="step-title">ส่งค่าของแถวนั้นเข้าวงใน</span><p>ค่าคอลัมน์ที่วงในอ้างอิง (เช่น E1.Dept_Code) กลายเป็นพารามิเตอร์</p></li>
+        <li><span class="step-title">วงในรันคำนวณเฉพาะค่านั้น</span><p>เช่น หา AVG(Salary) เฉพาะแผนกที่ส่งเข้ามา</p></li>
+        <li><span class="step-title">วงนอกเทียบเงื่อนไข</span><p>จริง (TRUE) → แถวนี้เข้าผลลัพธ์ / เท็จ (FALSE) → ตัดทิ้ง</p></li>
+        <li><span class="step-title">ขยับไปแถวที่ 2 แล้ววนซ้ำขั้น 1–4</span><p>ทำจนครบทุกแถวของตารางวงนอก</p></li>
+      </ol>
+
+      <h3>3.2 โจทย์คลาสสิก + ไล่รันทีละแถว</h3>
+      <p><strong>โจทย์:</strong> หาพนักงานที่เงินเดือนสูงกว่า<strong>เฉลี่ยของแผนกตัวเอง</strong></p>
+      <pre class="code"><span class="kw">SELECT</span> E1.Emp_Name, E1.Dept_Code, E1.Salary
+<span class="kw">FROM</span> Employee E1
+<span class="kw">WHERE</span> E1.Salary &gt; (
+    <span class="kw">SELECT</span> <span class="fn">AVG</span>(E2.Salary)
+    <span class="kw">FROM</span> Employee E2
+    <span class="kw">WHERE</span> E2.Dept_Code = E1.Dept_Code   <span class="cm">-- ⭐ อ้างอิงวงนอก E1 = Correlated!</span>
+);</pre>
+      <p>สมมติข้อมูล:</p>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>แถว (E1)</th><th>Emp_Name</th><th>Dept_Code</th><th>Salary</th></tr>
+        <tr><td>1</td><td>สมชาย</td><td>D01</td><td>30,000</td></tr>
+        <tr><td>2</td><td>สมศรี</td><td>D01</td><td>20,000</td></tr>
+        <tr><td>3</td><td>สมศักดิ์</td><td>D02</td><td>40,000</td></tr>
+      </table></div>
+
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>รอบ</th><th>ส่งค่าเข้าวงใน</th><th>วงในคำนวณ</th><th>เทียบวงนอก</th><th>ผลลัพธ์</th></tr>
+        <tr><td>แถว 1: สมชาย</td><td>E1.Dept_Code = 'D01'</td><td>AVG(D01) = (30,000+20,000)/2 = <strong>25,000</strong></td><td>30,000 &gt; 25,000 → TRUE</td><td style="background:#effaf3"><strong>✅ แสดง สมชาย</strong></td></tr>
+        <tr><td>แถว 2: สมศรี</td><td>E1.Dept_Code = 'D01'</td><td>AVG(D01) = <strong>25,000</strong></td><td>20,000 &gt; 25,000 → FALSE</td><td style="background:#fff1f0">✗ ไม่แสดง</td></tr>
+        <tr><td>แถว 3: สมศักดิ์</td><td>E1.Dept_Code = 'D02'</td><td>AVG(D02) = <strong>40,000</strong></td><td>40,000 &gt; 40,000 → FALSE (เท่ากันไม่ผ่าน!)</td><td style="background:#fff1f0">✗ ไม่แสดง</td></tr>
+      </table></div>
+      <div class="box box-tip"><p class="box-title">✅ คำตอบสุดท้าย</p><p>ได้เพียง <strong>สมชาย</strong> — และจุดที่คนพลาดบ่อยคือรอบ 3: "มากกว่า" (&gt;) แบบเข้ม 40,000 &gt; 40,000 เป็น<strong>เท็จ</strong> คนที่เท่ากับเฉลี่ยพอดีไม่ผ่าน</p></div>
+
+      <hr class="sep">
+
+      <h2>4. เทคนิคทำข้อสอบ SQL ที่อาจารย์ย้ำ</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🏷️ ใส่ชื่อตารางนำหน้าคอลัมน์เสมอ</h4>
+          <p>ตอน JOIN ถ้าคอลัมน์ชื่อซ้ำกัน (Dept_Code อยู่ทั้ง 2 ตาราง) ต้องเขียน <code>Employee.Dept_Code</code>
+          หรือใช้ Alias <code>E.Dept_Code</code> กัน error <strong>Ambiguous Column</strong></p>
+        </div>
+        <div class="card">
+          <h4>🔗 ใส่วงเล็บครอบเงื่อนไขซับซ้อน</h4>
+          <p>เงื่อนไขที่มี AND, OR, NOT ให้ครอบวงเล็บ (...) ตามกลุ่มเสมอ กันลำดับการตีความผิด — จุดหักคะแนนที่นักศึกษาตกบ่อยสุด</p>
+        </div>
+        <div class="card">
+          <h4>📊 กฎเหล็ก GROUP BY / HAVING</h4>
+          <p>คอลัมน์ธรรมดาหลัง SELECT ที่ไม่ได้อยู่ในฟังก์ชันรวม (SUM, AVG, COUNT, MIN, MAX) ต้อง<strong>อยู่ใน GROUP BY ทุกตัว</strong><br>
+          กรองผลระดับกลุ่มต้องใช้ <strong>HAVING</strong> ห้ามใช้ WHERE</p>
+        </div>
+        <div class="card">
+          <h4>🕳️ NULL ไม่ใช่ 0 และไม่ใช่ช่องว่าง</h4>
+          <p>กรองค่าว่างห้ามใช้ <code>= NULL</code> ต้องใช้ <code>IS NULL</code> หรือ <code>IS NOT NULL</code> เท่านั้น</p>
+        </div>
+        <div class="card">
+          <h4>⚡ กรองให้แคบก่อน JOIN</h4>
+          <p>ใช้ WHERE ลดจำนวนแถวให้น้อยที่สุดก่อน JOIN/GROUP BY เพื่อลดภาระ RAM — และหลีกเลี่ยง SELECT * ให้ระบุคอลัมน์ที่ต้องการ</p>
+        </div>
+        <div class="card">
+          <h4>⏰ กลยุทธ์เวลาในห้องสอบ</h4>
+          <p>ทำ SQL เป็นข้อแรก (ใช้เวลาเยอะสุด) — อ่านโจทย์ครบทุกข้อย่อยก่อน เพราะหลายข้อใช้ตาราง/Query เดียวกัน วิเคราะห์ครั้งเดียวใช้ได้หลายข้อ</p>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <h2>📝 แนวข้อสอบ SQL (แบบ 8 ข้อย่อย) + แนวคำตอบ</h2>
+      <p>สมมติตาราง: <code>Employee(Emp_ID, Emp_Name, Sex, Dept_Code, Salary)</code> และ <code>Department(Dept_Code, Dept_Name)</code></p>
+
+      <details class="sol"><summary>ข้อย่อย 1: แสดงชื่อ เพศ และชื่อแผนกของพนักงานทุกคน (INNER JOIN)</summary>
+        <div class="sol-body"><pre class="code"><span class="kw">SELECT</span> E.Emp_Name, E.Sex, D.Dept_Name
+<span class="kw">FROM</span> Employee E <span class="kw">INNER JOIN</span> Department D
+     <span class="kw">ON</span> E.Dept_Code = D.Dept_Code;</pre></div>
+      </details>
+      <details class="sol"><summary>ข้อย่อย 2: แสดงจังหวัดทั้งหมดพร้อมพนักงานที่สังกัด รวมจังหวัดที่ไม่มีพนักงาน (OUTER JOIN)</summary>
+        <div class="sol-body"><pre class="code"><span class="kw">SELECT</span> P.SPV_Name, E.Emp_Name
+<span class="kw">FROM</span> Set_Province P <span class="kw">LEFT OUTER JOIN</span> Employee E
+     <span class="kw">ON</span> P.SPV_Code = E.SPV_Code;</pre>
+        <p>สังเกตคำใบ้ "แสดงครบทุกจังหวัด" → ยึดฝั่งจังหวัด = LEFT JOIN</p></div>
+      </details>
+      <details class="sol"><summary>ข้อย่อย 3: หาพนักงานที่เงินเดือนสูงกว่าเฉลี่ยของบริษัท (Subquery ใน WHERE)</summary>
+        <div class="sol-body"><pre class="code"><span class="kw">SELECT</span> Emp_Name, Salary
+<span class="kw">FROM</span> Employee
+<span class="kw">WHERE</span> Salary &gt; (<span class="kw">SELECT</span> <span class="fn">AVG</span>(Salary) <span class="kw">FROM</span> Employee);</pre></div>
+      </details>
+      <details class="sol"><summary>ข้อย่อย 4: หาแผนกที่ยอดรวมเงินเดือนเกิน 100,000 (Subquery ใน FROM)</summary>
+        <div class="sol-body"><pre class="code"><span class="kw">SELECT</span> S.Dept_Code, S.Total_Salary
+<span class="kw">FROM</span> (<span class="kw">SELECT</span> Dept_Code, <span class="fn">SUM</span>(Salary) <span class="kw">AS</span> Total_Salary
+      <span class="kw">FROM</span> Employee <span class="kw">GROUP BY</span> Dept_Code) S
+<span class="kw">WHERE</span> S.Total_Salary &gt; 100000;</pre>
+        <p>(ทำด้วย GROUP BY + HAVING ก็ได้คำตอบเดียวกัน)</p></div>
+      </details>
+      <details class="sol"><summary>ข้อย่อย 5: แสดงชื่อพนักงาน เงินเดือน และเงินเดือนสูงสุดของบริษัทข้างกัน (Subquery ใน SELECT)</summary>
+        <div class="sol-body"><pre class="code"><span class="kw">SELECT</span> Emp_Name, Salary,
+       (<span class="kw">SELECT</span> <span class="fn">MAX</span>(Salary) <span class="kw">FROM</span> Employee) <span class="kw">AS</span> Max_Salary
+<span class="kw">FROM</span> Employee;</pre></div>
+      </details>
+      <details class="sol"><summary>ข้อย่อย 6: หาพนักงานที่เงินเดือนสูงกว่าเฉลี่ยของแผนกตัวเอง (Correlated Subquery)</summary>
+        <div class="sol-body"><pre class="code"><span class="kw">SELECT</span> E1.Emp_Name, E1.Dept_Code, E1.Salary
+<span class="kw">FROM</span> Employee E1
+<span class="kw">WHERE</span> E1.Salary &gt; (<span class="kw">SELECT</span> <span class="fn">AVG</span>(E2.Salary)
+                   <span class="kw">FROM</span> Employee E2
+                   <span class="kw">WHERE</span> E2.Dept_Code = E1.Dept_Code);</pre></div>
+      </details>
+      <details class="sol"><summary>ข้อย่อย 7: Subquery ธรรมดาต่างจาก Correlated Subquery อย่างไร?</summary>
+        <div class="sol-body"><p><strong>Subquery ธรรมดา:</strong> วงในรันครั้งเดียว แยกรันได้ แล้วส่งผลลัพธ์ให้วงนอก<br>
+        <strong>Correlated Subquery:</strong> วงในอ้างอิงคอลัมน์ของวงนอก รันเดี่ยวไม่ได้ ต้องรันทีละแถวของวงนอก (ช้ากว่าแต่จำเป็นกับโจทย์ "เทียบต่อกลุ่มของแถวนั้น")</p></div>
+      </details>
+      <details class="sol"><summary>ข้อย่อย 8: นับจำนวนพนักงานแยกตามแผนก เฉพาะแผนกที่มีมากกว่า 5 คน</summary>
+        <div class="sol-body"><pre class="code"><span class="kw">SELECT</span> D.Dept_Name, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> Num_Emp
+<span class="kw">FROM</span> Employee E <span class="kw">INNER JOIN</span> Department D
+     <span class="kw">ON</span> E.Dept_Code = D.Dept_Code
+<span class="kw">GROUP BY</span> D.Dept_Name
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) &gt; 5;</pre>
+        <p>กรองผลของฟังก์ชันรวมต้องใช้ HAVING — ไม่ใช่ WHERE</p></div>
+      </details>
+
+      <h3>🎬 ลองทำแบบทดสอบด่วน</h3>
+      <div class="quiz" data-answer="2">
+        <p class="quiz-q"><span class="qno">Q1</span>โจทย์ต้องการ "รายชื่อสาขาทั้งหมด พร้อมยอดขาย — สาขาที่ไม่มียอดขายต้องแสดงด้วย" ควรใช้อะไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">INNER JOIN</button>
+          <button class="quiz-opt">RIGHT JOIN โดยให้ตารางสาขาอยู่ขวา</button>
+          <button class="quiz-opt">LEFT JOIN โดยให้ตารางสาขาอยู่ซ้าย</button>
+          <button class="quiz-opt">CROSS JOIN</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 3 — "ครบทุกแถวฝั่งหนึ่งแม้ไม่มีคู่" = OUTER JOIN ถ้าวางตารางสาขาไว้ซ้ายใช้ LEFT JOIN (หรือ RIGHT JOIN ถ้าวางไว้ขวา — สำคัญที่ "ฝั่งที่ยึด" ไม่ใช่ชื่อคำสั่ง)</p>
+      </div>
+      <div class="quiz" data-answer="0">
+        <p class="quiz-q"><span class="qno">Q2</span>ลักษณะใดคือ Correlated Subquery?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">วงในอ้างอิงคอลัมน์ของตารางวงนอก ทำให้ต้องรันทีละแถว</button>
+          <button class="quiz-opt">วงในรันครั้งเดียวจบ แล้วส่งค่าให้วงนอก</button>
+          <button class="quiz-opt">การ JOIN ตารางกับตัวเอง</button>
+          <button class="quiz-opt">การเขียน SELECT โดยไม่มี WHERE</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 1 — Correlated แปลว่า "สัมพันธ์กัน" วงในพึ่งค่าจากวงนอก จึงรันเดี่ยวไม่ได้และต้องทำ Row-by-Row</p>
+      </div>
+      <div class="quiz" data-answer="1">
+        <p class="quiz-q"><span class="qno">Q3</span>ต้องการกรองกลุ่มที่ SUM(Sales) &gt; 100000 หลัง GROUP BY ควรใช้คำสั่งใด?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">WHERE SUM(Sales) &gt; 100000</button>
+          <button class="quiz-opt">HAVING SUM(Sales) &gt; 100000</button>
+          <button class="quiz-opt">ORDER BY SUM(Sales)</button>
+          <button class="quiz-opt">LIMIT 100000</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 2 — เงื่อนไขที่เกี่ยวกับผลของฟังก์ชันรวม (ระดับกลุ่ม) ต้องใช้ HAVING เท่านั้น WHERE ใช้กรองแถวก่อนจับกลุ่ม</p>
+      </div>
+
+      <div class="prevnext">
+        <a href="data-warehouse.html">← ก่อนหน้า: Data Warehouse<small>🏢 15 คะแนน</small></a>
+        <a class="next" href="critique.html">บทสุดท้าย: วิพากษ์ Data Model →<small>⚖️ 10 คะแนน — หัวข้อใหม่ปีนี้</small></a>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

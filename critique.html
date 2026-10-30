@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>วิพากษ์ Data Model (10 คะแนน) — เว็บติวสอบ Final DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style> :root { --accent:#ea580c; } </style>
+</head>
+<body>
+<div id="progressBar"></div>
+<div class="backdrop"></div>
+
+<header class="topbar">
+  <button class="hamburger" aria-label="เปิดเมนู">☰</button>
+  <div class="topbar-title">⚖️ วิพากษ์ Data Model — 10 คะแนน</div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="เมนูหลัก">
+    <div class="side-brand">🎓 DB Final Prep<small>Database Systems • 120 คะแนน</small></div>
+    <div class="side-note">💡 <b>เคล็ดลับรุ่นพี่:</b> ทำข้อ SQL ให้เสร็จก่อน เพราะใช้เวลาเยอะมาก!</div>
+    <a class="nav-link" href="index.html"><span class="nav-emoji">🏠</span> หน้าแรก + แผนอ่าน</a>
+    <a class="nav-link" href="db-concept.html"><span class="nav-emoji">📘</span> DB Concept <span class="nav-pts">10</span></a>
+    <a class="nav-link" href="normalization.html"><span class="nav-emoji">🧮</span> Normalization <span class="nav-pts">40</span></a>
+    <a class="nav-link" href="recovery.html"><span class="nav-emoji">🔄</span> Recovery Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="concurrency.html"><span class="nav-emoji">🔀</span> Concurrency Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="data-warehouse.html"><span class="nav-emoji">🏢</span> Data Warehouse <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="sql.html"><span class="nav-emoji">💾</span> SQL <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="critique.html"><span class="nav-emoji">⚖️</span> วิพากษ์ Data Model <span class="nav-pts">10</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="content">
+
+      <header class="page-head">
+        <p class="crumb"><a href="index.html">หน้าแรก</a> / วิพากษ์ Data Model</p>
+        <h1>⚖️ การวิพากษ์แบบจำลองข้อมูล (Data Model Critique)</h1>
+        <div class="head-meta">
+          <span class="badge">คะแนน 10</span>
+          <span class="badge">1 ข้อ — วิพากษ์โมเดลที่ให้มา</span>
+          <span class="badge gold">หัวข้อที่อาจารย์สอนวันสุดท้าย = เน้นหนัก</span>
+        </div>
+      </header>
+
+      <h2>หลักการ 2 ข้อที่ต้องจำก่อนตอบทุกข้อ</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🚫 No Silver Bullet</h4>
+          <p><strong>ไม่มี Data Model ใด "ดีที่สุด" ในทุกสถานการณ์</strong> — การออกแบบที่ดีต้องดูจากบริบทธุรกิจจริง
+          (Business Domain) และกระบวนการทำงาน (Business Process)</p>
+        </div>
+        <div class="card">
+          <h4>≠ ความไม่เท่ากัน</h4>
+          <p>โมเดลของระบบงานแต่ละประเภท<strong>แทนกันไม่ได้โดยตรง</strong> เพราะการไหลของข้อมูล (Information Flow)
+          และข้อจำกัดธุรกิจ (Business Constraints) ต่างกันสิ้นเชิง</p>
+        </div>
+      </div>
+
+      <div class="box box-warn">
+        <p class="box-title">⚠️ กฎเหล็กของข้อสอบวิพากษ์</p>
+        <p><strong>ห้ามสรุปว่าโมเดลไหน "ถูก" หรือ "ผิด"</strong> — ต้องตอบว่าโมเดลเหมาะ/ไม่เหมาะกับบริบทใด
+        และทำไมจึงแทนกันไม่ได้ (เอาโมเดลง่ายไปใช้กับงานซับซ้อน = ขาดโครงสร้าง
+        เอาโมเดลซับซ้อนไปใช้กับงานง่าย = Over-engineering)</p>
+      </div>
+
+      <h2>โมเดลที่ 1: Bill-Centric (ร้านอาหารหน้าร้าน / POS คิดเงินทันที)</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 780 240" width="780" role="img" aria-label="Bill-Centric Model" class="svg-text">
+          <defs>
+            <marker id="cm1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#ea580c"/>
+            </marker>
+          </defs>
+          <g transform="translate(30,30)">
+            <rect x="0" y="0" width="130" height="48" rx="10" fill="#ffedd5" stroke="#ea580c"/>
+            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#9a3412">CUSTOMERS</text>
+          </g>
+          <g transform="translate(220,30)">
+            <rect x="0" y="0" width="120" height="48" rx="10" fill="#ea580c"/>
+            <text x="60" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff">BILLS ⭐</text>
+          </g>
+          <g transform="translate(410,30)">
+            <rect x="0" y="0" width="130" height="48" rx="10" fill="#ffedd5" stroke="#ea580c"/>
+            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#9a3412">BILL_ITEMS</text>
+          </g>
+          <g transform="translate(610,30)">
+            <rect x="0" y="0" width="130" height="48" rx="10" fill="#ffedd5" stroke="#ea580c"/>
+            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#9a3412">MENU_ITEMS</text>
+          </g>
+          <g transform="translate(220,150)">
+            <rect x="0" y="0" width="120" height="48" rx="10" fill="#ffedd5" stroke="#ea580c"/>
+            <text x="60" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#9a3412">PAYMENTS</text>
+          </g>
+          <line x1="162" y1="54" x2="216" y2="54" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="190" y="44" text-anchor="middle" class="ts" style="font-size:11px">1..N</text>
+          <line x1="342" y1="54" x2="406" y2="54" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="375" y="44" text-anchor="middle" class="ts" style="font-size:11px">1..N</text>
+          <line x1="542" y1="54" x2="606" y2="54" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="575" y="44" text-anchor="middle" class="ts" style="font-size:11px">N..1</text>
+          <line x1="280" y1="80" x2="280" y2="146" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="296" y="118" class="ts" style="font-size:11px">1..N</text>
+          <text x="390" y="130" class="ts" style="font-size:12px">⭐ เอนทิตีแกนกลาง = BILLS (ใบเสร็จ/บิล)</text>
+        </svg>
+        <figcaption>ภาพที่ 1: Bill-Centric — ทุกอย่างหมุนรอบ "บิล" สั่งและจ่ายพร้อมกัน</figcaption>
+      </figure>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>✅ จุดเด่น</h4>
+          <p>โครงสร้างกะทัดรัด ซับซ้อนต่ำ Query ปิดยอดขายรายวันง่าย — เหมาะกับ POS หน้าร้าน ร้านอาหารทั่วไป
+          (สั่ง = จ่าย เกิดใกล้เคียงกัน ไม่ต้องแยก "ออเดอร์" ออกจาก "บิล")</p>
+        </div>
+        <div class="card">
+          <h4>❌ ข้อจำกัด</h4>
+          <p>ไม่รองรับการจัดส่ง (Fulfillment/Shipment), ไม่รองรับแบ่งจ่าย/แบ่งบิล, ไม่รองรับการสั่งล่วงหน้า</p>
+        </div>
+      </div>
+
+      <h2>โมเดลที่ 2: Order-Centric (สั่งจองล่วงหน้า / สั่งผลิต)</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 780 240" width="780" role="img" aria-label="Order-Centric Model" class="svg-text">
+          <g transform="translate(30,30)">
+            <rect x="0" y="0" width="130" height="48" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
+            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#3730a3">CUSTOMERS</text>
+          </g>
+          <g transform="translate(220,30)">
+            <rect x="0" y="0" width="120" height="48" rx="10" fill="#4f46e5"/>
+            <text x="60" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff">ORDERS ⭐</text>
+          </g>
+          <g transform="translate(410,30)">
+            <rect x="0" y="0" width="130" height="48" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
+            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#3730a3">ORDER_ITEMS</text>
+          </g>
+          <g transform="translate(610,30)">
+            <rect x="0" y="0" width="130" height="48" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
+            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#3730a3">MENU_ITEMS</text>
+          </g>
+          <g transform="translate(220,150)">
+            <rect x="0" y="0" width="120" height="48" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
+            <text x="60" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#3730a3">PAYMENTS</text>
+          </g>
+          <line x1="162" y1="54" x2="216" y2="54" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="190" y="44" text-anchor="middle" class="ts" style="font-size:11px">1..N</text>
+          <line x1="342" y1="54" x2="406" y2="54" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="375" y="44" text-anchor="middle" class="ts" style="font-size:11px">1..N</text>
+          <line x1="542" y1="54" x2="606" y2="54" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="575" y="44" text-anchor="middle" class="ts" style="font-size:11px">N..1</text>
+          <line x1="280" y1="80" x2="280" y2="146" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="296" y="118" class="ts" style="font-size:11px">1..N</text>
+          <text x="390" y="130" class="ts" style="font-size:12px">⭐ เอนทิตีแกนกลาง = ORDERS — บันทึก "เจตนาซื้อ" ก่อน จ่ายเข้าออเดอร์ตรง ๆ</text>
+        </svg>
+        <figcaption>ภาพที่ 2: Order-Centric — เน้นบันทึกออเดอร์ที่ยังไม่เสร็จ (รอปรุง/รอรับของ) ได้</figcaption>
+      </figure>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>✅ จุดเด่น</h4>
+          <p>เก็บ "เจตนาในการซื้อ" (Customer Intent) ก่อนจ่ายได้ — รองรับสถานะรอดำเนินการ เช่น รอปรุง รอลูกค้ามารับ (ร้านสั่งจอง, POS สั่งทำ)</p>
+        </div>
+        <div class="card">
+          <h4>❌ ข้อจำกัด</h4>
+          <p>รวมศูนย์การเงิน (Billing) กับคำสั่งซื้อ (Order) ไว้จุดเดียว — <strong>แยกรอบบิล</strong> หรือ<strong>แยกส่งหลายเที่ยว</strong>ไม่ได้</p>
+        </div>
+      </div>
+
+      <h2>โมเดลที่ 3: Enterprise Commerce (อีคอมเมิร์ซเต็มรูปแบบ)</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 800 384" width="800" role="img" aria-label="Enterprise Commerce Model" class="svg-text">
+          <g transform="translate(20,60)">
+            <rect x="0" y="0" width="110" height="46" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
+            <text x="55" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#3730a3">CUSTOMERS</text>
+          </g>
+          <g transform="translate(190,60)">
+            <rect x="0" y="0" width="110" height="46" rx="10" fill="#4f46e5"/>
+            <text x="55" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#fff">ORDERS ⭐</text>
+          </g>
+          <g transform="translate(190,190)">
+            <rect x="0" y="0" width="120" height="46" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
+            <text x="60" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#3730a3">ORDER_ITEMS</text>
+          </g>
+          <g transform="translate(20,190)">
+            <rect x="0" y="0" width="120" height="46" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
+            <text x="60" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#3730a3">MENU/PRODUCTS</text>
+          </g>
+
+          <g transform="translate(400,20)">
+            <rect x="0" y="0" width="100" height="46" rx="10" fill="#fff7ed" stroke="#ea580c"/>
+            <text x="50" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#9a3412">BILLS</text>
+          </g>
+          <g transform="translate(400,110)">
+            <rect x="0" y="0" width="100" height="46" rx="10" fill="#fff7ed" stroke="#ea580c"/>
+            <text x="50" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#9a3412">PAYMENTS</text>
+          </g>
+          <g transform="translate(610,20)">
+            <rect x="0" y="0" width="110" height="46" rx="10" fill="#ecfdf5" stroke="#059669"/>
+            <text x="55" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#065f46">SHIPMENTS</text>
+          </g>
+          <g transform="translate(610,110)">
+            <rect x="0" y="0" width="120" height="46" rx="10" fill="#ecfdf5" stroke="#059669"/>
+            <text x="60" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#065f46">SHIPMENT_ITEMS</text>
+          </g>
+
+          <text x="400" y="288" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#9a3412">💰 Commercial Intent: ORDERS → ORDER_ITEMS</text>
+          <text x="400" y="312" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#ea580c">🧾 Financial Flow: ORDERS → BILLS → PAYMENTS</text>
+          <text x="400" y="336" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#065f46">🚚 Logistics Flow: ORDERS → SHIPMENTS → SHIPMENT_ITEMS</text>
+          <text x="400" y="368" text-anchor="middle" class="ts" style="font-size:11.5px;fill:#6a1fd0">ORDER_ITEMS (1) → SHIPMENT_ITEMS (N) = สายส่งที่ทำ Partial Shipment ได้</text>
+
+          <line x1="132" y1="83" x2="186" y2="83" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="159" y="73" text-anchor="middle" class="ts" style="font-size:10.5px">1..N</text>
+          <line x1="245" y1="108" x2="245" y2="186" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="261" y="150" class="ts" style="font-size:10.5px">1..N</text>
+          <line x1="142" y1="213" x2="186" y2="213" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="163" y="203" text-anchor="middle" class="ts" style="font-size:10.5px">N..1</text>
+
+          <line x1="300" y1="70" x2="396" y2="45" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="345" y="42" text-anchor="middle" class="ts" style="font-size:10.5px">1..N</text>
+          <line x1="450" y1="68" x2="450" y2="106" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="466" y="92" class="ts" style="font-size:10.5px">1..N</text>
+
+          <line x1="302" y1="90" x2="606" y2="45" stroke="#059669" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="450" y="78" text-anchor="middle" class="ts" style="font-size:10.5px">1..N</text>
+          <line x1="665" y1="68" x2="665" y2="106" stroke="#059669" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
+          <text x="681" y="92" class="ts" style="font-size:10.5px">1..N</text>
+          <path d="M312 205 L 390 205 L 390 156" fill="none" stroke="#6a1fd0" stroke-width="2" marker-end="url(#cm1)"/>
+          <path d="M390 205 L 560 205 L 560 158" fill="none" stroke="#6a1fd0" stroke-width="2" marker-end="url(#cm1)"/>
+        </svg>
+        <figcaption>ภาพที่ 3: Enterprise Commerce — แยก 3 แกน: Order / Bill / Shipment ออกจากกันชัดเจน</figcaption>
+      </figure>
+
+      <p>แกนหลัก 3 เส้นของโมเดลนี้:</p>
+      <ol>
+        <li><strong>Commercial Intent</strong> — ลูกค้าต้องการซื้ออะไร (<code>ORDERS</code> + <code>ORDER_ITEMS</code>)</li>
+        <li><strong>Financial Flow</strong> — เรียกเก็บเงินเมื่อไร รูปแบบใด ชำระแล้วกี่งวด (<code>BILLS</code> + <code>PAYMENTS</code>)</li>
+        <li><strong>Logistics Flow</strong> — สินค้าแพ็กส่งรอบไหน ขนส่งรายใด (<code>SHIPMENTS</code> + <code>SHIPMENT_ITEMS</code>)</li>
+      </ol>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <h4>📦 Partial Shipment</h4>
+          <p>1 คำสั่งซื้อ ทยอยส่งหลายรอบตามสินค้าเข้าสต็อก (โครงสร้าง <code>SHIPMENT_ITEMS</code> รองรับ)</p>
+        </div>
+        <div class="card">
+          <h4>🧾 Split Billing</h4>
+          <p>แบ่งเปิดบิลหลายใบตามงวด หรือตามรอบที่ส่งของจริง</p>
+        </div>
+        <div class="card">
+          <h4>🔍 Traceability</h4>
+          <p>ตรวจได้ลึกระดับไอเทมว่า ชิ้นไหนส่งแล้ว ชิ้นไหนค้างส่ง</p>
+        </div>
+      </div>
+
+      <div class="box box-warn">
+        <p class="box-title">❌ ข้อจำกัดของโมเดลใหญ่</p>
+        <p>Schema ซับซ้อนสูง ต้อง JOIN หลายตาราง ต้นทุนประมวลผลสูง — เอาไปใช้กับร้านอาหารหน้าร้านธรรมดา = <strong>Over-engineering</strong> ทำให้ระบบยุ่งเกินจำเป็น</p>
+      </div>
+
+      <h2>ตารางวิพากษ์เทียบ 3 โมเดล (ท่องตารางนี้ = จบข้อสอบ)</h2>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>มิติ</th><th>Bill-Centric</th><th>Order-Centric</th><th>Enterprise Commerce</th></tr>
+        <tr><td>จุดศูนย์กลาง</td><td><code>BILLS</code></td><td><code>ORDERS</code></td><td><code>ORDERS</code> (แยก Billing &amp; Logistics ออก)</td></tr>
+        <tr><td>โลจิสติกส์/การจัดส่ง</td><td>ไม่รองรับ (รับของทันที)</td><td>ไม่รองรับ</td><td>รองรับเต็มรูปแบบ (<code>SHIPMENTS</code>, <code>SHIPMENT_ITEMS</code>)</td></tr>
+        <tr><td>ความยืดหยุ่นการชำระเงิน</td><td>จ่ายตามบิลหน้าร้าน</td><td>จ่ายตรงเข้าออเดอร์</td><td>แยกบิลได้หลายใบ/หลายงวด</td></tr>
+        <tr><td>ความซับซ้อน</td><td>ต่ำมาก</td><td>ต่ำ</td><td>สูง (สะท้อน Business Reality)</td></tr>
+        <tr><td>บริบทที่เหมาะ</td><td>ร้านอาหาร, ร้านค้าปลีกด่วน</td><td>ร้านสั่งจอง, POS สั่งทำ</td><td>E-Commerce, B2B, คลังสินค้า</td></tr>
+      </table></div>
+
+      <h2>สูตรตอบข้อสอบ "จงวิพากษ์โมเดลนี้" — 3 ขั้นตอน</h2>
+      <ol class="steps">
+        <li>
+          <span class="step-title">ระบุเจตนาของโจทย์</span>
+          <p>ชี้ทันทีว่าภาพนี้เป็นการเปรียบเทียบ<strong>โมเดลหน้าร้านแบบง่าย</strong> กับ <strong>โมเดลพาณิชย์/โลจิสติกส์ระดับองค์กร</strong> — และเครื่องหมาย ≠ หมายถึง <strong>แทนกันไม่ได้</strong> ไม่ใช่ "ผิด"</p>
+        </li>
+        <li>
+          <span class="step-title">อธิบายความหมายของ ≠</span>
+          <p>โมเดลฝั่งง่าย <strong>ใช้แทนฝั่งซับซ้อนไม่ได้</strong> เพราะขาดโครงสร้างรองรับการจัดส่ง (<code>SHIPMENTS</code>) และการแยกเปิดบิล (<code>BILLS</code>)<br>
+          และการเอาโมเดลใหญ่ไปใช้กับร้านหน้าร้านธรรมดาก็เกิด <strong>Over-engineering</strong> — ซับซ้อนเกินความจำเป็น</p>
+        </li>
+        <li>
+          <span class="step-title">ยกสถานการณ์จริง (Concrete Scenario)</span>
+          <p>ตัวอย่างที่โมเดลง่ายทำไม่ได้: <em>ลูกค้าสั่งสินค้า 5 ชิ้น สต็อกพร้อมส่งมี 3 ชิ้น → ทยอยส่งรอบแรก 3 ชิ้น รอบสองอีก 2 ชิ้น</em>
+          — ต้องใช้โมเดล Enterprise เท่านั้น ผ่าน <code>ORDER_ITEMS (1) → SHIPMENT_ITEMS (N)</code> จึงจะตามรอบการส่งได้</p>
+        </li>
+      </ol>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 โครงคำตอบ 1 ย่อหน้า (จำสั้น ๆ)</p>
+        <p>"โมเดลนี้เป็นแบบ [Bill/Order/Enterprise]-Centric ซึ่งเหมาะกับบริบท [X] แต่ <strong>ไม่สามารถนำไปแทน</strong> โมเดล [อีกฝั่ง] ได้ เพราะ [ขาด/มีเกิน] โครงสร้าง SHIPMENTS และ BILLS
+        เช่น กรณี Partial Shipment ลูกค้าสั่ง 5 ส่ง 2 รอบ โมเดลนี้เก็บข้อมูลไม่ได้ — จึงตอบว่า ≠ หมายถึงแทนกันไม่ได้ตามบริบท ไม่ใช่ผิด/ถูก"</p>
+      </div>
+
+      <hr class="sep">
+
+      <h2>📝 แนวข้อสอบ + ตัวอย่างคำตอบ</h2>
+      <details class="sol"><summary>ข้อ 1: ระบบร้านอาหารหน้าร้านทั่วไปควรใช้โมเดลใด เพราะอะไร?</summary>
+        <div class="sol-body"><p>ควรใช้ <strong>Bill-Centric Model</strong> เพราะกระบวนการสั่งและชำระเงินเกิดพร้อมกัน (POS คิดเงินทันที)
+        ไม่มีความจำเป็นต้องแยกสถานะ "คำสั่งซื้อ" ออกจาก "บิล" โครงสร้างจึงกะทัดรัด ซับซ้อนต่ำ และ Query ปิดยอดขายรายวันง่าย —
+        การใช้ Enterprise Commerce Model แทนจะเป็น Over-engineering สิ้นเปลืองโดยไม่จำเป็น</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 2: ทำไมภาพเปรียบเทียบโมเดลจึงใส่เครื่องหมาย ≠ ไม่ใช่ &lt; หรือ &gt; ?</summary>
+        <div class="sol-body"><p>เพราะตามหลัก <strong>No Silver Bullet</strong> ไม่มีโมเดลใดดีกว่าโมเดลใดโดยสัมบูรณ์ —
+        ≠ หมายถึง <strong>ไม่สามารถแทนที่กันโดยตรง</strong> เนื่องจากการไหลของข้อมูลและข้อจำกัดธุรกิจต่างกัน:
+        โมเดลง่ายขาด SHIPMENTS/BILLS ไปรองรับ E-Commerce ไม่ได้ ส่วนโมเดลใหญ่เอาไปใช้กับร้านหน้าร้านก็ซับซ้อนเกินจำเป็น
+        การเลือกจึงขึ้นกับบริบทธุรกิจ ไม่ใช่เรื่องถูก/ผิด</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 3: ลูกค้าสั่งของ 5 ชิ้นแต่สต็อกมี 3 ชิ้น ต้องทยอยส่ง 2 รอบ — โมเดลใดรองรับ ผ่านกลไกอะไร?</summary>
+        <div class="sol-body"><p>เฉพาะ <strong>Enterprise Commerce Model</strong> เท่านั้น — ผ่านความสัมพันธ์
+        <code>ORDER_ITEMS (1) → SHIPMENT_ITEMS (N)</code> ที่ให้ไอเทมหนึ่งของออเดอร์ถูกแบ่งไปอยู่ใน Shipment ได้หลายรอบ (Partial Shipment)
+        ทำให้ตรวจสอบได้ (Traceability) ว่าชิ้นใดส่งแล้ว/ค้างส่ง และเปิดบิลตามรอบการส่งจริงได้ (Split Billing) —
+        Bill-Centric และ Order-Centric ไม่มีเอนทิตี Shipment จึงเก็บข้อมูลการส่งแยกรอบไม่ได้เลย</p></div>
+      </details>
+
+      <h3>🎬 ลองทำแบบทดสอบด่วน</h3>
+      <div class="quiz" data-answer="1">
+        <p class="quiz-q"><span class="qno">Q1</span>โมเดลที่แยก ORDERS / BILLS / SHIPMENTS ออกจากกันอย่างชัดเจน คือโมเดลใด?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Bill-Centric Model</button>
+          <button class="quiz-opt">Enterprise Commerce Model</button>
+          <button class="quiz-opt">Order-Centric Model</button>
+          <button class="quiz-opt">Hierarchical Model</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 2 — Enterprise Commerce แยก 3 แกน: Commercial Intent (Orders), Financial Flow (Bills+Payments), Logistics Flow (Shipments)</p>
+      </div>
+      <div class="quiz" data-answer="3">
+        <p class="quiz-q"><span class="qno">Q2</span>การเอา Enterprise Commerce Model ไปใช้กับร้านกาแฟหน้าร้านเล็ก ๆ เรียกว่าอะไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Normalization</button>
+          <button class="quiz-opt">Denormalization</button>
+          <button class="quiz-opt">Refactoring</button>
+          <button class="quiz-opt">Over-engineering</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 4 — โมเดลใหญ่เกินความจำเป็นสำหรับงานง่าย = Over-engineering ทำให้ซับซ้อน/ต้นทุนสูงโดยไม่จำเป็น</p>
+      </div>
+      <div class="quiz" data-answer="0">
+        <p class="quiz-q"><span class="qno">Q3</span>เครื่องหมาย ≠ ระหว่างสองโมเดล ควรตอบข้อสอบว่าหมายความว่าอย่างไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">สองโมเดลแทนกันไม่ได้ตามบริบทธุรกิจ — ไม่มีใครถูก/ผิดโดยสัมบูรณ์</button>
+          <button class="quiz-opt">โมเดลซ้ายด้อยกว่าโมเดลขวาเสมอ</button>
+          <button class="quiz-opt">โมเดลขวาผิดหลักการออกแบบฐานข้อมูล</button>
+          <button class="quiz-opt">สองโมเดลให้ผล Query เหมือนกันทุกประการ</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 1 — หลัก No Silver Bullet: แต่ละโมเดลถูกออกแบบตาม Information Flow และ Business Constraints ที่ต่างกัน จึงห้ามสรุปว่าถูก/ผิด แต่ต้องชี้ว่าแทนกันไม่ได้และเพราะอะไร</p>
+      </div>
+
+      <div class="prevnext">
+        <a href="sql.html">← ก่อนหน้า: SQL<small>💾 15 คะแนน</small></a>
+        <a class="next" href="index.html">กลับหน้าแรก<small>🏠 ทบทวนแผนอ่าน + เช็คลิสต์</small></a>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

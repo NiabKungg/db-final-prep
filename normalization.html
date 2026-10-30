@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Normalization 1NF–5NF, BCNF (40 คะแนน) — เว็บติวสอบ Final DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style> :root { --accent:#7c3aed; } </style>
+</head>
+<body>
+<div id="progressBar"></div>
+<div class="backdrop"></div>
+
+<header class="topbar">
+  <button class="hamburger" aria-label="เปิดเมนู">☰</button>
+  <div class="topbar-title">🧮 Normalization — 40 คะแนน</div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="เมนูหลัก">
+    <div class="side-brand">🎓 DB Final Prep<small>Database Systems • 120 คะแนน</small></div>
+    <div class="side-note">💡 <b>เคล็ดลับรุ่นพี่:</b> ทำข้อ SQL ให้เสร็จก่อน เพราะใช้เวลาเยอะมาก!</div>
+    <a class="nav-link" href="index.html"><span class="nav-emoji">🏠</span> หน้าแรก + แผนอ่าน</a>
+    <a class="nav-link" href="db-concept.html"><span class="nav-emoji">📘</span> DB Concept <span class="nav-pts">10</span></a>
+    <a class="nav-link" href="normalization.html"><span class="nav-emoji">🧮</span> Normalization <span class="nav-pts">40</span></a>
+    <a class="nav-link" href="recovery.html"><span class="nav-emoji">🔄</span> Recovery Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="concurrency.html"><span class="nav-emoji">🔀</span> Concurrency Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="data-warehouse.html"><span class="nav-emoji">🏢</span> Data Warehouse <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="sql.html"><span class="nav-emoji">💾</span> SQL <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="critique.html"><span class="nav-emoji">⚖️</span> วิพากษ์ Data Model <span class="nav-pts">10</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="content">
+
+      <header class="page-head">
+        <p class="crumb"><a href="index.html">หน้าแรก</a> / Normalization</p>
+        <h1>🧮 Normalization — จัดระเบียบตาราง 1NF ถึง 5NF</h1>
+        <div class="head-meta">
+          <span class="badge">คะแนน 40 (มากที่สุด!)</span>
+          <span class="badge">4 ข้อ: 1–3NF / BCNF / 4NF / 5NF</span>
+          <span class="badge gold">ต้องเดินสูตรเป็น ไม่ใช่แค่ท่อง</span>
+        </div>
+      </header>
+
+      <h2>Normalization คืออะไร ทำไปทำไม</h2>
+      <p><strong>Normalization</strong> คือ กระบวนการวิเคราะห์และปรับปรุงโครงสร้างตาราง (Relation) ในฐานข้อมูลเชิงสัมพันธ์
+      โดย<strong>ย่อย/สปลิต</strong>ตารางใหญ่ 1 ตาราง (Decomposition) ออกเป็นตารางย่อย ๆ ที่เชื่อมโยงกันด้วย
+      <strong>Primary Key และ Foreign Key</strong> เพื่อให้อยู่ในรูปแบบมาตรฐานที่เรียกว่า <strong>Normal Form (NF)</strong></p>
+
+      <div class="grid grid-3">
+        <div class="card"><h4>1️⃣ ลดความซ้ำซ้อน</h4><p><strong>Minimum Redundancy</strong> — เก็บข้อมูลเรื่องเดียวกันไว้ที่เดียว ไม่กระจายซ้ำหลายตาราง</p></div>
+        <div class="card"><h4>2️⃣ กำจัด Anomalies</h4><p>แก้ปัญหา Insertion / Deletion / Update Anomaly ที่เกิดจากการเก็บตารางรวมเดียว</p></div>
+        <div class="card"><h4>3️⃣ ความถูกต้อง 100%</h4><p><strong>Data Integrity</strong> — Insert/Delete/Update ทำครั้งเดียวจบ ที่เดียวจบ ข้อมูลไม่ขัดแย้ง</p></div>
+      </div>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>ตารางที่ยังไม่ Normalize เหมือน <strong>กระเป๋าเป้ที่ยัดทุกอย่างรวมกัน</strong> — สมุด ขนม สายชาร์จ ขวดน้ำอยู่ห้องเดียว
+        จะหยิบอะไรก็ต้องรื้อทั้งกระเป๋า (แก้ไขข้อมูลครั้งเดียวกระทบหลายแถว) Normalization คือการ
+        <strong>แยกของใส่กระเป๋าแยกตามประเภท</strong>: กระเป๋าสมุด กระเป๋าเครื่องเขียน กระเป๋าอุปกรณ์ — จะหยิบ/แก้ไขอะไรก็แตะแค่กระเป๋าเดียว
+        แล้วเชื่อมกันด้วย "รหัส" (Foreign Key) แทนการพกของซ้ำ</p>
+      </div>
+
+      <h2>รู้จัก Functional Dependency (FD) ก่อน — อุปกรณ์หลักของบทนี้</h2>
+      <p><strong>FD (X → Y)</strong> คือ การขึ้นต่อกันเชิงฟังก์ชัน: เมื่อรู้ค่า X 1 ค่า จะระบุค่า Y ได้<strong>เพียงค่าเดียวเสมอ</strong></p>
+      <figure class="diagram">
+        <svg viewBox="0 0 700 170" width="700" role="img" aria-label="Functional Dependency" class="svg-text">
+          <defs>
+            <marker id="fda" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+            </marker>
+          </defs>
+          <rect x="30" y="40" width="240" height="70" rx="12" fill="#f6f0ff" stroke="#7c3aed" stroke-width="2"/>
+          <text x="150" y="70" text-anchor="middle" style="font-size:16px;font-weight:800;fill:#6a1fd0">X (Determinant)</text>
+          <text x="150" y="92" text-anchor="middle" class="ts">ตัวกำหนดค่า เช่น Emp_ID</text>
+          <rect x="430" y="40" width="240" height="70" rx="12" fill="#eef6ff" stroke="#2196f3" stroke-width="2"/>
+          <text x="550" y="70" text-anchor="middle" style="font-size:16px;font-weight:800;fill:#0b6bcb">Y (Dependent)</text>
+          <text x="550" y="92" text-anchor="middle" class="ts">ตัวถูกกำหนด เช่น Emp_Name</text>
+          <line x1="274" y1="75" x2="424" y2="75" stroke="#7c3aed" stroke-width="3" marker-end="url(#fda)"/>
+          <text x="350" y="60" text-anchor="middle" style="font-size:15px;font-weight:800;fill:#7c3aed">กำหนดค่า</text>
+          <text x="350" y="135" text-anchor="middle" class="ts">Emp_ID → Emp_Name : รู้รหัสพนักงาน = รู้ชื่อคนนั้นคนเดียว</text>
+        </svg>
+        <figcaption>ภาพที่ 1: X → Y — รู้ X ค่าเดียว ระบุ Y ได้ค่าเดียวเสมอ</figcaption>
+      </figure>
+
+      <h2>แผนที่บันได Normal Form ทั้งหมด</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 470" width="760" role="img" aria-label="บันได Normal Form" class="svg-text">
+          <defs>
+            <marker id="lad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+            </marker>
+          </defs>
+          <g text-anchor="middle">
+            <rect x="170" y="6" width="420" height="48" rx="10" fill="#94a3b8"/>
+            <text x="380" y="36" style="font-size:14.5px;fill:#fff;font-weight:800">UNF — ตารางดิบจากฟอร์ม/รายงาน</text>
+            <line x1="380" y1="54" x2="380" y2="70" stroke="#7c3aed" stroke-width="2" marker-end="url(#lad)"/>
+
+            <rect x="170" y="74" width="420" height="48" rx="10" fill="#7c3aed"/>
+            <text x="380" y="96" style="font-size:14.5px;fill:#fff;font-weight:800">1NF</text>
+            <text x="380" y="114" style="font-size:11.5px;fill:#e9d5ff">ทุกเซลล์เป็นค่าเดียว (Atomic) + กำหนด PK</text>
+            <line x1="380" y1="122" x2="380" y2="138" stroke="#7c3aed" stroke-width="2" marker-end="url(#lad)"/>
+
+            <rect x="170" y="142" width="420" height="48" rx="10" fill="#6d28d9"/>
+            <text x="380" y="164" style="font-size:14.5px;fill:#fff;font-weight:800">2NF</text>
+            <text x="380" y="182" style="font-size:11.5px;fill:#e9d5ff">ตัด Partial Dependency (Non-key ขึ้นกับ PK ทั้งก้อน)</text>
+            <line x1="380" y1="190" x2="380" y2="206" stroke="#7c3aed" stroke-width="2" marker-end="url(#lad)"/>
+
+            <rect x="170" y="210" width="420" height="48" rx="10" fill="#5b21b6"/>
+            <text x="380" y="232" style="font-size:14.5px;fill:#fff;font-weight:800">3NF</text>
+            <text x="380" y="250" style="font-size:11.5px;fill:#ddd6fe">ตัด Transitive Dependency (Non-key กำหนด Non-key)</text>
+            <line x1="380" y1="258" x2="380" y2="274" stroke="#7c3aed" stroke-width="2" marker-end="url(#lad)"/>
+
+            <rect x="170" y="278" width="420" height="48" rx="10" fill="#4c1d95"/>
+            <text x="380" y="300" style="font-size:14.5px;fill:#fff;font-weight:800">BCNF (เข้มกว่า 3NF)</text>
+            <text x="380" y="318" style="font-size:11.5px;fill:#ddd6fe">Determinant ของทุก FD ต้องเป็น Candidate Key</text>
+            <line x1="380" y1="326" x2="380" y2="342" stroke="#7c3aed" stroke-width="2" marker-end="url(#lad)"/>
+
+            <rect x="170" y="346" width="420" height="48" rx="10" fill="#3b0764"/>
+            <text x="380" y="368" style="font-size:14.5px;fill:#fff;font-weight:800">4NF</text>
+            <text x="380" y="386" style="font-size:11.5px;fill:#ddd6fe">ตัด Multi-valued Dependency (X→→Y, X→→Z อิสระกัน)</text>
+            <line x1="380" y1="394" x2="380" y2="410" stroke="#7c3aed" stroke-width="2" marker-end="url(#lad)"/>
+
+            <rect x="170" y="414" width="420" height="48" rx="10" fill="#2e1065"/>
+            <text x="380" y="436" style="font-size:14.5px;fill:#fff;font-weight:800">5NF / PJNF</text>
+            <text x="380" y="454" style="font-size:11.5px;fill:#ddd6fe">ตัด Join Dependency (แตก 3 ตาราง JOIN กลับได้ตารางเดิม)</text>
+          </g>
+        </svg>
+        <figcaption>ภาพที่ 2: บันได Normalization — ขึ้นทีละขั้น ต้องผ่านขั้นล่างก่อนเสมอ</figcaption>
+      </figure>
+
+      <div class="box box-basics">
+        <p class="box-title">📚 พื้นฐานที่ต้องรู้ก่อนอ่านต่อ</p>
+        <ul>
+          <li><strong>Primary Key (PK)</strong> — คีย์หลักระบุแถวไม่ซ้ำ (ดูบท DB Concept)</li>
+          <li><strong>Candidate Key (CK)</strong> — คีย์คู่แข่งทุกตัวที่ระบุแถวได้แบบน้อยที่สุด</li>
+          <li><strong>Composite Key</strong> — PK ที่ประกอบจาก 2 คอลัมน์ขึ้นไป</li>
+          <li><strong>Non-key attribute</strong> — คอลัมน์ที่ไม่ใช่คีย์ (มักเป็นตัวปัญหา!)</li>
+        </ul>
+      </div>
+
+      <hr class="sep">
+
+      <h2>1NF — ทุกเซลล์ต้องเป็นค่าเดียว (Atomic)</h2>
+      <p><strong>เงื่อนไข:</strong> ข้อมูลทุกเซลล์ต้องเป็น <strong>Atomic Value</strong> (ค่าเดี่ยวย่อยไม่ได้อีก) และ
+      <strong>ไม่มี Repeating Group</strong> (ไม่มีการเก็บหลายค่าในช่องเดียว หรือคอลัมน์ซ้ำ ๆ)</p>
+
+      <h3>❌ ไม่ผ่าน 1NF</h3>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Std_ID</th><th>Name</th><th>Tel_No</th></tr>
+        <tr><td>6501001</td><td>สมชาย</td><td>081-1111, 089-2222 ⚠️</td></tr>
+        <tr><td>6501002</td><td>สมหญิง</td><td>090-3333</td></tr>
+      </table></div>
+      <p>ช่อง Tel_No เก็บ 2 เบอร์ในเซลล์เดียว = ไม่ Atomic</p>
+
+      <h3>✅ ผ่าน 1NF — แยกเป็นแถวละ 1 ค่า (เติมช่องว่างให้เต็ม)</h3>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Std_ID</th><th>Name</th><th>Tel_No</th></tr>
+        <tr><td>6501001</td><td>สมชาย</td><td>081-1111</td></tr>
+        <tr><td>6501001</td><td>สมชาย</td><td>089-2222</td></tr>
+        <tr><td>6501002</td><td>สมหญิง</td><td>090-3333</td></tr>
+      </table></div>
+
+      <div class="box box-exam">
+        <p class="box-title">📝 เทคนิคข้อสอบ 1NF</p>
+        <p>โจทย์มักให้แบบฟอร์ม/ใบเสร็จ (เช่น ใบสั่งซื้อที่มีรายการสินค้าหลายบรรทัดในกรอบเดียว)
+        สิ่งที่ต้องทำคือ <strong>1) เติมข้อมูลซ้ำให้เต็มทุกแถว 2) กำหนด PK</strong> (มักเป็นคีย์ผสม เช่น (Order_ID, Item_ID))</p>
+      </div>
+
+      <h2>2NF — ตัด Partial Dependency</h2>
+      <p><strong>เงื่อนไข:</strong> ผ่าน 1NF + <strong>ไม่มี Partial Dependency</strong> — คอลัมน์ Non-key ทุกตัวต้องขึ้นกับ
+      <strong>PK ทั้งก้อน</strong> แบบสมบูรณ์ (Fully Functional Dependency: FFD)</p>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>Partial Dependency เหมือน <strong>กุญแจบ้านที่ต้องใช้กุญแจ 2 ดอกประกบกันถึงจะเปิดประตู</strong>
+        แต่กลับมี "ของในบ้านบางชิ้น" ที่ใช้แค่ดอกเดียวก็เปิดได้ — แปลว่าของชิ้นนั้นควรย้ายไปอยู่ "บ้าน" ของมันเอง
+        (สปลิตออกไปเป็นตารางใหม่ที่มีคอลัมน์นั้นเป็นของกุญแจดอกเดียว)</p>
+      </div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 740 310" width="740" role="img" aria-label="Partial Dependency" class="svg-text">
+          <defs>
+            <marker id="pda" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#22a05a"/>
+            </marker>
+            <marker id="pdr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/>
+            </marker>
+          </defs>
+          <rect x="60" y="16" width="150" height="52" rx="10" fill="#7c3aed"/>
+          <text x="135" y="38" text-anchor="middle" style="font-size:14px;fill:#fff;font-weight:800">Emp_ID</text>
+          <text x="135" y="56" text-anchor="middle" style="font-size:11px;fill:#e9d5ff">ครึ่งแรกของ PK</text>
+          <rect x="240" y="16" width="150" height="52" rx="10" fill="#9a6bff"/>
+          <text x="315" y="38" text-anchor="middle" style="font-size:14px;fill:#fff;font-weight:800">Proj_ID</text>
+          <text x="315" y="56" text-anchor="middle" style="font-size:11px;fill:#f1e9ff">ครึ่งหลังของ PK</text>
+          <text x="222" y="92" text-anchor="middle" class="ts">PK = (Emp_ID, Proj_ID) คีย์ผสม 2 ดอก</text>
+
+          <line x1="135" y1="70" x2="135" y2="140" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#pda)"/>
+          <line x1="315" y1="70" x2="315" y2="140" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#pda)"/>
+          <line x1="90" y1="70" x2="90" y2="204" stroke="#e5484d" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#pdr)"/>
+
+          <rect x="140" y="144" width="460" height="52" rx="10" fill="#effaf3" stroke="#b7e6c8"/>
+          <text x="370" y="166" text-anchor="middle" class="ts" style="fill:#157a42;font-weight:700">✅ Hours — ขึ้นกับ PK ทั้งก้อน (FFD)</text>
+          <text x="370" y="186" text-anchor="middle" class="ts" style="fill:#157a42">พนักงานคนนี้ทำโปรเจกต์นี้กี่ชั่วโมง ต้องรู้ทั้งสองดอก</text>
+
+          <rect x="140" y="208" width="460" height="52" rx="10" fill="#fff1f0" stroke="#ffc9c5"/>
+          <text x="370" y="230" text-anchor="middle" class="ts" style="fill:#c62a30;font-weight:700">❌ Emp_Name — ขึ้นกับแค่ Emp_ID = Partial Dependency</text>
+          <text x="370" y="250" text-anchor="middle" class="ts" style="fill:#c62a30">รู้รหัสพนักงานก็รู้ชื่อแล้ว ไม่ต้องรู้โปรเจกต์</text>
+
+          <text x="370" y="296" text-anchor="middle" class="ts" style="font-size:13px;font-weight:700;fill:#6a1fd0">👉 ทางแก้: ดึง Emp_Name ออกไปตั้งตารางใหม่ Employee(Emp_ID, Emp_Name)</text>
+        </svg>
+        <figcaption>ภาพที่ 3: Partial Dependency — Non-key ขึ้นกับ "ส่วนเดียว" ของคีย์ผสม</figcaption>
+      </figure>
+
+      <h3>ตัวอย่างเดินจริง</h3>
+      <p>ตาราง <code>Work_On(Emp_ID, Proj_ID, Emp_Name, Hours)</code> PK = (Emp_ID, Proj_ID)</p>
+      <ul>
+        <li><code>(Emp_ID, Proj_ID) → Hours</code> ✅ ขึ้นกับ PK ครบทั้งก้อน</li>
+        <li><code>Emp_ID → Emp_Name</code> ❌ Partial — รู้รหัสพนักงานก็รู้ชื่อแล้ว ไม่ต้องรู้โปรเจกต์</li>
+      </ul>
+      <p><strong>แก้: สปลิตเป็น 2 ตาราง</strong></p>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Employee(Emp_ID*, Emp_Name)</th><th>Work_On(Emp_ID*, Proj_ID*, Hours)</th></tr>
+        <tr><td>เก็บข้อมูลตัวคน</td><td>เก็บชั่วโมงทำงาน (คีย์ผสมเหมือนเดิม)</td></tr>
+      </table></div>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 ข้อสังเกตสำคัญ</p>
+        <p>ถ้า PK เป็น<strong>คอลัมน์เดียว</strong> → ไม่มีทางเกิด Partial Dependency (ไม่มี "ส่วน" ให้แบ่ง)
+        → <strong>ตารางที่ผ่าน 1NF และมี PK เดี่ยว ผ่าน 2NF อัตโนมัติ</strong></p>
+      </div>
+
+      <h2>3NF — ตัด Transitive Dependency</h2>
+      <p><strong>เงื่อนไข:</strong> ผ่าน 2NF + คอลัมน์ Non-key ต้อง<strong>ไม่ขึ้นกับ Non-key ตัวอื่น</strong>
+      (ไม่มีสายโซ่ X → Y → Z โดย X = PK แต่ Y, Z เป็น Non-key)</p>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>Transitive Dependency เหมือนการ <strong>เดาต่อเป็นทอด</strong>: รู้รหัสพนักงาน → เดารหัสแผนกได้ → เดาชื่อแผนกต่อได้อีก
+        ปัญหาคือ "ชื่อแผนก" ควรอยู่ในสมุดทะเบียนแผนก (ตาราง Department) ที่เดียว
+        ไม่ใช่มาเขียนแปะไว้ในแต่ละใบของพนักงาน — ไม่งั้นเปลี่ยนชื่อแผนกต้องตามแก้ทุกใบ</p>
+      </div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 740 220" width="740" role="img" aria-label="Transitive Dependency" class="svg-text">
+          <defs>
+            <marker id="tda" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+            </marker>
+          </defs>
+          <rect x="20" y="50" width="180" height="60" rx="10" fill="#7c3aed"/>
+          <text x="110" y="76" text-anchor="middle" style="font-size:14px;fill:#fff;font-weight:800">Emp_ID (PK)</text>
+          <text x="110" y="96" text-anchor="middle" style="font-size:11px;fill:#e9d5ff">คีย์หลัก</text>
+          <rect x="280" y="50" width="180" height="60" rx="10" fill="#f59e0b"/>
+          <text x="370" y="76" text-anchor="middle" style="font-size:14px;fill:#fff;font-weight:800">Dept_ID</text>
+          <text x="370" y="96" text-anchor="middle" style="font-size:11px;fill:#fef3c7">Non-key แต่กำหนดค่าตัวอื่นได้!</text>
+          <rect x="540" y="50" width="180" height="60" rx="10" fill="#e5484d"/>
+          <text x="630" y="76" text-anchor="middle" style="font-size:14px;fill:#fff;font-weight:800">Dept_Name</text>
+          <text x="630" y="96" text-anchor="middle" style="font-size:11px;fill:#fee2e2">Non-key ถูกกำหนด</text>
+          <line x1="204" y1="80" x2="274" y2="80" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#tda)"/>
+          <line x1="464" y1="80" x2="534" y2="80" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#tda)"/>
+          <text x="240" y="70" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#7c3aed">→</text>
+          <path d="M110 114 L110 160 L630 160 L630 116" fill="none" stroke="#e5484d" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="370" y="182" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#c62a30">Emp_ID → Dept_ID → Dept_Name (สายโซ่ผ่าน Non-key = Transitive ❌)</text>
+          <text x="370" y="207" text-anchor="middle" class="ts">ทางแก้: แยก Department(Dept_ID, Dept_Name) ออกไป แล้วเก็บแค่ Dept_ID เป็น FK</text>
+        </svg>
+        <figcaption>ภาพที่ 4: Transitive Dependency — Non-key กำหนดค่าให้ Non-key อีกตัว</figcaption>
+      </figure>
+
+      <h3>ตัวอย่างเดินจริง</h3>
+      <p>ตาราง <code>Emp(Emp_ID, Emp_Name, Dept_ID, Dept_Name)</code> PK = Emp_ID</p>
+      <ul>
+        <li><code>Emp_ID → Emp_Name</code> ✅ ปกติ</li>
+        <li><code>Dept_ID → Dept_Name</code> ❌ รู้รหัสแผนกก็รู้ชื่อแผนก (Dept_ID เป็น Non-key แต่กำหนดค่าได้)</li>
+        <li>รวมกันเกิดสายโซ่: <code>Emp_ID → Dept_ID → Dept_Name</code> ❌ Transitive</li>
+      </ul>
+      <p><strong>แก้: สปลิตเป็น 2 ตาราง</strong></p>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Emp(Emp_ID*, Emp_Name, Dept_ID*)</th><th>Department(Dept_ID*, Dept_Name)</th></tr>
+        <tr><td>Dept_ID กลายเป็น FK</td><td>ตารางแผนกใหม่</td></tr>
+      </table></div>
+
+      <div class="box box-exam">
+        <p class="box-title">📝 เทคนิคข้อสอบ 3NF</p>
+        <p>วิธีหาสายโซ่: ไล่ดู <strong>ทีละคอลัมน์ Non-key ว่า "รู้ค่าของมันแล้ว รู้ค่า Non-key ตัวอื่นตามไหม"</strong>
+        ถ้ามีคู่ไหนตอบว่าใช่ → เจอ Transitive → ดึงคู่นั้นออกไปตั้งตารางใหม่ (Determinant กลายเป็น PK ของตารางใหม่)</p>
+      </div>
+
+      <h2>BCNF — เข้มกว่า 3NF: Determinant ทุกตัวต้องเป็น Candidate Key</h2>
+      <p><strong>เงื่อนไข:</strong> สำหรับทุก FD (X → Y) ในตาราง <strong>ตัวกำหนดค่า X ต้องเป็น Candidate Key เท่านั้น</strong>
+      แม้แต่กรณีที่ 3NF ผ่านแล้ว ก็ยังอาจไม่ผ่าน BCNF!</p>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>จินตนาการว่าทุก FD คือ <strong>"กุญแจที่เปิดได้"</strong> BCNF บังคับว่า <strong>กุญแจทุกดอกในตารางต้องเป็น "กุญแจแท้"</strong> (Candidate Key)
+        ถ้ามีกุญแจปลอมดอกไหนเปิดอะไรได้ แปลว่ามีคอลัมน์ครอบครองข้อมูลที่มันไม่ควรครอบ → ต้องแยกบ้านใหม่ให้กุญแจดอกนั้น</p>
+      </div>
+
+      <h3>โจทย์คลาสสิก: ตาราง Advisor</h3>
+      <p>ตาราง <code>Advisor(Student_ID, Subject, Advisor_Name)</code> โดยมีเงื่อนไขธุรกิจ:</p>
+      <ul>
+        <li>นิสิต 1 คน เรียนได้หลายวิชา</li>
+        <li>วิชาหนึ่ง มีอาจารย์ที่ปรึกษาได้หลายคน</li>
+        <li>อาจารย์ 1 คน สอน/เป็นที่ปรึกษาได้<strong>วิชาเดียว</strong> → <code>Advisor_Name → Subject</code></li>
+      </ul>
+      <p>ผลคือ CK = <code>(Student_ID, Subject)</code> และ CK = <code>(Student_ID, Advisor_Name)</code> → เลือก PK = <code>(Student_ID, Subject)</code></p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 740 264" width="740" role="img" aria-label="BCNF Advisor" class="svg-text">
+          <defs>
+            <marker id="bca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+            </marker>
+            <marker id="bcr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/>
+            </marker>
+          </defs>
+          <rect x="30" y="30" width="200" height="52" rx="10" fill="#7c3aed"/>
+          <text x="130" y="55" text-anchor="middle" style="font-size:13.5px;fill:#fff;font-weight:800">Student_ID</text>
+          <text x="130" y="73" text-anchor="middle" style="font-size:11px;fill:#e9d5ff">ส่วนหนึ่งของ PK</text>
+          <rect x="270" y="30" width="200" height="52" rx="10" fill="#7c3aed"/>
+          <text x="370" y="55" text-anchor="middle" style="font-size:13.5px;fill:#fff;font-weight:800">Subject</text>
+          <text x="370" y="73" text-anchor="middle" style="font-size:11px;fill:#e9d5ff">ส่วนหนึ่งของ PK</text>
+          <rect x="510" y="30" width="200" height="52" rx="10" fill="#f59e0b"/>
+          <text x="610" y="55" text-anchor="middle" style="font-size:13.5px;fill:#fff;font-weight:800">Advisor_Name</text>
+          <text x="610" y="73" text-anchor="middle" style="font-size:11px;fill:#fef3c7">Non-key แต่กำหนด Subject ได้!</text>
+
+          <line x1="130" y1="82" x2="130" y2="150" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#bca)"/>
+          <line x1="370" y1="82" x2="370" y2="150" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#bca)"/>
+          <line x1="610" y1="82" x2="610" y2="150" stroke="#e5484d" stroke-width="2.5" marker-end="url(#bcr)"/>
+
+          <text x="180" y="175" style="font-size:13px;font-weight:700;fill:#157a42">(Student_ID, Subject) → ทุกคอลัมน์ ✅ ปกติ</text>
+          <text x="180" y="200" style="font-size:13px;font-weight:700;fill:#c62a30">Advisor_Name → Subject ❌ Determinant ไม่ใช่ CK!</text>
+          <text x="370" y="230" text-anchor="middle" class="ts">จุดสีแดงคือสาเหตุที่ผ่าน 3NF แต่ไม่ผ่าน BCNF — Y ที่ถูกกำหนดเป็น "ส่วนหนึ่งของ PK"</text>
+          <text x="370" y="250" text-anchor="middle" class="ts">3NF ยอมให้กรณีนี้ แต่ BCNF ไม่ยอม (ต้องแยกตารางให้ Determinant เป็น PK ของตัวเอง)</text>
+        </svg>
+        <figcaption>ภาพที่ 5: BCNF — Advisor_Name กำหนด Subject ทั้งที่ตัวเองไม่ใช่ Candidate Key</figcaption>
+      </figure>
+
+      <p><strong>แก้: สปลิตเป็น 2 ตาราง</strong> (เอา Determinant ไม่ใช่ CK ไปตั้งตารางใหม่)</p>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Student_Advisor(Student_ID*, Advisor_Name*)</th><th>Advisor_Subject(Advisor_Name*, Subject)</th></tr>
+        <tr><td>นิสิตคนไหนมีอาจารย์ที่ปรึกษาคนไหน</td><td>อาจารย์คนไหนสอนวิชาอะไร (Advisor_Name เป็น PK เสมอ → ผ่าน BCNF)</td></tr>
+      </table></div>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 3NF vs BCNF ในหนึ่งบรรทัด (ออกสอบถามความต่างบ่อยมาก)</p>
+        <p><strong>3NF:</strong> ยอมให้ X → Y โดย X ไม่ใช่ CK <em>ได้</em> ถ้า Y เป็นส่วนหนึ่งของ Candidate Key<br>
+        <strong>BCNF:</strong> <em>ห้ามเด็ดขาด</em> — ฝั่งซ้าย (Determinant) ของทุก FD ต้องเป็น Candidate Key เท่านั้น
+        ดังนั้น <strong>BCNF ⊂ 3NF เสมอ</strong> (ผ่าน BCNF = ผ่าน 3NF แต่ย้อนกลับไม่จริง)</p>
+      </div>
+
+      <hr class="sep">
+
+      <h2>4NF — ตัด Multi-valued Dependency (MVD)</h2>
+      <p><strong>เงื่อนไข:</strong> ผ่าน BCNF + สำหรับทุก MVD <code>X →→ Y</code> ตัว X ต้องเป็น Candidate Key เท่านั้น</p>
+      <p><strong>MVD (X →→ Y)</strong> คือ รู้ค่า X 1 ค่า แล้วได้<strong>เซตของ Y หลายค่า</strong> โดยเซตนั้น<strong>เป็นอิสระ</strong>จากคอลัมน์อื่น (Z) ในตารางเดียวกันโดยสิ้นเชิง</p>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ (สำคัญมาก)</p>
+        <p>ร้านไอศกรีมแห่งหนึ่งมี <strong>สาขา 2 แห่ง</strong> (สยาม, เซ็นทรัล) และขาย <strong>รสชาติ 3 แบบ</strong> (วานิลลา, ช็อกโกแลต, สตรอว์เบอร์รี)
+        โดยกฎธุรกิจคือ <strong>ทุกสาขาขายครบทุกรสชาติ</strong> — สาขากับรสชาติ "ไม่เกี่ยวกันเอง"
+        ถ้าเก็บในตารางเดียว <code>(สาขา, รสชาติ)</code> จะได้ 2×3 = <strong>6 แถวที่เป็นแค่การจับคู่สุ่ม ๆ</strong>
+        เพิ่มรสชาติใหม่ 1 รส ต้องเพิ่ม 2 แถว (หนึ่งแถวต่อสาขา) นี่คือความซ้ำซ้อนที่ MVD ก่อให้เกิด — ทางแก้คือแยกเป็น 2 ตาราง</p>
+      </div>
+
+      <h3>โจทย์คลาสสิก: ตาราง Course</h3>
+      <p><code>Course(Course_Name, Teacher, Text_Book)</code> — วิชาหนึ่งมีอาจารย์ผู้สอนหลายคน และมีหนังสือแนะนำหลายเล่ม
+      <strong>อาจารย์กับหนังสือไม่มีความสัมพันธ์กันเอง</strong> (อาจารย์ท่านไหนก็ใช้หนังสือได้ทุกเล่ม)</p>
+      <ul>
+        <li><code>Course_Name →→ Teacher</code> (วิชาหนึ่ง มีหลายอาจารย์)</li>
+        <li><code>Course_Name →→ Text_Book</code> (วิชาหนึ่ง มีหลายหนังสือ)</li>
+        <li>Teacher ⊥ Text_Book — อิสระต่อกันโดยสิ้นเชิง</li>
+      </ul>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 290" width="760" role="img" aria-label="ปัญหา MVD จับคู่กันหมด" class="svg-text">
+          <g transform="translate(20,20)">
+            <text x="0" y="0" style="font-size:14px;font-weight:800;fill:#c62a30">❌ ตารางเดียว: ต้องเก็บจับคู่กันหมด 2×3 = 6 แถว</text>
+            <g transform="translate(0,16)">
+              <rect x="0" y="0" width="330" height="230" rx="10" fill="#fff" stroke="#ffc9c5"/>
+              <rect x="0" y="0" width="330" height="30" rx="10" fill="#e5484d"/>
+              <text x="10" y="20" style="font-size:12.5px;fill:#fff;font-weight:700">Course_Name | Teacher | Text_Book</text>
+              <g style="font-size:12px;fill:#333">
+                <text x="10" y="52">DB | อ.เอ | หนังสือก</text>
+                <text x="10" y="74">DB | อ.เอ | หนังสือข</text>
+                <text x="10" y="96">DB | อ.เอ | หนังสือค</text>
+                <text x="10" y="118">DB | อ.บี | หนังสือก</text>
+                <text x="10" y="140">DB | อ.บี | หนังสือข</text>
+                <text x="10" y="162">DB | อ.บี | หนังสือค</text>
+                <text x="10" y="192" fill="#c62a30" font-weight="700">⚠️ แถวที่ 3-4 เป็นข้อมูลหลอก:</text>
+                <text x="10" y="212" fill="#c62a30">อาจารย์×หนังสือไม่เกี่ยวกัน แต่ต้องเก็บครบคู่</text>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(430,20)">
+            <text x="0" y="0" style="font-size:14px;font-weight:800;fill:#157a42">✅ 4NF: แยกเป็น 2 ตาราง 3+3 แถว</text>
+            <g transform="translate(0,16)">
+              <rect x="0" y="0" width="150" height="122" rx="10" fill="#fff" stroke="#b7e6c8"/>
+              <rect x="0" y="0" width="150" height="30" rx="10" fill="#22a05a"/>
+              <text x="10" y="20" style="font-size:12px;fill:#fff;font-weight:700">Course_Teacher</text>
+              <g style="font-size:12px;fill:#333">
+                <text x="10" y="52">DB | อ.เอ</text>
+                <text x="10" y="74">DB | อ.บี</text>
+              </g>
+              <rect x="175" y="0" width="150" height="122" rx="10" fill="#fff" stroke="#b7e6c8"/>
+              <rect x="175" y="0" width="150" height="30" rx="10" fill="#22a05a"/>
+              <text x="185" y="20" style="font-size:12px;fill:#fff;font-weight:700">Course_Book</text>
+              <g style="font-size:12px;fill:#333">
+                <text x="185" y="52">DB | หนังสือก</text>
+                <text x="185" y="74">DB | หนังสือข</text>
+                <text x="185" y="96">DB | หนังสือค</text>
+              </g>
+              <text x="0" y="150" class="ts" style="font-size:12.5px">เพิ่มรส/หนังสือ/อาจารย์ใหม่ แก้แค่ตารางของมันเอง</text>
+              <text x="0" y="170" class="ts" style="font-size:12.5px">ต้องการคู่เต็ม → JOIN กลับ (ได้ผลเหมือนเดิมเป๊ะ)</text>
+            </g>
+          </g>
+        </svg>
+        <figcaption>ภาพที่ 6: 4NF — ข้อมูล 2 กลุ่มที่อิสระกันและมีหลายค่า ต้องแยกตาราง</figcaption>
+      </figure>
+
+      <p><strong>แก้: สปลิตเป็น 2 ตาราง</strong></p>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Course_Teacher(Course_Name*, Teacher*)</th><th>Course_Book(Course_Name*, Text_Book*)</th></tr>
+        <tr><td>เก็บแค่ความสัมพันธ์ วิชา↔อาจารย์</td><td>เก็บแค่ความสัมพันธ์ วิชา↔หนังสือ</td></tr>
+      </table></div>
+
+      <hr class="sep">
+
+      <h2>5NF — ตัด Join Dependency (โจทย์สามเส้า)</h2>
+      <p><strong>เงื่อนไข:</strong> ผ่าน 4NF + ไม่มี Join Dependency ที่ไม่จำเป็น — ตารางต้อง<strong>ไม่สามารถ</strong>แตกเป็น
+      n ตารางย่อย (n ≥ 3) แล้ว JOIN กลับมาได้ตารางเดิม 100% <em>เว้นแต่</em>การแตกนั้น lossless จริง ๆ
+      (5NF จึงถูกเรียกว่า <strong>Project-Join Normal Form (PJNF)</strong>)</p>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบ: 4NF vs 5NF ต่างกันยังไง</p>
+        <p><strong>4NF</strong> = จับคู่<strong>สองเส้า</strong>ที่อิสระกัน (X→→Y, X→→Z) → แยกเป็น 2 ตาราง<br>
+        <strong>5NF</strong> = ความสัมพันธ์<strong>สามเส้า</strong> (Ternary) ที่แยกแต่ละคู่แล้ว JOIN กลับ <strong>ไม่ครบตารางเดิม</strong>
+        ต้องเก็บครบทั้ง 3 คู่ ถึงจะสร้างข้อมูลจริงได้ — เหมือนการจับคู่เดท 3 เส้า ที่รู้จักแค่ A-ชอบ-B กับ B-ชอบ-C ไม่พอ ต้องรู้ A-ชอบ-C ด้วยถึงจะสรุปได้</p>
+      </div>
+
+      <h3>โจทย์คลาสสิก: ตาราง Supply(Supplier, Part, Project)</h3>
+      <p>เก็บว่า <strong>ซัพพลายเออร์คนไหน ส่งชิ้นส่วนอะไร ให้โปรเจกต์ไหน</strong> โดยมีเงื่อนไขธุรกิจ 3 ข้อ:</p>
+      <ul>
+        <li>ซัพพลายเออร์ส่งชิ้นส่วนบางประเภท</li>
+        <li>ชิ้นส่วนถูกใช้ในบางโปรเจกต์</li>
+        <li>ซัพพลายเออร์ทำงานให้บางโปรเจกต์</li>
+        <li>และกฎ: <strong>ถ้า (S ส่ง P) และ (P ใช้ใน J) และ (S รับผิดชอบ J) → S ต้องส่ง P ให้ J เสมอ</strong> (จากกฎนี้ 3 ตารางคู่ JOIN กลับได้ตารางเดิม 100%)</li>
+      </ul>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 740 330" width="740" role="img" aria-label="5NF แตกเป็น 3 ตาราง" class="svg-text">
+          <defs>
+            <marker id="nfa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+            </marker>
+          </defs>
+          <rect x="250" y="10" width="240" height="54" rx="10" fill="#3b0764"/>
+          <text x="370" y="34" text-anchor="middle" style="font-size:14px;fill:#fff;font-weight:800">Supply(Supplier, Part, Project)</text>
+          <text x="370" y="54" text-anchor="middle" style="font-size:11px;fill:#ddd6fe">ความสัมพันธ์ 3 เส้า (Ternary)</text>
+
+          <line x1="290" y1="64" x2="170" y2="128" stroke="#7c3aed" stroke-width="2" marker-end="url(#nfa)"/>
+          <line x1="370" y1="64" x2="370" y2="128" stroke="#7c3aed" stroke-width="2" marker-end="url(#nfa)"/>
+          <line x1="450" y1="64" x2="570" y2="128" stroke="#7c3aed" stroke-width="2" marker-end="url(#nfa)"/>
+
+          <rect x="40" y="132" width="260" height="60" rx="10" fill="#eef6ff" stroke="#b9dcff"/>
+          <text x="170" y="156" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#0b6bcb">Supplier_Part(Supplier*, Part*)</text>
+          <text x="170" y="176" text-anchor="middle" class="ts">ใครส่งชิ้นส่วนอะไร</text>
+
+          <rect x="240" y="132" width="260" height="60" rx="10" fill="#effaf3" stroke="#b7e6c8"/>
+          <text x="370" y="156" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#157a42">Part_Project(Part*, Project*)</text>
+          <text x="370" y="176" text-anchor="middle" class="ts">ชิ้นส่วนไหนใช้ในโปรเจกต์ไหน</text>
+
+          <rect x="440" y="132" width="260" height="60" rx="10" fill="#fff8e8" stroke="#ffe2a3"/>
+          <text x="570" y="156" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#a36b00">Supplier_Project(Supplier*, Project*)</text>
+          <text x="570" y="176" text-anchor="middle" class="ts">ใครรับผิดชอบโปรเจกต์ไหน</text>
+
+          <path d="M170 196 L170 240 L370 240 M370 240 L370 196 M570 196 L570 240 L370 240" fill="none" stroke="#7c3aed" stroke-width="2"/>
+          <text x="370" y="268" text-anchor="middle" style="font-size:13.5px;font-weight:700;fill:#6a1fd0">JOIN ทั้ง 3 กลับมา = ได้ตารางเดิม 100% (Lossless) ✅</text>
+          <text x="370" y="296" text-anchor="middle" class="ts">⚠️ ถ้าแยกเป็นแค่ 2 ตาราง (เช่น SP กับ PJ) จะได้ข้อมูลหลอก (Spurious Tuples) — เพราะการแตกแบบนี้ไม่ lossless</text>
+          <text x="370" y="320" text-anchor="middle" class="ts">จุดต่างจาก 4NF: 4NF แตก 2 ตารางพอ / 5NF ต้องแตกครบทั้ง 3 คู่พร้อมกัน</text>
+        </svg>
+        <figcaption>ภาพที่ 7: 5NF — แยกความสัมพันธ์สามเส้าเป็น 3 ตารางคู่ แล้ว JOIN กลับได้ตารางเดิม</figcaption>
+      </figure>
+
+      <hr class="sep">
+
+      <h2>🔨 โจทย์เดินเต็มสเต็ป: UNF → 3NF (แบบที่อาจารย์สอนในวิดีโอ)</h2>
+      <p>โจทย์: ตารางข้อมูลพนักงานและการทำงานในโครงการ รวมกันเป็นตารางเดียว</p>
+
+      <ol class="steps">
+        <li>
+          <span class="step-title">UNF — วางข้อมูลดิบลงตารางใหญ่ตารางเดียว</span>
+          <p><code>R(Emp_ID, Emp_Name, Dept_ID, Dept_Name, Proj_ID, Proj_Name, Hours)</code>
+          (พนักงาน 1 คนทำหลายโปรเจกต์ → เกิดกลุ่มซ้ำ)</p>
+        </li>
+        <li>
+          <span class="step-title">1NF — กำจัด Repeating Group</span>
+          <p>เติมข้อมูลซ้ำให้เต็มทุกแถว (ทำให้ทุกเซลล์ Atomic) แล้วกำหนด PK ผสม <code>(Emp_ID, Proj_ID)</code><br>
+          ได้ตาราง 1NF: <code>R(Emp_ID, Proj_ID, Emp_Name, Dept_ID, Dept_Name, Proj_Name, Hours)</code></p>
+        </li>
+        <li>
+          <span class="step-title">2NF — ไล่หา FD แล้วตัด Partial Dependency</span>
+          <p>วิเคราะห์ FD ทั้งหมด:</p>
+          <ul>
+            <li><code>(Emp_ID, Proj_ID) → Hours</code> ✅ FFD (ชั่วโมงต้องรู้ทั้งคนและโปรเจกต์)</li>
+            <li><code>Emp_ID → Emp_Name, Dept_ID, Dept_Name</code> ❌ Partial (รู้แค่รหัสพนักงานก็พอ)</li>
+            <li><code>Proj_ID → Proj_Name</code> ❌ Partial (รู้แค่รหัสโปรเจกต์ก็พอ)</li>
+          </ul>
+          <p>สปลิตเป็น <strong>3 ตาราง</strong>:</p>
+          <ul>
+            <li><code>Employee_Dept(Emp_ID*, Emp_Name, Dept_ID, Dept_Name)</code></li>
+            <li><code>Project(Proj_ID*, Proj_Name)</code></li>
+            <li><code>Work_On(Emp_ID*, Proj_ID*, Hours)</code></li>
+          </ul>
+        </li>
+        <li>
+          <span class="step-title">3NF — ตัด Transitive Dependency</span>
+          <p>พิจารณา <code>Employee_Dept</code>: พบสายโซ่ <code>Emp_ID → Dept_ID → Dept_Name</code>
+          (Dept_ID และ Dept_Name เป็น Non-key ทั้งคู่) → สปลิตเป็น 2 ตาราง:</p>
+          <ul>
+            <li><code>Employee(Emp_ID*, Emp_Name, Dept_ID→FK)</code></li>
+            <li><code>Department(Dept_ID*, Dept_Name)</code></li>
+          </ul>
+        </li>
+        <li>
+          <span class="step-title">ผลลัพธ์สุดท้าย — 4 ตาราง ผ่าน 3NF/BCNF</span>
+          <ul>
+            <li><code>Employee (Emp_ID [PK], Emp_Name, Dept_ID [FK])</code></li>
+            <li><code>Department (Dept_ID [PK], Dept_Name)</code></li>
+            <li><code>Project (Proj_ID [PK], Proj_Name)</code></li>
+            <li><code>Work_On (Emp_ID [PK/FK], Proj_ID [PK/FK], Hours)</code></li>
+          </ul>
+          <p>เปลี่ยนชื่อแผนก/ชื่อโปรเจกต์ = แก้จุดเดียว ตารางเดียว ✅</p>
+        </li>
+      </ol>
+
+      <div class="box box-tip">
+        <p class="box-title">✅ เช็คลิสต์สอบ Normalization (ไล่ถามตัวเองทีละข้อ)</p>
+        <ol>
+          <li>ทุกเซลล์ Atomic หรือยัง? → 1NF</li>
+          <li>PK เป็นคีย์ผสมไหม? ถ้าใช่ มี Non-key ขึ้นกับ "ส่วนเดียว" ไหม? → 2NF</li>
+          <li>มี Non-key กำหนดค่า Non-key ตัวอื่นไหม? → 3NF</li>
+          <li>Determinant (ฝั่งซ้ายของทุก FD) เป็น Candidate Key ครบไหม? → BCNF</li>
+          <li>มีข้อมูล 2 กลุ่มอิสระกันแต่หลายค่า (X→→Y, X→→Z) ไหม? → 4NF</li>
+          <li>เป็นความสัมพันธ์ 3 เส้าที่แตก 3 คู่แล้ว JOIN กลับได้ตารางเดิมไหม? → 5NF</li>
+        </ol>
+      </div>
+
+      <hr class="sep">
+
+      <h2>📝 แนวข้อสอบ Normalization + ตัวอย่างคำตอบ</h2>
+
+      <details class="sol"><summary>ข้อ 1 (3NF): ตาราง ENROLL(Std_ID, Std_Name, Course_ID, Course_Name, Grade) PK=(Std_ID, Course_ID) — จงทำให้เป็น 3NF</summary>
+        <div class="sol-body">
+          <p><strong>ขั้น 1NF:</strong> ทุกเซลล์ Atomic อยู่แล้ว ✅</p>
+          <p><strong>ขั้น 2NF:</strong> ตรวจ Partial พบ</p>
+          <ul>
+            <li>Std_ID → Std_Name ❌ Partial</li>
+            <li>Course_ID → Course_Name ❌ Partial</li>
+            <li>(Std_ID, Course_ID) → Grade ✅ FFD</li>
+          </ul>
+          <p>สปลิตเป็น 3 ตาราง: <code>Student(Std_ID, Std_Name)</code>, <code>Course(Course_ID, Course_Name)</code>, <code>Enroll(Std_ID*, Course_ID*, Grade)</code></p>
+          <p><strong>ขั้น 3NF:</strong> ตรวจแต่ละตาราง — ไม่มี Non-key กำหนด Non-key (ชื่อนักศึกษาขึ้นกับรหัสโดยตรง ชื่อวิชาขึ้นกับรหัสวิชาโดยตรง) ✅ ผ่าน 3NF</p>
+        </div>
+      </details>
+
+      <details class="sol"><summary>ข้อ 2 (BCNF): 3NF กับ BCNF ต่างกันอย่างไร พร้อมตัวอย่างที่ผ่าน 3NF แต่ไม่ผ่าน BCNF</summary>
+        <div class="sol-body">
+          <p><strong>3NF:</strong> ห้ามมี Transitive Dependency แต่ยอมให้ X→Y โดย X ไม่ใช่ CK ได้ กรณี Y เป็นส่วนหนึ่งของ Candidate Key<br>
+          <strong>BCNF:</strong> เข้มกว่า — ฝั่งซ้ายของทุก FD ต้องเป็น Candidate Key เท่านั้น</p>
+          <p><strong>ตัวอย่าง:</strong> ตาราง <code>Advisor(Student_ID, Subject, Advisor_Name)</code> ที่มี Advisor_Name → Subject
+          (อาจารย์ 1 คนสอนวิชาเดียว) และ PK = (Student_ID, Subject) — ผ่าน 3NF เพราะ Subject เป็นส่วนหนึ่งของ PK
+          แต่ไม่ผ่าน BCNF เพราะ Advisor_Name (Determinant) ไม่ใช่ CK → แก้โดยแยกเป็น
+          <code>Advisor_Subject(Advisor_Name*, Subject)</code> และ <code>Student_Advisor(Student_ID*, Advisor_Name*)</code></p>
+        </div>
+      </details>
+
+      <details class="sol"><summary>ข้อ 3 (4NF): ตาราง Course(Course_Name, Teacher, Text_Book) วิชาหนึ่งมีอาจารย์หลายคนและหนังสือหลายเล่มโดยอิสระต่อกัน — จงทำ 4NF</summary>
+        <div class="sol-body">
+          <p>เกิด MVD: <code>Course_Name →→ Teacher</code> และ <code>Course_Name →→ Text_Book</code>
+          โดย Teacher กับ Text_Book อิสระกันโดยสิ้นเชิง → เกิดตารางจับคู่ซ้ำซ้อน (อาจารย์×หนังสือ ทั้งหมด)</p>
+          <p><strong>แก้:</strong> แยกเป็น <code>Course_Teacher(Course_Name*, Teacher*)</code> และ
+          <code>Course_Book(Course_Name*, Text_Book*)</code> — ข้อมูลครบเท่าเดิม (JOIN กลับได้ตารางเดิม) แต่ไม่มีแถวจับคู่หลอกแล้ว</p>
+        </div>
+      </details>
+
+      <details class="sol"><summary>ข้อ 4 (5NF): ตาราง Supply(Supplier, Part, Project) — จงอธิบายวิธีทำ 5NF</summary>
+        <div class="sol-body">
+          <p>เมื่อความสัมพันธ์เป็น Ternary 3 เส้า และมีกฎธุรกิจที่ทำให้แตกเป็น 3 ตารางคู่แล้ว JOIN กลับได้ตารางเดิม 100% (Lossless Join)</p>
+          <p><strong>แก้:</strong> แยกเป็น <code>Supplier_Part(Supplier*, Part*)</code>,
+          <code>Part_Project(Part*, Project*)</code>, <code>Supplier_Project(Supplier*, Project*)</code>
+          — ห้ามแตกเป็น 2 ตาราง เพราะจะเกิดข้อมูลหลอก (Spurious Tuples) ตอน JOIN กลับ</p>
+        </div>
+      </details>
+
+      <h3>🎬 ลองทำแบบทดสอบด่วน</h3>
+      <div class="quiz" data-answer="1">
+        <p class="quiz-q"><span class="qno">Q1</span>ตาราง Work_On(Emp_ID, Proj_ID, Emp_Name, Hours) มี PK = (Emp_ID, Proj_ID) ขั้นตอนแรกที่ต้องแก้คืออะไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Transitive Dependency ของ Dept_Name</button>
+          <button class="quiz-opt">Partial Dependency: Emp_Name ขึ้นกับแค่ Emp_ID จึงต้องสปลิตออก</button>
+          <button class="quiz-opt">MVD ระหว่าง Hours กับ Proj_ID</button>
+          <button class="quiz-opt">ไม่ต้องแก้อะไร ผ่านทุก NF แล้ว</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 2 — Emp_Name รู้ได้จาก Emp_ID เพียงอย่างเดียว = ขึ้นกับ "ส่วนเดียว" ของคีย์ผสม = Partial Dependency → ไม่ผ่าน 2NF ต้องสปลิต Employee(Emp_ID, Emp_Name) ออกก่อน</p>
+      </div>
+      <div class="quiz" data-answer="2">
+        <p class="quiz-q"><span class="qno">Q2</span>ข้อใดคือเงื่อนไขของ BCNF?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">ทุกคอลัมน์ต้องเป็น Atomic</button>
+          <button class="quiz-opt">ไม่มี Transitive Dependency</button>
+          <button class="quiz-opt">Determinant (ฝั่งซ้าย) ของทุก FD ต้องเป็น Candidate Key</button>
+          <button class="quiz-opt">PK ต้องมีเพียงคอลัมน์เดียว</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 3 — BCNF กำหนดว่าทุก FD (X→Y) ต้องมี X เป็น Candidate Key ซึ่งเข้มกว่า 3NF</p>
+      </div>
+      <div class="quiz" data-answer="0">
+        <p class="quiz-q"><span class="qno">Q3</span>ตารางเก็บ (สาขา, รสไอศกรีม) โดยทุกสาขาขายครบทุกรส และสาขากับรสชาติไม่เกี่ยวข้องกันเอง — เป็นปัญหาแบบไหน?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">MVD → ไม่ผ่าน 4NF ต้องแยกเป็น 2 ตาราง</button>
+          <button class="quiz-opt">Partial Dependency → ไม่ผ่าน 2NF</button>
+          <button class="quiz-opt">Join Dependency → ไม่ผ่าน 5NF</button>
+          <button class="quiz-opt">Transitive Dependency → ไม่ผ่าน 3NF</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 1 — ข้อมูล 2 กลุ่มที่หลายค่าและอิสระกันโดยสิ้นเชิง (X→→Y, X→→Z) คือ Multi-valued Dependency แก้ด้วยการแยกตาราง (4NF)</p>
+      </div>
+
+      <div class="prevnext">
+        <a href="db-concept.html">← ก่อนหน้า: DB Concept<small>📘 10 คะแนน</small></a>
+        <a class="next" href="recovery.html">บทต่อไป: Recovery Control →<small>🔄 Transaction 30 คะแนน (ครึ่งแรก)</small></a>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

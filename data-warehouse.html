@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Warehouse (15 คะแนน) — เว็บติวสอบ Final DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style> :root { --accent:#059669; } </style>
+</head>
+<body>
+<div id="progressBar"></div>
+<div class="backdrop"></div>
+
+<header class="topbar">
+  <button class="hamburger" aria-label="เปิดเมนู">☰</button>
+  <div class="topbar-title">🏢 Data Warehouse — 15 คะแนน</div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="เมนูหลัก">
+    <div class="side-brand">🎓 DB Final Prep<small>Database Systems • 120 คะแนน</small></div>
+    <div class="side-note">💡 <b>เคล็ดลับรุ่นพี่:</b> ทำข้อ SQL ให้เสร็จก่อน เพราะใช้เวลาเยอะมาก!</div>
+    <a class="nav-link" href="index.html"><span class="nav-emoji">🏠</span> หน้าแรก + แผนอ่าน</a>
+    <a class="nav-link" href="db-concept.html"><span class="nav-emoji">📘</span> DB Concept <span class="nav-pts">10</span></a>
+    <a class="nav-link" href="normalization.html"><span class="nav-emoji">🧮</span> Normalization <span class="nav-pts">40</span></a>
+    <a class="nav-link" href="recovery.html"><span class="nav-emoji">🔄</span> Recovery Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="concurrency.html"><span class="nav-emoji">🔀</span> Concurrency Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="data-warehouse.html"><span class="nav-emoji">🏢</span> Data Warehouse <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="sql.html"><span class="nav-emoji">💾</span> SQL <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="critique.html"><span class="nav-emoji">⚖️</span> วิพากษ์ Data Model <span class="nav-pts">10</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="content">
+
+      <header class="page-head">
+        <p class="crumb"><a href="index.html">หน้าแรก</a> / Data Warehouse</p>
+        <h1>🏢 Data Warehouse — คลังข้อมูลเพื่อการวิเคราะห์</h1>
+        <div class="head-meta">
+          <span class="badge">คะแนน 15</span>
+          <span class="badge">ไม่ออกการออกแบบ — เน้นนิยาม/เปรียบเทียบ/องค์ประกอบ</span>
+          <span class="badge gold">บทอ่านเบา ท่องได้ = ได้คะแนน</span>
+        </div>
+      </header>
+
+      <h2>1. Data Warehouse คืออะไร</h2>
+      <p><strong>Data Warehouse (คลังข้อมูล)</strong> คือ ระบบจัดเก็บข้อมูลเชิงวิเคราะห์ขนาดใหญ่
+      ที่รวบรวมข้อมูลจากหลากหลายแหล่งทั้งภายในและภายนอกองค์กร นำมาไว้ที่คลังกลาง
+      เพื่อรองรับ<strong>การตัดสินใจเชิงบริหาร</strong> (MIS, DSS, EIS) และงาน Business Intelligence (BI) / Data Science</p>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>ฐานข้อมูลประจำวัน (OLTP) เหมือน <strong>ร้านค้าหน้าร้าน</strong> — ขายของ รับเงิน บันทึกรายการรายวัน เร็ว ๆ ทีละรายการ<br>
+        Data Warehouse เหมือน <strong>ห้องประชุมผู้บริหารที่มีกระดานสรุปทุกอย่าง</strong> — รวมยอดขายทุกสาขา ทุกเดือน ย้อนหลัง 5-10 ปี
+        ไว้ให้ดูแนวโน้มและตัดสินใจ ไม่ใช่ให้ใช้ขายของ</p>
+      </div>
+
+      <h2>2. ลักษณะสำคัญ 4 ประการ (นิยามของ Bill Inmon — ท่องให้ขึ้นใจ!)</h2>
+      <p>Bill Inmon ผู้ถูกยกให้เป็น "บิดาแห่ง Data Warehouse" ให้นิยามลักษณะ 4 ข้อ นี่คือคำตอบมาตรฐานของข้อสอบ:</p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🎯 Subject-Oriented (เน้นตามหัวเรื่อง)</h4>
+          <p>ไม่จัดเก็บตามกระบวนการทำงานรายวัน แต่จัดตาม<strong>หัวข้อเชิงธุรกิจ</strong>ที่ผู้บริหารสนใจวิเคราะห์<br>
+          <em>ตัวอย่าง:</em> แยกเก็บตามยอดขาย (Sales), สินค้า (Product), ลูกค้า (Customer), การตลาด (Marketing)</p>
+        </div>
+        <div class="card">
+          <h4>🧩 Integrated (รวมเป็นหนึ่งเดียว)</h4>
+          <p>ดึงจากหลายระบบที่โครงสร้างต่างกัน แล้ว<strong>ปรับมาตรฐาน + ล้างข้อมูล</strong> (Standardization/Cleansing) ให้เป็นรูปแบบเดียวกัน<br>
+          <em>ตัวอย่าง:</em> สาขา A เก็บเพศ 'M/F', สาขา B เก็บ '1/0', สาขา C เก็บ 'ชาย/หญิง' → ในคลังต้องแปลงเป็นมาตรฐานเดียว</p>
+        </div>
+        <div class="card">
+          <h4>⏳ Time-Variant (ผูกกับแกนเวลา)</h4>
+          <p>ข้อมูลทุกแถวมี <strong>Time Dimension/Time Stamp</strong> เก็บประวัติย้อนหลังนาน 5–10 ปี รองรับการเทียบแนวโน้มและพยากรณ์<br>
+          <em>ตัวอย่าง:</em> ดึงรายงานเทียบยอดขายไตรมาส 1 ปีนี้ กับไตรมาส 1 ย้อนหลัง 5 ปี ได้ทันที</p>
+        </div>
+        <div class="card">
+          <h4>🔒 Non-Volatile (เสถียร ไม่แก้ไข)</h4>
+          <p>ข้อมูลที่เข้าคลังแล้วเป็น <strong>Read-Only</strong> — ผู้ใช้ทั่วไป UPDATE/DELETE ไม่ได้ เพิ่มได้เฉพาะโหลดเป็นรอบ (Batch Load)<br>
+          <em>ตัวอย่าง:</em> ยอดขายเดือนที่แล้วเข้าคลังแล้ว ห้ามพนักงานแก้ตัวเลขย้อนหลัง เพื่อความถูกต้อง 100%</p>
+        </div>
+      </div>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 วิธีจำ 4 ข้อ</p>
+        <p><strong>S-I-T-N</strong> = "<strong>หัวเรื่อง</strong> รวม<strong>เดียว</strong> ผูก<strong>เวลา</strong> ไม่<strong>แก้ไข</strong>"
+        (Subject / Integrated / Time-variant / Non-volatile)</p>
+      </div>
+
+      <h2>3. OLTP vs OLAP / Data Warehouse — ตารางเปรียบเทียบ (ออกบ่อยมาก)</h2>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>ประเด็น</th><th>OLTP (Online Transaction Processing)</th><th>OLAP / Data Warehouse</th></tr>
+        <tr><td>วัตถุประสงค์</td><td>งานประจำวัน (จองตั๋ว โอนเงิน ขายของ)</td><td>วิเคราะห์ + สนับสนุนการตัดสินใจผู้บริหาร (MIS, DSS, EIS)</td></tr>
+        <tr><td>คำสั่งที่ใช้</td><td>เน้นเขียน/แก้ (INSERT, UPDATE, DELETE) รายการเล็ก ๆ</td><td>เน้นอ่านปริมาณมาก (SELECT) + นำเข้าแบบ Batch</td></tr>
+        <tr><td>โครงสร้าง</td><td>ER Diagram + Normalization (3NF/BCNF) ลดความซ้ำซ้อน</td><td>Dimensional Model (Star/Snowflake) เน้น query เร็ว</td></tr>
+        <tr><td>ช่วงเวลาข้อมูล</td><td>ปัจจุบัน/ย้อนหลังสั้น (1–3 ปี)</td><td>ประวัติยาว 5–10 ปี พร้อมแกนเวลา</td></tr>
+        <tr><td>ผู้ใช้หลัก</td><td>พนักงานปฏิบัติการ ลูกค้า แอปพลิเคชัน</td><td>ผู้บริหาร, Data Analyst, Data Scientist</td></tr>
+        <tr><td>ปรับแต่งเพื่อ</td><td>เขียน (Write) เร็ว + ข้อมูลซ้ำน้อย</td><td>อ่านสรุป (Read/Query) เร็ว — ยอมให้มีข้อมูลซ้ำบ้าง</td></tr>
+      </table></div>
+
+      <h2>4. สถาปัตยกรรมและองค์ประกอบ</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 780 300" width="780" role="img" aria-label="สถาปัตยกรรม Data Warehouse" class="svg-text">
+          <defs>
+            <marker id="dwa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#059669"/>
+            </marker>
+          </defs>
+          <rect x="15" y="70" width="150" height="150" rx="14" fill="#eef6ff" stroke="#b9dcff"/>
+          <text x="90" y="98" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#0b6bcb">Data Sources</text>
+          <text x="90" y="126" text-anchor="middle" style="font-size:19px">🏪🏦📄</text>
+          <text x="90" y="152" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">OLTP, ERP, Excel,</text>
+          <text x="90" y="170" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">CSV, JSON, API, IoT</text>
+
+          <rect x="215" y="70" width="150" height="150" rx="14" fill="#fff8e8" stroke="#ffe2a3"/>
+          <text x="290" y="98" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#a36b00">Staging Area</text>
+          <text x="290" y="126" text-anchor="middle" style="font-size:19px">📥🧹</text>
+          <text x="290" y="152" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">พื้นที่พักข้อมูลดิบ</text>
+          <text x="290" y="170" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">ชั่วคราว + ETL</text>
+
+          <rect x="415" y="70" width="160" height="150" rx="14" fill="#effaf3" stroke="#b7e6c8" stroke-width="2"/>
+          <text x="495" y="98" text-anchor="middle" style="font-size:14px;font-weight:800;fill:#157a42">Data Warehouse</text>
+          <text x="495" y="126" text-anchor="middle" style="font-size:19px">🏢</text>
+          <text x="495" y="152" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">คลังกลางองค์กร</text>
+          <text x="495" y="170" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">+ Metadata</text>
+
+          <rect x="615" y="20" width="150" height="80" rx="14" fill="#f6f0ff" stroke="#ddc9ff"/>
+          <text x="690" y="46" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#6a1fd0">Data Marts</text>
+          <text x="690" y="68" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">คลังย่อยรายฝ่าย</text>
+          <text x="690" y="86" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">ขาย/การตลาด/HR</text>
+          <rect x="615" y="190" width="150" height="80" rx="14" fill="#fff1f0" stroke="#ffc9c5"/>
+          <text x="690" y="216" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#c62a30">BI / Dashboard</text>
+          <text x="690" y="238" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">รายงาน วิเคราะห์</text>
+          <text x="690" y="256" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">MIS DSS EIS</text>
+
+          <line x1="167" y1="145" x2="209" y2="145" stroke="#059669" stroke-width="2.5" marker-end="url(#dwa)"/>
+          <line x1="367" y1="145" x2="409" y2="145" stroke="#059669" stroke-width="2.5" marker-end="url(#dwa)"/>
+          <line x1="577" y1="120" x2="609" y2="70" stroke="#059669" stroke-width="2.5" marker-end="url(#dwa)"/>
+          <line x1="577" y1="170" x2="609" y2="220" stroke="#059669" stroke-width="2.5" marker-end="url(#dwa)"/>
+          <text x="390" y="265" text-anchor="middle" class="ts">กระแสข้อมูล: แหล่งต้นทาง → พัก/แปลงสภาพ (ETL) → คลังกลาง → คลังย่อย/งานวิเคราะห์</text>
+        </svg>
+        <figcaption>ภาพที่ 1: สถาปัตยกรรม Data Warehouse ตามลำดับการไหลของข้อมูล</figcaption>
+      </figure>
+
+      <h3>ETL — Extract, Transform, Load (ท่อง 3 คำนี้พร้อมความหมาย)</h3>
+      <ol class="steps">
+        <li><span class="step-title">Extract (สกัดข้อมูล)</span><p>ดึงข้อมูลจากแหล่งต้นทางทุกระบบ — เหมือน<strong>เก็บผักจากหลายฟาร์ม</strong>มารวมกันที่ลาน</p></li>
+        <li><span class="step-title">Transform (แปลงสภาพ + ทำความสะอาด)</span><p>ตรวจสอบ คัดกรอง ล้าง (Data Cleansing) จัดรูปแบบรหัส คำนวณค่า ให้เป็นมาตรฐานเดียว — เหมือน<strong>ล้างผัก หั่นผัก คัดของเน่าทิ้ง</strong></p></li>
+        <li><span class="step-title">Load (นำเข้า)</span><p>โหลดข้อมูลที่สะอาดแล้วเข้าสู่คลังหลักหรือ Data Mart — เหมือน<strong>แพ็กใส่กล่องเข้าคลังสินค้า</strong>จัดเก็บตามชั้น</p></li>
+      </ol>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🏬 Data Mart คืออะไร</h4>
+          <p>คลังข้อมูล<strong>ขนาดย่อย</strong>ที่จัดเฉพาะตามฝ่าย เช่น Data Mart ฝ่ายขาย ฝ่ายการตลาด ฝ่าย HR — เข้าถึงเร็ว เจาะจงงานตัวเอง</p>
+        </div>
+        <div class="card">
+          <h4>📇 Metadata คืออะไร</h4>
+          <p>"ข้อมูลที่อธิบายข้อมูล" — โครงสร้าง นิยาม ที่มาของคอลัมน์/ตาราง เหมือน<strong>แผนที่และป้ายชื่อชั้นวางของในคลัง</strong> ให้คนหาข้อมูลเจอถูกต้อง</p>
+        </div>
+      </div>
+
+      <div class="box box-exam">
+        <p class="box-title">📝 2 แนวคิดการสร้าง Data Mart (ถามเทียบกันได้)</p>
+        <p><strong>Inmon (Top-Down):</strong> สร้าง Enterprise Data Warehouse ศูนย์กลางใหญ่<strong>ก่อน</strong> แล้วค่อยแตกเป็น Data Marts ย่อย<br>
+        <strong>Kimball (Bottom-Up):</strong> สร้าง Data Marts ย่อยรายแผนก<strong>ก่อน</strong> ด้วย Dimensional Model แล้วค่อยรวมเป็นคลังใหญ่</p>
+      </div>
+
+      <h2>5. Star Schema vs Snowflake Schema (รู้จักไว้ — เขาบอกว่าไม่ออกออกแบบ แต่ถามนิยามได้)</h2>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>⭐ Fact Table (ตารางข้อเท็จจริง)</h4>
+          <p>อยู่<strong>ตรงกลาง</strong> เก็บ<strong>ตัวเลขวัดผลทางธุรกิจ</strong> (Measures) ที่เกิดจากเหตุการณ์<br>
+          องค์ประกอบ: FK ไปยังตารางมิติ + ตัวเลข เช่น ยอดขาย (Sales_Amount), จำนวน (Quantity), ส่วนลด, กำไร</p>
+        </div>
+        <div class="card">
+          <h4>🧭 Dimension Table (ตารางมิติ)</h4>
+          <p><strong>ล้อมรอบ</strong> Fact Table เก็บบริบท/คำอธิบาย ตอบคำถาม <strong>ใคร อะไร ที่ไหน เมื่อไหร่</strong><br>
+          เช่น Dim_Time (วัน→เดือน→ไตรมาส→ปี), Dim_Customer, Dim_Product, Dim_Store — จัดลำดับชั้น (Hierarchy) เพื่อ Drill-down/Roll-up</p>
+        </div>
+      </div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 950" width="760" role="img" aria-label="Star Schema vs Snowflake Schema" class="svg-text">
+          <defs>
+            <marker id="sta2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#059669"/>
+            </marker>
+            <marker id="sta3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#0284c7"/>
+            </marker>
+          </defs>
+
+          <text x="380" y="38" text-anchor="middle" style="font-size:15px;font-weight:800;fill:#157a42">⭐ Star Schema — Dim ชั้นเดียวจบ • JOIN น้อย • Query เร็ว</text>
+          <g transform="translate(380,230)">
+            <rect x="-70" y="-26" width="140" height="52" rx="10" fill="#059669"/>
+            <text x="0" y="-2" text-anchor="middle" style="font-size:12.5px;fill:#fff;font-weight:800">Fact_Sales</text>
+            <text x="0" y="16" text-anchor="middle" style="font-size:9.5px;fill:#d1fae5">Sales_Amount, Qty</text>
+            <rect x="-58" y="-156" width="116" height="40" rx="8" fill="#eef6ff" stroke="#b9dcff"/>
+            <text x="0" y="-131" text-anchor="middle" style="font-size:11.5px;font-weight:700;fill:#0b6bcb">Dim_Time</text>
+            <rect x="-58" y="116" width="116" height="40" rx="8" fill="#eef6ff" stroke="#b9dcff"/>
+            <text x="0" y="141" text-anchor="middle" style="font-size:11.5px;font-weight:700;fill:#0b6bcb">Dim_Store</text>
+            <rect x="-225" y="-20" width="126" height="40" rx="8" fill="#eef6ff" stroke="#b9dcff"/>
+            <text x="-162" y="5" text-anchor="middle" style="font-size:11.5px;font-weight:700;fill:#0b6bcb">Dim_Customer</text>
+            <rect x="99" y="-20" width="126" height="40" rx="8" fill="#eef6ff" stroke="#b9dcff"/>
+            <text x="162" y="5" text-anchor="middle" style="font-size:11.5px;font-weight:700;fill:#0b6bcb">Dim_Product</text>
+            <line x1="0" y1="-28" x2="0" y2="-110" stroke="#059669" stroke-width="2" marker-start="url(#sta2)" marker-end="url(#sta2)"/>
+            <line x1="0" y1="28" x2="0" y2="110" stroke="#059669" stroke-width="2" marker-start="url(#sta2)" marker-end="url(#sta2)"/>
+            <line x1="-74" y1="0" x2="-93" y2="0" stroke="#059669" stroke-width="2" marker-end="url(#sta2)"/>
+            <line x1="74" y1="0" x2="93" y2="0" stroke="#059669" stroke-width="2" marker-end="url(#sta2)"/>
+          </g>
+          <text x="380" y="446" text-anchor="middle" class="ts">ทุก Dimension เชื่อมตรงกับ Fact คนละชั้น — เข้าใจง่าย สั่ง JOIN ได้ไว</text>
+
+          <text x="380" y="510" text-anchor="middle" style="font-size:15px;font-weight:800;fill:#0b6bcb">❄️ Snowflake Schema — Dim ถูก Normalize (3NF) แตกกิ่งย่อย • ซ้ำน้อยแต่ JOIN เยอะ</text>
+          <g transform="translate(380,700)">
+            <rect x="-70" y="-26" width="140" height="52" rx="10" fill="#0284c7"/>
+            <text x="0" y="-2" text-anchor="middle" style="font-size:12.5px;fill:#fff;font-weight:800">Fact_Sales</text>
+            <text x="0" y="16" text-anchor="middle" style="font-size:9.5px;fill:#e0f2fe">Sales_Amount, Qty</text>
+            <rect x="-58" y="-156" width="116" height="40" rx="8" fill="#eef6ff" stroke="#b9dcff"/>
+            <text x="0" y="-131" text-anchor="middle" style="font-size:11.5px;font-weight:700;fill:#0b6bcb">Dim_Time</text>
+            <rect x="-225" y="-20" width="126" height="40" rx="8" fill="#eef6ff" stroke="#b9dcff"/>
+            <text x="-162" y="5" text-anchor="middle" style="font-size:11.5px;font-weight:700;fill:#0b6bcb">Dim_Customer</text>
+            <rect x="99" y="-20" width="126" height="40" rx="8" fill="#eef6ff" stroke="#b9dcff"/>
+            <text x="162" y="5" text-anchor="middle" style="font-size:11.5px;font-weight:700;fill:#0b6bcb">Dim_Product</text>
+            <rect x="-58" y="96" width="116" height="40" rx="8" fill="#eef6ff" stroke="#b9dcff"/>
+            <text x="0" y="121" text-anchor="middle" style="font-size:11.5px;font-weight:700;fill:#0b6bcb">Dim_Store</text>
+            <rect x="-250" y="176" width="120" height="36" rx="8" fill="#fff8e8" stroke="#ffe2a3"/>
+            <text x="-190" y="199" text-anchor="middle" style="font-size:11px;font-weight:700;fill:#a36b00">Dim_District</text>
+            <rect x="130" y="176" width="120" height="36" rx="8" fill="#fff8e8" stroke="#ffe2a3"/>
+            <text x="190" y="199" text-anchor="middle" style="font-size:11px;font-weight:700;fill:#a36b00">Dim_Province</text>
+            <line x1="0" y1="-28" x2="0" y2="-110" stroke="#0284c7" stroke-width="2" marker-start="url(#sta3)" marker-end="url(#sta3)"/>
+            <line x1="-74" y1="0" x2="-93" y2="0" stroke="#0284c7" stroke-width="2" marker-end="url(#sta3)"/>
+            <line x1="74" y1="0" x2="93" y2="0" stroke="#0284c7" stroke-width="2" marker-end="url(#sta3)"/>
+            <line x1="0" y1="28" x2="0" y2="90" stroke="#0284c7" stroke-width="2" marker-start="url(#sta3)" marker-end="url(#sta3)"/>
+            <line x1="-32" y1="138" x2="-148" y2="176" stroke="#0284c7" stroke-width="2" marker-end="url(#sta3)"/>
+            <line x1="32" y1="138" x2="148" y2="176" stroke="#0284c7" stroke-width="2" marker-end="url(#sta3)"/>
+          </g>
+          <text x="380" y="944" text-anchor="middle" class="ts">Dim_Store ถูกแตกย่อยเป็น Dim_District / Dim_Province — เกล็ดหิมะแตกกิ่งออกไป</text>
+        </svg>
+        <figcaption>ภาพที่ 2: Star (ดาวชั้นเดียว) vs Snowflake (เกล็ดหิมะแตกกิ่ง) — Snowflake คือการนำ Dimension ไปทำ 3NF</figcaption>
+      </figure>
+
+      <h2>6. ประโยชน์และตัวอย่างการใช้งานจริง</h2>
+      <div class="grid grid-2">
+        <div class="card"><h4>🗂️ รวมศูนย์ข้อมูลองค์กร</h4><p>ผู้บริหาร/ทีมวิเคราะห์เข้าถึงข้อมูลทั้งองค์กรจากแหล่งเดียว รวดเร็ว</p></div>
+        <div class="card"><h4>📊 ตัดสินใจแบบ Data-Driven</h4><p>ดูแนวโน้ม ยอดขาย กำไร ผ่าน Dashboard แม่นยำ</p></div>
+        <div class="card"><h4>⚡ ไม่กระทบระบบหลัก</h4><p>ดึงไปวิเคราะห์ที่คลัง ระบบขาย/ลงทะเบียน (OLTP) ยังเร็วเหมือนเดิม</p></div>
+        <div class="card"><h4>🤖 รากฐาน Data Science</h4><p>ข้อมูลสะอาดพร้อมทำ Data Mining, Machine Learning, พยากรณ์</p></div>
+      </div>
+
+      <p><strong>ตัวอย่างจริงที่อาจารย์ยกในวิดีโอ:</strong></p>
+      <ul>
+        <li><strong>ธุรกิจค้าปลีก/ร้านสะดวกซื้อ:</strong> วิเคราะห์ยอดขายตามสาขา เทียบวันหยุด vs วันธรรมดา จำแนกกลุ่มสินค้าเพื่อทำโปรโมชัน</li>
+        <li><strong>ภาครัฐ (Government Data Catalog / Open Data):</strong> รวบรวมชุดข้อมูลกรม กระทรวง ผ่าน Data Catalog เปิดเผยสถิติให้ประชาชนใช้ร่วมกัน</li>
+        <li><strong>ระบบบริหารน้ำ/ภัยพิบัติ:</strong> รวบรวมข้อมูลเซนเซอร์ ปริมาณน้ำฝน มาทำแดชบอร์ดและพยากรณ์ (Forecasting)</li>
+      </ul>
+
+      <hr class="sep">
+
+      <h2>📝 แนวข้อสอบ Data Warehouse + ตัวอย่างคำตอบ</h2>
+      <div class="box box-exam"><p class="box-title">📌 หมายเหตุจากโครงข้อสอบ</p><p>"ความรู้เบื้องต้นด้าน Data Warehouse <strong>ไม่ออกการออกแบบ</strong>" — ดังนั้นเตรียมตัวเน้นการบ้าน: นิยาม 4 ข้อ, ตาราง OLTP vs OLAP, องค์ประกอบ/ETL, นิยาม Fact/Dimension และ Star vs Snowflake พอ</p></div>
+
+      <details class="sol"><summary>ข้อ 1: Data Warehouse คืออะไร และมีลักษณะสำคัญอะไรบ้าง</summary>
+        <div class="sol-body"><p>Data Warehouse คือ ระบบจัดเก็บข้อมูลเชิงวิเคราะห์ขนาดใหญ่ ที่รวบรวมข้อมูลจากหลายแหล่งทั้งภายใน/ภายนอกองค์กร
+        มาไว้คลังกลางเพื่อสนับสนุนการตัดสินใจเชิงบริหารและงาน BI — ลักษณะ 4 ประการตามนิยามของ Bill Inmon:
+        <strong>Subject-Oriented</strong> (จัดเก็บตามหัวเรื่องเชิงธุรกิจ เช่น ยอดขาย ลูกค้า),
+        <strong>Integrated</strong> (รวมหลายระบบเป็นมาตรฐานเดียว),
+        <strong>Time-Variant</strong> (ผูกแกนเวลา เก็บประวัติ 5–10 ปี),
+        <strong>Non-Volatile</strong> (เข้าคลังแล้วแก้/ลบไม่ได้ อ่านอย่างเดียว)</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 2: เปรียบเทียบ OLTP กับ Data Warehouse/OLAP</summary>
+        <div class="sol-body"><p><strong>OLTP:</strong> รองรับงานประจำวัน เน้นเขียน/แก้ไขรายการเล็ก ออกแบบด้วย ER + Normalization (3NF)
+        เก็บข้อมูลปัจจุบัน ผู้ใช้คือพนักงานปฏิบัติการ/ลูกค้า — ปรับแต่งให้ Write เร็ว<br>
+        <strong>OLAP/DW:</strong> รองรับการวิเคราะห์และการตัดสินใจ เน้นอ่านปริมาณมาก ออกแบบด้วย Dimensional Model (Star/Snowflake)
+        เก็บประวัติ 5–10 ปี ผู้ใช้คือผู้บริหาร/นักวิเคราะห์ — ปรับแต่งให้ Read เร็ว ยอมให้ข้อมูลซ้ำบ้าง</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 3: ETL คืออะไร อธิบายแต่ละขั้นตอน</summary>
+        <div class="sol-body"><p>ETL คือกระบวนการเคลื่อนข้อมูลเข้าคลังข้อมูล 3 ขั้น:
+        <strong>Extract</strong> — สกัด/ดึงข้อมูลจากแหล่งต้นทางหลากหลายระบบ;
+        <strong>Transform</strong> — แปลงสภาพ ตรวจสอบ ทำความสะอาด (Cleansing) จัดรูปแบบรหัสให้เป็นมาตรฐานเดียว;
+        <strong>Load</strong> — นำเข้าข้อมูลที่ผ่านการตรวจแล้วเข้าสู่ Data Warehouse หรือ Data Mart</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 4: Fact Table กับ Dimension Table ต่างกันอย่างไร และ Star Schema ต่างจาก Snowflake Schema อย่างไร</summary>
+        <div class="sol-body"><p><strong>Fact Table</strong> — ตารางกลางเก็บตัวเลขวัดผล (Measures) เช่น ยอดขาย จำนวน ส่วนลด + FK เชื่อมไปยังมิติ<br>
+        <strong>Dimension Table</strong> — ตารางล้อมรอบเก็บบริบท/คำอธิบาย (ใคร อะไร ที่ไหน เมื่อไหร่) พร้อมลำดับชั้นสำหรับ Drill-down/Roll-up<br>
+        <strong>Star Schema:</strong> Dimension อยู่ชั้นเดียวโดยรอบ Fact — ง่าย เร็ว JOIN น้อย<br>
+        <strong>Snowflake Schema:</strong> นำ Dimension ไทำ Normalization แตกเป็นตารางย่อยต่อ — ซ้ำน้อยกว่า แต่ JOIN หลายตาราง Query ช้าลงเล็กน้อย</p></div>
+      </details>
+
+      <h3>🎬 ลองทำแบบทดสอบด่วน</h3>
+      <div class="quiz" data-answer="2">
+        <p class="quiz-q"><span class="qno">Q1</span>สาขา A เก็บเพศ 'M/F' สาขา B เก็บ '1/0' แล้วแปลงให้เหมือนกันในคลังข้อมูล — ตรงกับลักษณะข้อใด?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Subject-Oriented</button>
+          <button class="quiz-opt">Time-Variant</button>
+          <button class="quiz-opt">Integrated</button>
+          <button class="quiz-opt">Non-Volatile</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 3 — การปรับข้อมูลจากหลายระบบให้เป็นมาตรฐานเดียวกัน (Standardization/Cleansing) คือ Integrated</p>
+      </div>
+      <div class="quiz" data-answer="0">
+        <p class="quiz-q"><span class="qno">Q2</span>ระบบจองตั๋วหนังที่ใช้งานจริงทุกวัน (INSERT/UPDATE เร็ว ๆ ทีละรายการ) จัดเป็นอะไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">OLTP</button>
+          <button class="quiz-opt">OLAP</button>
+          <button class="quiz-opt">Data Mart</button>
+          <button class="quiz-opt">Metadata</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 1 — ระบบประมวลผลรายการประจำวันที่เน้นเขียน/แก้ไข คือ OLTP (Online Transaction Processing)</p>
+      </div>
+      <div class="quiz" data-answer="3">
+        <p class="quiz-q"><span class="qno">Q3</span>ตารางที่เก็บตัวเลขวัดผล เช่น ยอดขาย จำนวนชิ้น อยู่ตรงกลางของ Star Schema เรียกว่าอะไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Dimension Table</button>
+          <button class="quiz-opt">Metadata</button>
+          <button class="quiz-opt">Staging Table</button>
+          <button class="quiz-opt">Fact Table</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 4 — Fact Table เก็บ Measures (ตัวเลขเหตุการณ์) และ FK เชื่อมไปยัง Dimension Table ที่ล้อมรอบ</p>
+      </div>
+
+      <div class="prevnext">
+        <a href="concurrency.html">← ก่อนหน้า: Concurrency Control<small>🔀 Transaction ครึ่งหลัง</small></a>
+        <a class="next" href="sql.html">บทต่อไป: SQL →<small>💾 15 คะแนน — ทำก่อนในห้องสอบ</small></a>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เว็บติวสอบ Final — Database Systems | หน้าแรก</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="progressBar"></div>
+<div class="backdrop"></div>
+
+<header class="topbar">
+  <button class="hamburger" aria-label="เปิดเมนู">☰</button>
+  <div class="topbar-title">🎓 ติวสอบ Final — Database Systems</div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="เมนูหลัก">
+    <div class="side-brand">🎓 DB Final Prep<small>Database Systems • 120 คะแนน</small></div>
+    <div class="side-note">💡 <b>เคล็ดลับรุ่นพี่:</b> ทำข้อ SQL ให้เสร็จก่อน เพราะใช้เวลาเยอะมาก!</div>
+    <a class="nav-link" href="index.html"><span class="nav-emoji">🏠</span> หน้าแรก + แผนอ่าน</a>
+    <a class="nav-link" href="db-concept.html"><span class="nav-emoji">📘</span> DB Concept <span class="nav-pts">10</span></a>
+    <a class="nav-link" href="normalization.html"><span class="nav-emoji">🧮</span> Normalization <span class="nav-pts">40</span></a>
+    <a class="nav-link" href="recovery.html"><span class="nav-emoji">🔄</span> Recovery Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="concurrency.html"><span class="nav-emoji">🔀</span> Concurrency Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="data-warehouse.html"><span class="nav-emoji">🏢</span> Data Warehouse <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="sql.html"><span class="nav-emoji">💾</span> SQL <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="critique.html"><span class="nav-emoji">⚖️</span> วิพากษ์ Data Model <span class="nav-pts">10</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="content">
+
+      <section class="hero">
+        <p class="kicker">DATABASE SYSTEMS • FINAL EXAM PREP</p>
+        <h1>ติวสอบ Final ฐานข้อมูล<br>ฉบับเข้าใจง่าย ครบทุกหัวข้อที่ออกสอบ</h1>
+        <p>สรุปเนื้อหาจากวิดีโอการสอนของอาจารย์ + แนวข้อสอบจากรุ่นพี่ พร้อมภาพประกอบทีละขั้นตอน
+        ตัวอย่างโจทย์พร้อมเฉลย และแบบทดสอบซ้อมทำ — อ่านได้ทั้งคอมและมือถือ</p>
+        <div class="hero-stats">
+          <div class="stat"><b>120</b><span>คะแนนเต็ม</span></div>
+          <div class="stat"><b>6</b><span>ส่วนข้อสอบ</span></div>
+          <div class="stat"><b>✍️</b><span>เขียนตอบทั้งหมด</span></div>
+        </div>
+      </section>
+
+      <h2>📊 โครงข้อสอบ Final ปีนี้ (เน้นหนักสุดๆ)</h2>
+      <p>แนวข้อสอบ Final รวม <strong>120 คะแนน</strong> แบ่งเป็น 6 ส่วน ดังนี้ — สีเข้ม = คะแนนเยอะต้องเก่งก่อน</p>
+
+      <div class="score-row"><div class="subj">🧮 Normalization</div><div class="score-bar"><div class="score-fill" style="width:100%;background:#7c3aed;">40 คะแนน</div></div></div>
+      <div class="score-row"><div class="subj">🔄🔀 Transaction Processing</div><div class="score-bar"><div class="score-fill" style="width:75%;background:#e11d48;">30 คะแนน</div></div></div>
+      <div class="score-row"><div class="subj">🏢 Data Warehouse</div><div class="score-bar"><div class="score-fill" style="width:37.5%;background:#059669;">15</div></div></div>
+      <div class="score-row"><div class="subj">💾 SQL</div><div class="score-bar"><div class="score-fill" style="width:37.5%;background:#2563eb;">15</div></div></div>
+      <div class="score-row"><div class="subj">📘 DB Concept</div><div class="score-bar"><div class="score-fill" style="width:25%;background:#0284c7;">10</div></div></div>
+      <div class="score-row"><div class="subj">⚖️ วิพากษ์ Data Model</div><div class="score-bar"><div class="score-fill" style="width:25%;background:#ea580c;">10</div></div></div>
+
+      <div class="box box-exam">
+        <p class="box-title">📝 แนวข้อสอบที่ออกในปีนี้ (จากประกาศของอาจารย์)</p>
+        <ol>
+          <li><strong>10 คะแนน</strong> — วิพากษ์ Data Model ที่อ้างอิงการออกแบบ 1 ข้อ</li>
+          <li><strong>40 คะแนน</strong> — Normalization 4 ข้อ (1–3NF, BCNF, 4NF, 5NF)</li>
+          <li><strong>30 คะแนน</strong> — Transaction Processing 2 ข้อ (Recovery Control, Concurrency Control)</li>
+          <li><strong>10 คะแนน</strong> — DB Concept</li>
+          <li><strong>15 คะแนน</strong> — ความรู้เบื้องต้นด้าน Data Warehouse <strong>(ไม่ออกการออกแบบ — อ่านเน้นความหมาย/เปรียบเทียบ)</strong></li>
+          <li><strong>15 คะแนน</strong> — SQL (Outer JOIN, Subquery, Correlated Subquery)</li>
+        </ol>
+      </div>
+
+      <h2>🗺️ แผนที่เนื้อหา — เลือกหัวข้อที่จะอ่าน</h2>
+      <div class="grid grid-2">
+        <a class="card" href="db-concept.html" style="text-decoration:none;">
+          <span class="tag" style="background:#e0f2fe;color:#0369a1;">10 คะแนน • พื้นฐาน</span>
+          <h4>📘 DB Concept</h4>
+          <p>ฐานข้อมูลคืออะไร, DBMS, Key ทุกชนิด, Anomalies, 3-Tier, Schema vs Instance, DDL/DML/DCL/TCL — เป็นฐานให้ทุกบท อ่านก่อน!</p>
+        </a>
+        <a class="card" href="normalization.html" style="text-decoration:none;">
+          <span class="tag" style="background:#ede9fe;color:#6d28d9;">40 คะแนน • หัวใจของข้อสอบ</span>
+          <h4>🧮 Normalization</h4>
+          <p>1NF–3NF, BCNF, 4NF, 5NF อธิบายทีละขั้นพร้อมภาพ FD, Partial/Transitive/MVD/JD และโจทย์เดินเฉลยเต็มสเต็ป</p>
+        </a>
+        <a class="card" href="recovery.html" style="text-decoration:none;">
+          <span class="tag" style="background:#fef3c7;color:#b45309;">Transaction 30 คะแนน</span>
+          <h4>🔄 Recovery Control</h4>
+          <p>Transaction + ACID, Log File, UNDO/REDO, Checkpoint, Deferred vs Immediate Update และโจทย์ recovery จาก log ทีละบรรทัด</p>
+        </a>
+        <a class="card" href="concurrency.html" style="text-decoration:none;">
+          <span class="tag" style="background:#ffe4e6;color:#be123c;">Transaction 30 คะแนน</span>
+          <h4>🔀 Concurrency Control</h4>
+          <p>Lost Update, Dirty Read, Locking (S/X), 2PL, Timestamp, Deadlock และโจทย์ตารางเวลา 2 Transaction ทำงานพร้อมกัน</p>
+        </a>
+        <a class="card" href="data-warehouse.html" style="text-decoration:none;">
+          <span class="tag" style="background:#d1fae5;color:#047857;">15 คะแนน • ไม่ออกออกแบบ</span>
+          <h4>🏢 Data Warehouse</h4>
+          <p>นิยาม 4 ลักษณะของ Bill Inmon, OLTP vs OLAP, ETL, Data Mart, Star vs Snowflake — อ่านเน้นความหมายและตารางเปรียบเทียบ</p>
+        </a>
+        <a class="card" href="sql.html" style="text-decoration:none;">
+          <span class="tag" style="background:#dbeafe;color:#1d4ed8;">15 คะแนน • ทำก่อนในห้องสอบ</span>
+          <h4>💾 SQL</h4>
+          <p>INNER/OUTER JOIN พร้อมแผนภาพเวนน์, Subquery 3 ตำแหน่ง, Correlated Subquery ไล่รันทีละแถว และเทคนิคทำข้อสอบ</p>
+        </a>
+        <a class="card" href="critique.html" style="text-decoration:none;">
+          <span class="tag" style="background:#ffedd5;color:#c2410c;">10 คะแนน • หัวข้อใหม่ปีนี้</span>
+          <h4>⚖️ วิพากษ์ Data Model</h4>
+          <p>หลัก No Silver Bullet, เทียบ 3 โมเดล Bill-Centric / Order-Centric / Enterprise Commerce และสูตรตอบข้อสอบ 3 ขั้น</p>
+        </a>
+        <div class="card" style="background:#f8fafc;">
+          <span class="tag" style="background:#e2e8f0;color:#334155;">จากรุ่นพี่</span>
+          <h4>🧑‍🎓 รีวิวข้อสอบปีก่อน</h4>
+          <p>ข้อสอบเขียนตอบทั้งหมด, ER บางข้อแบ่ง Req เป็นส่วน ๆ แล้วรวมกัน, SQL เน้น Join + Subquery เหมือนเดิม</p>
+        </div>
+      </div>
+
+      <h2>📅 แผนอ่านแนะนำ (สำหรับเวลาจำกัด)</h2>
+      <p>เรียงตาม <strong>คะแนนต่อเวลาที่ลงทุน</strong> — หัวข้อไหนคุ้มที่สุดอ่านก่อน</p>
+      <ol>
+        <li><strong>Normalization (40 คะแนน)</strong> — อ่านจนทำโจทย์ 1NF→5NF ได้คล่อง เดินสูตรได้ทุกแบบ</li>
+        <li><strong>Recovery + Concurrency (30 คะแนน)</strong> — ข้อสอบเป็นแบบเดิมซ้ำ ๆ: นิยาม + ตัวอย่าง + เดิน log/schedule</li>
+        <li><strong>SQL (15 คะแนน)</strong> — ฝึกเขียนมือจนคล่อง เพราะในห้องสอบต้อง <em>ทำ SQL เป็นข้อแรก</em> (คำแนะนำรุ่นพี่)</li>
+        <li><strong>Data Warehouse (15 คะแนน)</strong> — ท่องนิยาม 4 ข้อ + ตาราง OLTP vs OLAP ให้ขึ้นใจ (ไม่มีการออกแบบ)</li>
+        <li><strong>DB Concept (10 คะแนน)</strong> — ท่อง 5 คำถามพื้นฐานพร้อมตัวอย่าง</li>
+        <li><strong>วิพากษ์ Data Model (10 คะแนน)</strong> — จำสูตรตอบ 3 ขั้น + โครง 3 โมเดล</li>
+      </ol>
+
+      <h2>✅ เช็คลิสต์เตรียมสอบ (ติ๊กเก็บไว้ได้ — ไม่หายแม้ปิดเบราว์เซอร์)</h2>
+      <ul class="checklist" id="exam-checklist">
+        <li><label><input type="checkbox" data-key="norm"><span>ทำโจทย์ Normalization ครบ 1NF → 5NF ได้เองทุกขั้น (รู้ว่าเมื่อไรต้องสปลิตตาราง)</span></label></li>
+        <li><label><input type="checkbox" data-key="bcnf"><span>อธิบายความต่าง 3NF vs BCNF ได้ พร้อมตัวอย่าง Advisor</span></label></li>
+        <li><label><input type="checkbox" data-key="acid"><span>ท่อง ACID ได้ครบ 4 ข้อ พร้อมตัวอย่างโอนเงิน/ยืมหนังสือ</span></label></li>
+        <li><label><input type="checkbox" data-key="recovery"><span>เดินโจทย์ Recovery จาก log: แยก Redo-list / Undo-list แล้ว UNDO ย้อน → REDO ไปหน้า ได้</span></label></li>
+        <li><label><input type="checkbox" data-key="concurrency"><span>วาดตาราง schedule T1/T2 แบบ Lost Update + แบบมี Lock (2PL) ได้</span></label></li>
+        <li><label><input type="checkbox" data-key="dw"><span>ท่อง 4 ลักษณะ Data Warehouse (Subject-Oriented, Integrated, Time-Variant, Non-Volatile) + ตาราง OLTP vs OLAP</span></label></li>
+        <li><label><input type="checkbox" data-key="sql"><span>เขียน LEFT OUTER JOIN, Subquery, Correlated Subquery ได้ด้วยมือเปล่า</span></label></li>
+        <li><label><input type="checkbox" data-key="critique"><span>จำสูตรวิพากษ์ 3 ขั้น: เจตนาโจทย์ → ความหมาย ≠ → ยกสถานการณ์ Partial Shipment</span></label></li>
+      </ul>
+
+      <div class="box box-tip">
+        <p class="box-title">💡 กลยุทธ์ในห้องสอบ (จากรุ่นพี่ทุกรุ่นย้ำเหมือนกัน)</p>
+        <ul>
+          <li>ข้อสอบ <strong>เขียนตอบทั้งหมด</strong> — ซ้อมเขียนมือ อย่าอ่านผ่านอย่างเดียว</li>
+          <li><strong>ทำ SQL ให้เสร็จก่อน</strong> เพราะใช้เวลาเยอะมาก ถ้าไปทำทีหลังอาจไม่ทัน</li>
+          <li>SQL ปีก่อนเน้น <strong>Join เยอะ + Subquery</strong> เหมือนข้อสอบเก่า — ลองทำข้อสอบเก่าซ้ำ</li>
+          <li>ข้อวิพากษ์/นิยาม ตอบเป็นโครงสร้าง: <strong>นิยาม → เหตุผล → ยกตัวอย่าง</strong> ได้คะแนนเต็มง่ายกว่าเขียนยาวไปเรื่อย</li>
+        </ul>
+      </div>
+
+      <div class="prevnext">
+        <a class="next" href="db-concept.html">เริ่มอ่านบทแรก: DB Concept<small>📘 10 คะแนน — ความรู้พื้นฐานที่ต้องรู้ก่อน</small></a>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

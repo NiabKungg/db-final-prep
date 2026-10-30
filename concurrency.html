@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concurrency Control (30 คะแนน) — เว็บติวสอบ Final DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style> :root { --accent:#e11d48; } </style>
+</head>
+<body>
+<div id="progressBar"></div>
+<div class="backdrop"></div>
+
+<header class="topbar">
+  <button class="hamburger" aria-label="เปิดเมนู">☰</button>
+  <div class="topbar-title">🔀 Concurrency Control — Transaction ครึ่งหลัง</div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="เมนูหลัก">
+    <div class="side-brand">🎓 DB Final Prep<small>Database Systems • 120 คะแนน</small></div>
+    <div class="side-note">💡 <b>เคล็ดลับรุ่นพี่:</b> ทำข้อ SQL ให้เสร็จก่อน เพราะใช้เวลาเยอะมาก!</div>
+    <a class="nav-link" href="index.html"><span class="nav-emoji">🏠</span> หน้าแรก + แผนอ่าน</a>
+    <a class="nav-link" href="db-concept.html"><span class="nav-emoji">📘</span> DB Concept <span class="nav-pts">10</span></a>
+    <a class="nav-link" href="normalization.html"><span class="nav-emoji">🧮</span> Normalization <span class="nav-pts">40</span></a>
+    <a class="nav-link" href="recovery.html"><span class="nav-emoji">🔄</span> Recovery Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="concurrency.html"><span class="nav-emoji">🔀</span> Concurrency Control <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="data-warehouse.html"><span class="nav-emoji">🏢</span> Data Warehouse <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="sql.html"><span class="nav-emoji">💾</span> SQL <span class="nav-pts">15</span></a>
+    <a class="nav-link" href="critique.html"><span class="nav-emoji">⚖️</span> วิพากษ์ Data Model <span class="nav-pts">10</span></a>
+  </nav>
+
+  <main class="main">
+    <div class="content">
+
+      <header class="page-head">
+        <p class="crumb"><a href="index.html">หน้าแรก</a> / Transaction Processing / Concurrency Control</p>
+        <h1>🔀 Concurrency Control — คุมหลาย Transaction ที่ทำงานพร้อมกัน</h1>
+        <div class="head-meta">
+          <span class="badge">Transaction Processing รวม 30 คะแนน</span>
+          <span class="badge">ข้อสอบ: นิยาม + ปัญหา + เดินตาราง schedule</span>
+          <span class="badge gold">ปี 67 ถาม 2 ข้อใหญ่ — อย่าปล่อย</span>
+        </div>
+      </header>
+
+      <h2>1. Concurrency Control คืออะไร ทำไมจึงต้องมี</h2>
+      <p><strong>Concurrency Control</strong> คือ กลไกของ DBMS ในการ<strong>จัดลำดับและควบคุม</strong>การทำงานของ
+      หลาย Transaction ที่เข้ามาทำงานพร้อมกันในเวลาเดียว (Concurrent Transactions) ให้ได้ผลลัพธ์ถูกต้องเสมอ</p>
+
+      <div class="grid grid-3">
+        <div class="card"><h4>🎯 Serializability</h4><p>ผู้ใช้ส่งงานเข้ามาขนานกัน แต่ DBMS ต้องจัดให้ผลลัพธ์เหมือน<strong>ทำทีละตัวตามลำดับ</strong> (Serial Execution)</p></div>
+        <div class="card"><h4>🛡️ รักษา I + C ใน ACID</h4><p>ป้องกัน Transaction หนึ่งไปยุ่งข้อมูลกลางคัน (ยังไม่ Commit) ของอีกตัว</p></div>
+        <div class="card"><h4>👥 รองรับผู้ใช้เยอะพร้อมกัน</h4><p>ระบบจองตั๋วหนัง ลงทะเบียนเรียน โอนเงิน — มีคนเข้าพร้อมกันร้อยคนได้โดยข้อมูลไม่พัง</p></div>
+      </div>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>เหมือน<strong>ธนาคารที่มีลูกค้า 100 คนเดินเข้ามาพร้อมกัน</strong> — ถ้าทุกคนวิ่งไปกระทบยอดบัญชีเดียวกันพร้อมกัน ตัวเลขจะพังแน่นอน
+        Concurrency Control คือระบบ <strong>บัตรคิว + ป้าย "กำลังใช้งาน"</strong> ที่ทำให้ทุกคนได้ทำรายการเสร็จสมบูรณ์
+        และผลรวมท้ายวันถูกต้อง เหมือนเดินคิวทีละคน</p>
+      </div>
+
+      <h2>2. ปัญหา 4 อย่างเมื่อไม่มี Concurrency Control</h2>
+
+      <h3>❗ ปัญหาที่ 1: Lost Update (สำคัญที่สุด — ออกเดินตารางบ่อย)</h3>
+      <p>Transaction 2 ตัว<strong>อ่านค่าเดิมพร้อมกัน</strong> แล้วต่างคนต่างเขียนทับ → ผลของตัวแรกสูญหาย</p>
+      <p>สถานการณ์: บัญชี A = 100 บาท | T1 ฝากเพิ่ม 50 (ควรได้ 130 รวมกับถอน) | T2 ถอน 20</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>t</th><th>T1 (ฝาก +50)</th><th>T2 (ถอน −20)</th><th>A ในหน่วยความจำ T1</th><th>A ในหน่วยความจำ T2</th><th>A ใน Database</th><th>เกิดอะไรขึ้น</th></tr>
+        <tr><td>t1</td><td><strong>READ(A)</strong></td><td>—</td><td>100</td><td>—</td><td>100</td><td>T1 อ่าน A = 100</td></tr>
+        <tr><td>t2</td><td>—</td><td><strong>READ(A)</strong></td><td>100</td><td>100</td><td>100</td><td>T2 อ่าน<strong>ค่าเดิม</strong> 100 ไปด้วย</td></tr>
+        <tr><td>t3</td><td><strong>A = A+50</strong></td><td>—</td><td>150</td><td>100</td><td>100</td><td>T1 คำนวณได้ 150</td></tr>
+        <tr><td>t4</td><td>—</td><td><strong>A = A−20</strong></td><td>150</td><td>80</td><td>100</td><td>T2 คำนวณได้ 80</td></tr>
+        <tr><td>t5</td><td><strong>WRITE(A)</strong></td><td>—</td><td>150</td><td>80</td><td><strong>150</strong></td><td>T1 เขียน 150 ลง DB</td></tr>
+        <tr><td>t6</td><td>—</td><td><strong>WRITE(A)</strong></td><td>150</td><td>80</td><td><strong>80 ⚠️</strong></td><td>T2 เขียนทับด้วย 80 → <strong>Lost Update!</strong></td></tr>
+      </table></div>
+      <div class="box box-warn"><p class="box-title">⚠️ ผลลัพธ์ผิด</p><p>ยอดที่ถูกต้องควรเป็น 100 + 50 − 20 = <strong>130 บาท</strong> แต่ในฐานข้อมูลเหลือแค่ <strong>80 บาท</strong> — เงินฝาก 50 บาทของ T1 "หายไป"</p></div>
+
+      <h3>❗ ปัญหาที่ 2: Dirty Read (อ่านข้อมูลสกปรก)</h3>
+      <p>T2 ไปอ่านข้อมูลที่ T1 <strong>ยังไม่ Commit</strong> แล้ว T1 กลับ Rollback ทิ้ง →
+      T2 ตัดสินใจบนข้อมูลที่ "ไม่เคยมีอยู่จริง" (ข้อมูลสกปรก = Uncommitted Data)</p>
+
+      <h3>❗ ปัญหาที่ 3: Uncommitted Dependency</h3>
+      <p>เชื่อมโยงกับ Dirty Read — T2 พึ่งพา (หรือแก้ไขต่อ) ค่าที่ T1 ยังไม่ยืนยัน เมื่อ T1 ยกเลิก T2 ก็พังตาม
+      เหมือน <strong>ต่อคิวซื้อของตามคนที่ "บอกว่าจะซื้อ" แต่สุดท้ายไม่ซื้อแล้ว</strong></p>
+
+      <h3>❗ ปัญหาที่ 4: Inconsistent Analysis</h3>
+      <p>T2 อ่านข้อมูลหลายแถวเพื่อสรุปผล (เช่น รวมยอดทุกบัญชี) แต่ระหว่างอ่าน T1 แก้ไขบางแถวไปแล้ว →
+      ยอดสรุปที่ได้<strong>ไม่สอดคล้องกัน</strong> (บางส่วนก่อนแก้ บางส่วนหลังแก้) เหมือนนับเงินในลิ้นชักไปครึ่งหนึ่ง
+      แล้วมีคนมาหยิบธนบัตรออกไป 1 ใบ แล้วค่อยนับต่อ</p>
+
+      <hr class="sep">
+
+      <h2>3. เทคนิคแก้ปัญหา</h2>
+      <h3>3.1 Locking — ล็อกข้อมูลก่อนใช้</h3>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>📖 Shared Lock (S-Lock)</h4>
+          <p>ล็อกเพื่อ<strong>อ่าน</strong> (READ) — ให้หลาย Transaction ถือพร้อมกันได้ (อ่านพร้อมกันไม่มีปัญหา)
+          แต่ใครก็ตามที่ถืออยู่ <strong>ห้ามใครเขียนทับ</strong>จนกว่าจะปลดล็อก</p>
+        </div>
+        <div class="card">
+          <h4>✍️ Exclusive Lock (X-Lock)</h4>
+          <p>ล็อกเพื่อ<strong>เขียน/แก้ไข</strong> (WRITE, UPDATE, DELETE) — ครองสิทธิ์<strong>ผู้เดียว</strong>
+          ใครก็ตามที่ถืออยู่ คนอื่นขอ S หรือ X เพิ่มไม่ได้เลย ต้องรอจนปลดล็อก</p>
+        </div>
+      </div>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p><strong>S-Lock = ห้องสมุด</strong>: ทุกคนเข้าไปอ่านหนังสือเล่มเดียวกันพร้อมกันได้ (อ่านไม่ทำให้เนื้อหาเปลี่ยน)
+        แต่ห้ามใครเอาปากกาไปขีดเขียนแก้<br>
+        <strong>X-Lock = ห้องน้ำสาธารณะ</strong>: เข้าคนเดียวแล้วล็อกประตู ใครมาทีหลังต้องรอจนกว่าจะเปิด</p>
+      </div>
+
+      <div class="tbl-wrap"><table class="tbl compact">
+        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">ตารางความเข้ากันได้ของ Lock (Lock Compatibility Matrix)</caption>
+        <tr><th>มีอยู่ ↓ / ขอเพิ่ม →</th><th>Shared Lock (S)</th><th>Exclusive Lock (X)</th></tr>
+        <tr><td><strong>Shared Lock (S)</strong></td><td style="background:#effaf3;color:#157a42;font-weight:700">อนุมัติ ✅</td><td style="background:#fff1f0;color:#c62a30;font-weight:700">ปฏิเสธ (Wait) ✗</td></tr>
+        <tr><td><strong>Exclusive Lock (X)</strong></td><td style="background:#fff1f0;color:#c62a30;font-weight:700">ปฏิเสธ (Wait) ✗</td><td style="background:#fff1f0;color:#c62a30;font-weight:700">ปฏิเสธ (Wait) ✗</td></tr>
+      </table></div>
+      <div class="box box-mem"><p class="box-title">🧠 วิธีจำ</p><p>ยอมเฉพาะ <strong>S+S</strong> (อ่านพร้อมกันได้) ที่เหลือล็อกกันหมด — เพราะ "อ่านพร้อมกันได้ แต่แก้ต้องคนเดียว"</p></div>
+
+      <h3>3.2 Two-Phase Locking (2PL) — กฎล็อก 2 ระยะ</h3>
+      <p>กฎข้อบังคับการขอ/คืน Lock เพื่อ<strong>การันตีว่า Schedule เป็น Serializable 100%</strong></p>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 230" width="760" role="img" aria-label="Two-Phase Locking" class="svg-text">
+          <rect x="40" y="40" width="310" height="130" rx="14" fill="#effaf3" stroke="#b7e6c8" stroke-width="2"/>
+          <text x="195" y="72" text-anchor="middle" style="font-size:15px;font-weight:800;fill:#157a42">Phase 1: Growing (ระยะขยาย)</text>
+          <text x="195" y="98" text-anchor="middle" class="ts">ขอ Lock เพิ่มได้เรื่อย ๆ 📈</text>
+          <text x="195" y="120" text-anchor="middle" class="ts" style="font-weight:700;fill:#c62a30">แต่ห้ามคืน (Unlock) แม้แต่ตัวเดียว</text>
+          <text x="195" y="150" text-anchor="middle" class="ts">เหมือนระยะ "เก็บของใส่กระเป๋า" — เก็บได้เพิ่ม ห้ามหยิบออก</text>
+
+          <rect x="410" y="40" width="310" height="130" rx="14" fill="#eef6ff" stroke="#b9dcff" stroke-width="2"/>
+          <text x="565" y="72" text-anchor="middle" style="font-size:15px;font-weight:800;fill:#0b6bcb">Phase 2: Shrinking (ระยะหด)</text>
+          <text x="565" y="98" text-anchor="middle" class="ts">คืน Lock ได้เรื่อย ๆ 📉</text>
+          <text x="565" y="120" text-anchor="middle" class="ts" style="font-weight:700;fill:#c62a30">แต่ห้ามขอเพิ่มอีกเด็ดขาด</text>
+          <text x="565" y="150" text-anchor="middle" class="ts">เหมือนระยะ "ปิดกระเป๋าแจกของ" — แจกได้ ห้ามเก็บเพิ่ม</text>
+
+          <line x1="352" y1="105" x2="404" y2="105" stroke="#e11d48" stroke-width="3"/>
+          <text x="380" y="88" text-anchor="middle" style="font-size:12px;font-weight:800;fill:#c62a30">คืน Lock ตัวแรก</text>
+          <text x="380" y="128" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">(จุดเปลี่ยนเฟส)</text>
+          <text x="380" y="205" text-anchor="middle" class="ts" style="font-size:13.5px">เปลี่ยนเฟสได้ครั้งเดียว: พอคืน Lock ตัวแรก = เข้าโหมดคืนตลอด ห้ามขอ Lock เพิ่มอีกเด็ดขาด</text>
+        </svg>
+        <figcaption>ภาพที่ 4: 2PL — ขอได้อย่างเดียว → คืนได้อย่างเดียว เปลี่ยนเฟสครั้งเดียวไม่มีย้อนกลับ</figcaption>
+      </figure>
+
+      <h3>3.3 Timestamp Ordering — ตัดสินด้วยตราเวลา</h3>
+      <ul>
+        <li>ทุก Transaction ได้รับ <strong>Timestamp (TS)</strong> ตอนเริ่มงาน — มาก่อนได้ TS น้อยกว่า (แก่กว่า)</li>
+        <li>เมื่อเกิดขัดแย้ง: ตัว<strong>เก่ากว่า</strong> (TS น้อย) ขอก่อน → ได้สิทธิ์</li>
+        <li>ตัว<strong>ใหม่กว่า</strong> (TS มาก) ทำรายการขัดแย้งกับตัวเก่า → ถูก <strong>Abort แล้ว Restart ใหม่</strong>พร้อม TS ใหม่</li>
+      </ul>
+
+      <h3>3.4 Deadlock — สภาวะติดหล่ม</h3>
+      <p>เกิดเมื่อ Transaction 2 ตัวขึ้นไป <strong>ต่างถือ Lock และต่างรอ Lock ของกันและกันเป็นวงวน</strong> (Circular Wait) จนระบบค้าง</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 720 250" width="720" role="img" aria-label="Deadlock circular wait" class="svg-text">
+          <defs>
+            <marker id="dla" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/>
+            </marker>
+          </defs>
+          <rect x="40" y="60" width="180" height="70" rx="14" fill="#fff8e8" stroke="#ffe2a3"/>
+          <text x="130" y="90" text-anchor="middle" style="font-size:14.5px;font-weight:800;fill:#a36b00">T1</text>
+          <text x="130" y="112" text-anchor="middle" class="ts">ถือ Lock A ✋ รอ Lock B ⏳</text>
+          <rect x="500" y="60" width="180" height="70" rx="14" fill="#eef6ff" stroke="#b9dcff"/>
+          <text x="590" y="90" text-anchor="middle" style="font-size:14.5px;font-weight:800;fill:#0b6bcb">T2</text>
+          <text x="590" y="112" text-anchor="middle" class="ts">ถือ Lock B ✋ รอ Lock A ⏳</text>
+          <rect x="280" y="50" width="160" height="44" rx="10" fill="#f6f0ff" stroke="#ddc9ff"/>
+          <text x="360" y="78" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#6a1fd0">🗄️ ข้อมูล A</text>
+          <rect x="280" y="140" width="160" height="44" rx="10" fill="#f6f0ff" stroke="#ddc9ff"/>
+          <text x="360" y="168" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#6a1fd0">🗄️ ข้อมูล B</text>
+          <path d="M224 95 C 250 80, 255 72, 276 72" fill="none" stroke="#22a05a" stroke-width="2.5" marker-end="url(#dla)"/>
+          <path d="M500 72 C 470 80, 462 80, 444 80" fill="none" stroke="#22a05a" stroke-width="2.5" marker-end="url(#dla)"/>
+          <path d="M285 172 C 250 150, 240 130, 222 122" fill="none" stroke="#e5484d" stroke-width="2.5" marker-end="url(#dla)"/>
+          <path d="M435 172 C 470 150, 480 130, 498 122" fill="none" stroke="#e5484d" stroke-width="2.5" marker-end="url(#dla)"/>
+          <text x="360" y="215" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#c62a30">เขียว = ถืออยู่ • แดง = รออยู่ → รอกันเป็นวงวน ไม่มีใครขยับ!</text>
+        </svg>
+        <figcaption>ภาพที่ 5: Deadlock — T1 ถือ A รอ B / T2 ถือ B รอ A เกิด Circular Wait</figcaption>
+      </figure>
+
+      <div class="box box-analogy">
+        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
+        <p>เหมือน<strong>สองคนเจอกันกลางสะพานแคบ</strong> — คน A ถือของใหญ่ไม่ยอมถอย คน B ก็ถือของใหญ่ไม่ยอมถอย
+        ต่างคนต่างรอให้อีกฝ่ายถอยก่อน สุดท้ายตันกันทั้งสะพาน วิธีแก้คือต้องมี "ผู้ตัดสิน" สั่งให้ใครคนหนึ่งยอมถอย (Abort)</p>
+      </div>
+
+      <h3>วิธีแก้ Deadlock</h3>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>🛡️ Deadlock Prevention (ป้องกันล่วงหน้า — ใช้ Timestamp)</h4>
+          <p><strong>Wait-Die:</strong> ตัวเก่า (TS น้อย) ขอข้อมูลที่ตัวใหม่ถือ → ตัวเก่า<strong>รอ</strong> (Wait);
+          ตัวใหม่ขอที่ตัวเก่าถือ → ตัวใหม่ตายทันที (Die/Abort)<br>
+          <strong>Wound-Wait:</strong> ตัวเก่าขอที่ตัวใหม่ถือ → ตัวเก่า<strong>แย่ง</strong> (Wound — สั่ง Abort ตัวใหม่);
+          ตัวใหม่ขอที่ตัวเก่าถือ → ตัวใหม่<strong>รอ</strong> (Wait)</p>
+        </div>
+        <div class="card">
+          <h4>🔍 Deadlock Detection &amp; Recovery (ตรวจจับแล้วแก้)</h4>
+          <p>DBMS วาด <strong>Wait-For Graph (WFG)</strong> — จุด = Transaction, ลูกศร = รอ —
+          ถ้าเจอ <strong>วงวน (Cycle)</strong> = เจอ Deadlock → เลือก <strong>Victim</strong> (เหยื่อ) 1 ตัว
+          เพื่อ Abort/Rollback ปลด Lock ทั้งหมด ให้อีกตัวทำงานต่อจนจบ</p>
+        </div>
+      </div>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 วิธีจำ Wait-Die vs Wound-Wait</p>
+        <p>จำจากตัว<strong>เก่าเป็นศูนย์กลาง</strong>: เก่าขอใหม่ → <strong>Wait-Die: เก่ารอ / Wound-Wait: เก่าแย่ง</strong><br>
+        (เก่า = ผู้ใหญ่: สโลแกน "ผู้ใหญ่หลังยืดหยุ่นกว่า" — อย่าสลับ)</p>
+      </div>
+
+      <hr class="sep">
+
+      <h2>📌 โจทย์เดินเต็มสเต็ป: T1+T2 ทำงานพร้อมกัน แบบมี Lock (2PL)</h2>
+      <p>สถานการณ์เดียวกับ Lost Update ข้างบน (A = 100, T1 ฝาก +50, T2 ถอน −20) แต่คราวนี้เปิดระบบ Lock</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>t</th><th>T1</th><th>T2</th><th>สถานะ Lock บน A</th><th>ผลลัพธ์ / การประมวลผล</th></tr>
+        <tr><td>t1</td><td><strong>LOCK-X(A)</strong></td><td>—</td><td>Locked by T1</td><td>T1 ขอ X-Lock สำเร็จ</td></tr>
+        <tr><td>t2</td><td><strong>READ(A)</strong></td><td>—</td><td>Locked by T1</td><td>T1 อ่านได้ A = 100</td></tr>
+        <tr><td>t3</td><td>A = A+50</td><td><strong>LOCK-X(A)</strong></td><td>Locked by T1</td><td>T2 ขอ X-Lock <strong>ไม่สำเร็จ → ต้อง Wait</strong> ⏳</td></tr>
+        <tr><td>t4</td><td><strong>WRITE(A)</strong></td><td>(รออยู่)</td><td>Locked by T1</td><td>T1 เขียน A = 150 ลง DB</td></tr>
+        <tr><td>t5</td><td><strong>UNLOCK(A)</strong></td><td>(รออยู่)</td><td>Free</td><td>T1 คืน Lock → T2 ได้ X-Lock ทันที</td></tr>
+        <tr><td>t6</td><td>—</td><td><strong>READ(A)</strong></td><td>Locked by T2</td><td>T2 อ่านค่า<strong>ล่าสุด</strong> A = 150</td></tr>
+        <tr><td>t7</td><td>—</td><td>A = A−20</td><td>Locked by T2</td><td>T2 คำนวณ 150 − 20 = 130</td></tr>
+        <tr><td>t8</td><td>—</td><td><strong>WRITE(A)</strong></td><td>Locked by T2</td><td>T2 เขียน A = 130 ลง DB</td></tr>
+        <tr><td>t9</td><td>—</td><td><strong>UNLOCK(A)</strong></td><td>Free</td><td>T2 ปลดล็อก เสร็จสิ้นถูกต้อง ✅</td></tr>
+      </table></div>
+      <div class="box box-tip"><p class="box-title">✅ สรุปผล</p><p>เมื่อใช้ Locking (2PL) ปัญหา Lost Update ถูกกำจัด — ฐานข้อมูลจบที่ค่าถูกต้อง <strong>130 บาท</strong> เพราะ T2 ต้องรอจน T1 จบแล้วจึงอ่านค่าล่าสุดเสมอ</p></div>
+
+      <div class="box box-exam">
+        <p class="box-title">📝 สูตรเดินตาราง schedule ในข้อสอบ</p>
+        <ol>
+          <li>วาดคอลัมน์: เวลา t / T1 / T2 / สถานะ Lock / ค่าใน DB</li>
+          <li>ไล่ตามลำดับที่โจทย์ให้ ทีละแถว: ใครขอ Lock ก่อนได้ก่อน (First-Come-First-Served)</li>
+          <li>ถ้าใครขอ Lock ที่ขัดกัน → เขียนว่า WAIT แล้วค้างไว้ จนกว่าเจ้าของเดิม UNLOCK</li>
+          <li>ทุกครั้งที่ READ ให้เขียนค่าล่าสุดใน DB ลงหน่วยความจำของตัวนั้น</li>
+          <li>ตอบท้ายด้วย: ค่าสุดท้ายใน DB = ? และเกิดปัญหาอะไร (หรือแก้ปัญหาอะไรได้)</li>
+        </ol>
+      </div>
+
+      <hr class="sep">
+
+      <h2>📝 แนวข้อสอบ Concurrency + ตัวอย่างคำตอบ</h2>
+      <details class="sol"><summary>ข้อ 1: Concurrency Control คืออะไร พร้อมตัวอย่าง</summary>
+        <div class="sol-body"><p>Concurrency Control คือ กลไกของ DBMS ที่ควบคุมการประมวลผลของหลาย Transaction ที่ทำงานพร้อมกัน
+        ให้ได้ผลลัพธ์ถูกต้องเสมือนทำงานทีละตัวตามลำดับ (Serializable) เพื่อรักษาคุณสมบัติ Isolation และ Consistency —
+        <strong>ตัวอย่าง:</strong> ระบบจองตั๋วหนังที่มีผู้ใช้จองที่นั่งเดียวกันพร้อมกัน ระบบต้องใช้ Lock กันไม่ให้ขายที่นั่งเดิมให้สองคน</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 2: Lost Update คืออะไร ยกตัวอย่างพร้อมวิธีแก้</summary>
+        <div class="sol-body"><p>Lost Update คือ ปัญหาที่ Transaction 2 ตัวอ่านค่าเดิมพร้อมกัน แล้วเขียนทับกัน ทำให้การอัปเดตของตัวแรกสูญหาย —
+        <strong>ตัวอย่าง:</strong> A = 100, T1 ฝาก 50, T2 ถอน 20 อ่านพร้อมกันแล้วเขียนทับ ผลจบที่ 80 แทนที่ควรเป็น 130<br>
+        <strong>วิธีแก้:</strong> ใช้ Exclusive Lock ตามกฎ Two-Phase Locking — ใครล็อกข้อมูลก่อน อีกตัวต้องรอจนปลดล็อก
+        ทำให้ตัวหลังอ่านค่าล่าสุดเสมอ</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 3: อธิบาย Two-Phase Locking (2PL)</summary>
+        <div class="sol-body"><p>2PL คือ กฎการขอ/คืน Lock 2 ระยะเพื่อการันตี Serializability:<br>
+        <strong>Growing Phase</strong> — ขอ Lock เพิ่มได้เรื่อย ๆ แต่ห้ามคืนแม้แต่ตัวเดียว<br>
+        <strong>Shrinking Phase</strong> — พอคืน Lock ตัวแรกแล้ว คืนได้เรื่อย ๆ แต่ห้ามขอเพิ่มอีกเด็ดขาด<br>
+        เปลี่ยนเฟสได้ครั้งเดียว ไม่มีย้อนกลับ — ทำให้ผลลัพธ์ของ Schedule เทียบเท่าการทำงานทีละตัว</p></div>
+      </details>
+      <details class="sol"><summary>ข้อ 4: Deadlock เกิดได้อย่างไร และแก้อย่างไร</summary>
+        <div class="sol-body"><p><strong>การเกิด:</strong> T1 ถือ Lock ข้อมูล A แล้วรอ Lock ข้อมูล B / T2 ถือ Lock ข้อมูล B แล้วรอ Lock ข้อมูล A
+        → เกิดการรอซึ่งกันและกันเป็นวงวน (Circular Wait) ระบบค้างชะงัก<br>
+        <strong>วิธีแก้:</strong> (1) Prevention ด้วย Timestamp เช่น Wait-Die / Wound-Wait
+        (2) Detection &amp; Recovery ด้วย Wait-For Graph หา Cycle แล้วเลือก Victim 1 ตัว Abort เพื่อปลด Lock ให้อีกตัวทำงานต่อ</p></div>
+      </details>
+
+      <h3>🎬 ลองทำแบบทดสอบด่วน</h3>
+      <div class="quiz" data-answer="1">
+        <p class="quiz-q"><span class="qno">Q1</span>Transaction ที่ต้องการแก้ไขข้อมูล (WRITE) ควรขอ Lock แบบใด?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Shared Lock (S-Lock)</button>
+          <button class="quiz-opt">Exclusive Lock (X-Lock)</button>
+          <button class="quiz-opt">ไม่ต้องขอ Lock</button>
+          <button class="quiz-opt">Commit Lock</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 2 — เขียน/แก้ไขต้องใช้ X-Lock เพื่อครองสิทธิ์ผู้เดียว กันคนอื่นอ่าน/เขียนพร้อมกัน ส่วน S-Lock ใช้ตอนอ่าน</p>
+      </div>
+      <div class="quiz" data-answer="3">
+        <p class="quiz-q"><span class="qno">Q2</span>ข้อใดเป็นข้อห้ามของ Two-Phase Locking?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">ห้ามขอ Lock มากกว่า 2 ตัว</button>
+          <button class="quiz-opt">ต้องคืน Lock ทุกตัวพร้อมกัน</button>
+          <button class="quiz-opt">ห้ามใช้ S-Lock กับ X-Lock ผสมกัน</button>
+          <button class="quiz-opt">พอเริ่มคืน Lock (Unlock) ตัวแรกแล้ว ห้ามขอ Lock เพิ่มอีก</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 4 — 2PL แบ่งเป็น Growing (ขอได้อย่างเดียว) และ Shrinking (คืนได้อย่างเดียว) เปลี่ยนเฟสได้ครั้งเดียวเมื่อคืน Lock ตัวแรก</p>
+      </div>
+      <div class="quiz" data-answer="0">
+        <p class="quiz-q"><span class="qno">Q3</span>T2 อ่านค่าที่ T1 เขียนไว้แต่ยังไม่ Commit แล้ว T1 Rollback — T2 เจอปัญหาอะไร?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt">Dirty Read (อ่านข้อมูลสกปรก)</button>
+          <button class="quiz-opt">Lost Update</button>
+          <button class="quiz-opt">Deadlock</button>
+          <button class="quiz-opt">Phantom Read</button>
+        </div>
+        <p class="quiz-explain">เฉลย ข้อ 1 — การอ่านข้อมูลที่ยังไม่ Commit (แล้วถูกยกเลิกทิ้ง) คือ Dirty Read ทำให้ตัดสินใจบนข้อมูลที่ไม่เคยมีอยู่จริง</p>
+      </div>
+
+      <div class="prevnext">
+        <a href="recovery.html">← ก่อนหน้า: Recovery Control<small>🔄 Transaction ครึ่งแรก</small></a>
+        <a class="next" href="data-warehouse.html">บทต่อไป: Data Warehouse →<small>🏢 15 คะแนน — ไม่ออกออกแบบ</small></a>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
