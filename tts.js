@@ -257,12 +257,12 @@
       <div class="tts-bar-body">
         <div class="tts-status" role="status">พร้อม — กดปุ่ม 🔊 อ่าน ที่หัวข้อหรือกล่องความรู้ที่ต้องการฟัง</div>
         <div class="tts-row">
-          <label>เสียงไทย <select class="tts-vth"></select></label>
-          <label>เสียงอังกฤษ <select class="tts-ven"></select></label>
+          <label>เสียงไทย <select id="ttsVoiceTh" name="ttsVoiceTh" class="tts-vth"></select></label>
+          <label>เสียงอังกฤษ <select id="ttsVoiceEn" name="ttsVoiceEn" class="tts-ven"></select></label>
         </div>
         <div class="tts-row">
           <label>ความเร็ว
-            <select class="tts-rate">
+            <select id="ttsRate" name="ttsRate" class="tts-rate">
               <option value="0.75">ช้า 0.75×</option>
               <option value="0.9">ช้านิด 0.9×</option>
               <option value="1" selected>ปกติ 1×</option>
