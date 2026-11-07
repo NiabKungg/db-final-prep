@@ -127,27 +127,13 @@
 
       <h3>3.2 Two-Phase Locking (2PL) — กฎล็อก 2 ระยะ</h3>
       <p>กฎข้อบังคับการขอ/คืน Lock เพื่อ<strong>การันตีว่า Schedule เป็น Serializable 100%</strong></p>
-      <figure class="diagram">
-        <svg viewBox="0 0 760 230" width="760" role="img" aria-label="Two-Phase Locking" class="svg-text">
-          <rect x="40" y="40" width="310" height="130" rx="14" fill="#effaf3" stroke="#b7e6c8" stroke-width="2"/>
-          <text x="195" y="72" text-anchor="middle" style="font-size:15px;font-weight:800;fill:#157a42">Phase 1: Growing (ระยะขยาย)</text>
-          <text x="195" y="98" text-anchor="middle" class="ts">ขอ Lock เพิ่มได้เรื่อย ๆ 📈</text>
-          <text x="195" y="120" text-anchor="middle" class="ts" style="font-weight:700;fill:#c62a30">แต่ห้ามคืน (Unlock) แม้แต่ตัวเดียว</text>
-          <text x="195" y="150" text-anchor="middle" class="ts">เหมือนระยะ "เก็บของใส่กระเป๋า" — เก็บได้เพิ่ม ห้ามหยิบออก</text>
-
-          <rect x="410" y="40" width="310" height="130" rx="14" fill="#eef6ff" stroke="#b9dcff" stroke-width="2"/>
-          <text x="565" y="72" text-anchor="middle" style="font-size:15px;font-weight:800;fill:#0b6bcb">Phase 2: Shrinking (ระยะหด)</text>
-          <text x="565" y="98" text-anchor="middle" class="ts">คืน Lock ได้เรื่อย ๆ 📉</text>
-          <text x="565" y="120" text-anchor="middle" class="ts" style="font-weight:700;fill:#c62a30">แต่ห้ามขอเพิ่มอีกเด็ดขาด</text>
-          <text x="565" y="150" text-anchor="middle" class="ts">เหมือนระยะ "ปิดกระเป๋าแจกของ" — แจกได้ ห้ามเก็บเพิ่ม</text>
-
-          <line x1="352" y1="105" x2="404" y2="105" stroke="#e11d48" stroke-width="3"/>
-          <text x="380" y="88" text-anchor="middle" style="font-size:12px;font-weight:800;fill:#c62a30">คืน Lock ตัวแรก</text>
-          <text x="380" y="128" text-anchor="middle" style="font-size:11.5px;fill:#5b6474">(จุดเปลี่ยนเฟส)</text>
-          <text x="380" y="205" text-anchor="middle" class="ts" style="font-size:13.5px">เปลี่ยนเฟสได้ครั้งเดียว: พอคืน Lock ตัวแรก = เข้าโหมดคืนตลอด ห้ามขอ Lock เพิ่มอีกเด็ดขาด</text>
-        </svg>
-        <figcaption>ภาพที่ 4: 2PL — ขอได้อย่างเดียว → คืนได้อย่างเดียว เปลี่ยนเฟสครั้งเดียวไม่มีย้อนกลับ</figcaption>
-      </figure>
+      <pre class="mermaid">
+flowchart LR
+  G1["Phase 1: Growing (ระยะขยาย)<br>ขอ Lock เพิ่มได้เรื่อย ๆ 📈<br>แต่ห้ามคืน Unlock แม้แต่ตัวเดียว"]
+  G2["Phase 2: Shrinking (ระยะหด)<br>คืน Lock ได้เรื่อย ๆ 📉<br>แต่ห้ามขอเพิ่มอีกเด็ดขาด"]
+  G1 -->|"คืน Lock ตัวแรก = เปลี่ยนเฟส<br>เกิดได้ครั้งเดียว ไม่มีย้อนกลับ"| G2
+      </pre>
+      <p class="mermaid-caption">ภาพที่ 4: 2PL — ขอได้อย่างเดียว → คืนได้อย่างเดียว เปลี่ยนเฟสครั้งเดียวไม่มีย้อนกลับ</p>
 
       <h3>3.3 Timestamp Ordering — ตัดสินด้วยตราเวลา</h3>
       <ul>
@@ -159,31 +145,18 @@
       <h3>3.4 Deadlock — สภาวะติดหล่ม</h3>
       <p>เกิดเมื่อ Transaction 2 ตัวขึ้นไป <strong>ต่างถือ Lock และต่างรอ Lock ของกันและกันเป็นวงวน</strong> (Circular Wait) จนระบบค้าง</p>
 
-      <figure class="diagram">
-        <svg viewBox="0 0 720 250" width="720" role="img" aria-label="Deadlock circular wait" class="svg-text">
-          <defs>
-            <marker id="dla" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/>
-            </marker>
-          </defs>
-          <rect x="40" y="60" width="180" height="70" rx="14" fill="#fff8e8" stroke="#ffe2a3"/>
-          <text x="130" y="90" text-anchor="middle" style="font-size:14.5px;font-weight:800;fill:#a36b00">T1</text>
-          <text x="130" y="112" text-anchor="middle" class="ts">ถือ Lock A ✋ รอ Lock B ⏳</text>
-          <rect x="500" y="60" width="180" height="70" rx="14" fill="#eef6ff" stroke="#b9dcff"/>
-          <text x="590" y="90" text-anchor="middle" style="font-size:14.5px;font-weight:800;fill:#0b6bcb">T2</text>
-          <text x="590" y="112" text-anchor="middle" class="ts">ถือ Lock B ✋ รอ Lock A ⏳</text>
-          <rect x="280" y="50" width="160" height="44" rx="10" fill="#f6f0ff" stroke="#ddc9ff"/>
-          <text x="360" y="78" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#6a1fd0">🗄️ ข้อมูล A</text>
-          <rect x="280" y="140" width="160" height="44" rx="10" fill="#f6f0ff" stroke="#ddc9ff"/>
-          <text x="360" y="168" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#6a1fd0">🗄️ ข้อมูล B</text>
-          <path d="M224 95 C 250 80, 255 72, 276 72" fill="none" stroke="#22a05a" stroke-width="2.5" marker-end="url(#dla)"/>
-          <path d="M500 72 C 470 80, 462 80, 444 80" fill="none" stroke="#22a05a" stroke-width="2.5" marker-end="url(#dla)"/>
-          <path d="M285 172 C 250 150, 240 130, 222 122" fill="none" stroke="#e5484d" stroke-width="2.5" marker-end="url(#dla)"/>
-          <path d="M435 172 C 470 150, 480 130, 498 122" fill="none" stroke="#e5484d" stroke-width="2.5" marker-end="url(#dla)"/>
-          <text x="360" y="215" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#c62a30">เขียว = ถืออยู่ • แดง = รออยู่ → รอกันเป็นวงวน ไม่มีใครขยับ!</text>
-        </svg>
-        <figcaption>ภาพที่ 5: Deadlock — T1 ถือ A รอ B / T2 ถือ B รอ A เกิด Circular Wait</figcaption>
-      </figure>
+      <pre class="mermaid">
+flowchart LR
+  T1["T1<br>ถือ Lock A ✋ รอ Lock B ⏳"]
+  T2["T2<br>ถือ Lock B ✋ รอ Lock A ⏳"]
+  A["🗄️ ข้อมูล A"]
+  B["🗄️ ข้อมูล B"]
+  T1 -->|"ถือ"| A
+  T2 -->|"ถือ"| B
+  T1 -.->|"รอ"| B
+  T2 -.->|"รอ"| A
+      </pre>
+      <p class="mermaid-caption">ภาพที่ 5: Deadlock — T1 ถือ A รอ B / T2 ถือ B รอ A เกิด Circular Wait รอกันเป็นวงวน ไม่มีใครขยับ!</p>
 
       <div class="box box-analogy">
         <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
@@ -312,5 +285,24 @@
 </div>
 <script src="script.js"></script>
 <script src="tts.js"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    securityLevel: 'loose',
+    theme: 'base',
+    themeVariables: {
+      fontFamily: "'Noto Sans Thai', 'Leelawadee UI', Tahoma, sans-serif",
+      fontSize: '14px',
+      primaryColor: '#ffeef0',
+      primaryBorderColor: '#ffeef0',
+      primaryTextColor: '#1d2333',
+      lineColor: '#64748b',
+      secondaryColor: '#e11d48',
+      tertiaryColor: '#fafbfe'
+    },
+    flowchart: { curve: 'basis', htmlLabels: true, nodeSpacing: 36, rankSpacing: 44 }
+  });
+</script>
 </body>
 </html>

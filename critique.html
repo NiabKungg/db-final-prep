@@ -69,45 +69,14 @@
       </div>
 
       <h2>โมเดลที่ 1: Bill-Centric (ร้านอาหารหน้าร้าน / POS คิดเงินทันที)</h2>
-      <figure class="diagram">
-        <svg viewBox="0 0 780 240" width="780" role="img" aria-label="Bill-Centric Model" class="svg-text">
-          <defs>
-            <marker id="cm1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 z" fill="#ea580c"/>
-            </marker>
-          </defs>
-          <g transform="translate(30,30)">
-            <rect x="0" y="0" width="130" height="48" rx="10" fill="#ffedd5" stroke="#ea580c"/>
-            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#9a3412">CUSTOMERS</text>
-          </g>
-          <g transform="translate(220,30)">
-            <rect x="0" y="0" width="120" height="48" rx="10" fill="#ea580c"/>
-            <text x="60" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff">BILLS ⭐</text>
-          </g>
-          <g transform="translate(410,30)">
-            <rect x="0" y="0" width="130" height="48" rx="10" fill="#ffedd5" stroke="#ea580c"/>
-            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#9a3412">BILL_ITEMS</text>
-          </g>
-          <g transform="translate(610,30)">
-            <rect x="0" y="0" width="130" height="48" rx="10" fill="#ffedd5" stroke="#ea580c"/>
-            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#9a3412">MENU_ITEMS</text>
-          </g>
-          <g transform="translate(220,150)">
-            <rect x="0" y="0" width="120" height="48" rx="10" fill="#ffedd5" stroke="#ea580c"/>
-            <text x="60" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#9a3412">PAYMENTS</text>
-          </g>
-          <line x1="162" y1="54" x2="216" y2="54" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="190" y="44" text-anchor="middle" class="ts" style="font-size:11px">1..N</text>
-          <line x1="342" y1="54" x2="406" y2="54" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="375" y="44" text-anchor="middle" class="ts" style="font-size:11px">1..N</text>
-          <line x1="542" y1="54" x2="606" y2="54" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="575" y="44" text-anchor="middle" class="ts" style="font-size:11px">N..1</text>
-          <line x1="280" y1="80" x2="280" y2="146" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="296" y="118" class="ts" style="font-size:11px">1..N</text>
-          <text x="390" y="130" class="ts" style="font-size:12px">⭐ เอนทิตีแกนกลาง = BILLS (ใบเสร็จ/บิล)</text>
-        </svg>
-        <figcaption>ภาพที่ 1: Bill-Centric — ทุกอย่างหมุนรอบ "บิล" สั่งและจ่ายพร้อมกัน</figcaption>
-      </figure>
+      <pre class="mermaid">
+erDiagram
+  CUSTOMERS ||--o{ BILLS : "มีบิล (1:N)"
+  BILLS ||--|{ BILL_ITEMS : "รายการในบิล (1:N)"
+  BILL_ITEMS }o--|| MENU_ITEMS : "อ้างสินค้า (N:1)"
+  BILLS ||--o{ PAYMENTS : "ชำระเงิน (1:N)"
+      </pre>
+      <p class="mermaid-caption">ภาพที่ 1: Bill-Centric — ทุกอย่างหมุนรอบ "บิล" สั่งและจ่ายพร้อมกัน</p>
 
       <div class="grid grid-2">
         <div class="card">
@@ -122,40 +91,14 @@
       </div>
 
       <h2>โมเดลที่ 2: Order-Centric (สั่งจองล่วงหน้า / สั่งผลิต)</h2>
-      <figure class="diagram">
-        <svg viewBox="0 0 780 240" width="780" role="img" aria-label="Order-Centric Model" class="svg-text">
-          <g transform="translate(30,30)">
-            <rect x="0" y="0" width="130" height="48" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
-            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#3730a3">CUSTOMERS</text>
-          </g>
-          <g transform="translate(220,30)">
-            <rect x="0" y="0" width="120" height="48" rx="10" fill="#4f46e5"/>
-            <text x="60" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff">ORDERS ⭐</text>
-          </g>
-          <g transform="translate(410,30)">
-            <rect x="0" y="0" width="130" height="48" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
-            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#3730a3">ORDER_ITEMS</text>
-          </g>
-          <g transform="translate(610,30)">
-            <rect x="0" y="0" width="130" height="48" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
-            <text x="65" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#3730a3">MENU_ITEMS</text>
-          </g>
-          <g transform="translate(220,150)">
-            <rect x="0" y="0" width="120" height="48" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
-            <text x="60" y="29" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#3730a3">PAYMENTS</text>
-          </g>
-          <line x1="162" y1="54" x2="216" y2="54" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="190" y="44" text-anchor="middle" class="ts" style="font-size:11px">1..N</text>
-          <line x1="342" y1="54" x2="406" y2="54" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="375" y="44" text-anchor="middle" class="ts" style="font-size:11px">1..N</text>
-          <line x1="542" y1="54" x2="606" y2="54" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="575" y="44" text-anchor="middle" class="ts" style="font-size:11px">N..1</text>
-          <line x1="280" y1="80" x2="280" y2="146" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="296" y="118" class="ts" style="font-size:11px">1..N</text>
-          <text x="390" y="130" class="ts" style="font-size:12px">⭐ เอนทิตีแกนกลาง = ORDERS — บันทึก "เจตนาซื้อ" ก่อน จ่ายเข้าออเดอร์ตรง ๆ</text>
-        </svg>
-        <figcaption>ภาพที่ 2: Order-Centric — เน้นบันทึกออเดอร์ที่ยังไม่เสร็จ (รอปรุง/รอรับของ) ได้</figcaption>
-      </figure>
+      <pre class="mermaid">
+erDiagram
+  CUSTOMERS ||--o{ ORDERS : "สั่งซื้อ (1:N)"
+  ORDERS ||--|{ ORDER_ITEMS : "รายการ (1:N)"
+  ORDER_ITEMS }o--|| MENU_ITEMS : "อ้างสินค้า (N:1)"
+  ORDERS ||--o{ PAYMENTS : "จ่ายเข้าออเดอร์ (1:N)"
+      </pre>
+      <p class="mermaid-caption">ภาพที่ 2: Order-Centric — เน้นบันทึก "เจตนาซื้อ" ก่อน จ่ายเข้าออเดอร์ตรง ๆ รองรับสถานะรอดำเนินการ</p>
 
       <div class="grid grid-2">
         <div class="card">
@@ -169,68 +112,16 @@
       </div>
 
       <h2>โมเดลที่ 3: Enterprise Commerce (อีคอมเมิร์ซเต็มรูปแบบ)</h2>
-      <figure class="diagram">
-        <svg viewBox="0 0 800 384" width="800" role="img" aria-label="Enterprise Commerce Model" class="svg-text">
-          <g transform="translate(20,60)">
-            <rect x="0" y="0" width="110" height="46" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
-            <text x="55" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#3730a3">CUSTOMERS</text>
-          </g>
-          <g transform="translate(190,60)">
-            <rect x="0" y="0" width="110" height="46" rx="10" fill="#4f46e5"/>
-            <text x="55" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#fff">ORDERS ⭐</text>
-          </g>
-          <g transform="translate(190,190)">
-            <rect x="0" y="0" width="120" height="46" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
-            <text x="60" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#3730a3">ORDER_ITEMS</text>
-          </g>
-          <g transform="translate(20,190)">
-            <rect x="0" y="0" width="120" height="46" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
-            <text x="60" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#3730a3">MENU/PRODUCTS</text>
-          </g>
-
-          <g transform="translate(400,20)">
-            <rect x="0" y="0" width="100" height="46" rx="10" fill="#fff7ed" stroke="#ea580c"/>
-            <text x="50" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#9a3412">BILLS</text>
-          </g>
-          <g transform="translate(400,110)">
-            <rect x="0" y="0" width="100" height="46" rx="10" fill="#fff7ed" stroke="#ea580c"/>
-            <text x="50" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#9a3412">PAYMENTS</text>
-          </g>
-          <g transform="translate(610,20)">
-            <rect x="0" y="0" width="110" height="46" rx="10" fill="#ecfdf5" stroke="#059669"/>
-            <text x="55" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#065f46">SHIPMENTS</text>
-          </g>
-          <g transform="translate(610,110)">
-            <rect x="0" y="0" width="120" height="46" rx="10" fill="#ecfdf5" stroke="#059669"/>
-            <text x="60" y="28" text-anchor="middle" style="font-size:12.5px;font-weight:800;fill:#065f46">SHIPMENT_ITEMS</text>
-          </g>
-
-          <text x="400" y="288" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#9a3412">💰 Commercial Intent: ORDERS → ORDER_ITEMS</text>
-          <text x="400" y="312" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#ea580c">🧾 Financial Flow: ORDERS → BILLS → PAYMENTS</text>
-          <text x="400" y="336" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#065f46">🚚 Logistics Flow: ORDERS → SHIPMENTS → SHIPMENT_ITEMS</text>
-          <text x="400" y="368" text-anchor="middle" class="ts" style="font-size:11.5px;fill:#6a1fd0">ORDER_ITEMS (1) → SHIPMENT_ITEMS (N) = สายส่งที่ทำ Partial Shipment ได้</text>
-
-          <line x1="132" y1="83" x2="186" y2="83" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="159" y="73" text-anchor="middle" class="ts" style="font-size:10.5px">1..N</text>
-          <line x1="245" y1="108" x2="245" y2="186" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="261" y="150" class="ts" style="font-size:10.5px">1..N</text>
-          <line x1="142" y1="213" x2="186" y2="213" stroke="#4f46e5" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="163" y="203" text-anchor="middle" class="ts" style="font-size:10.5px">N..1</text>
-
-          <line x1="300" y1="70" x2="396" y2="45" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="345" y="42" text-anchor="middle" class="ts" style="font-size:10.5px">1..N</text>
-          <line x1="450" y1="68" x2="450" y2="106" stroke="#ea580c" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="466" y="92" class="ts" style="font-size:10.5px">1..N</text>
-
-          <line x1="302" y1="90" x2="606" y2="45" stroke="#059669" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="450" y="78" text-anchor="middle" class="ts" style="font-size:10.5px">1..N</text>
-          <line x1="665" y1="68" x2="665" y2="106" stroke="#059669" stroke-width="2" marker-start="url(#cm1)" marker-end="url(#cm1)"/>
-          <text x="681" y="92" class="ts" style="font-size:10.5px">1..N</text>
-          <path d="M312 205 L 390 205 L 390 156" fill="none" stroke="#6a1fd0" stroke-width="2" marker-end="url(#cm1)"/>
-          <path d="M390 205 L 560 205 L 560 158" fill="none" stroke="#6a1fd0" stroke-width="2" marker-end="url(#cm1)"/>
-        </svg>
-        <figcaption>ภาพที่ 3: Enterprise Commerce — แยก 3 แกน: Order / Bill / Shipment ออกจากกันชัดเจน</figcaption>
-      </figure>
+      <pre class="mermaid">
+erDiagram
+  CUSTOMERS ||--o{ ORDERS : "สั่งซื้อ (1:N)"
+  ORDERS ||--|{ ORDER_ITEMS : "รายการ (1:N)"
+  ORDER_ITEMS }o--o{ SHIPMENT_ITEMS : "ทยอยส่ง (1:N)"
+  SHIPMENT_ITEMS }o--|| SHIPMENTS : "อยู่ในรอบส่ง"
+  ORDERS ||--o{ BILLS : "เปิดบิล (1:N)"
+  BILLS ||--o{ PAYMENTS : "ชำระ (1:N)"
+      </pre>
+      <p class="mermaid-caption">ภาพที่ 3: Enterprise Commerce — แยก 3 แกน: Commercial Intent (Orders) / Financial Flow (Bills+Payments) / Logistics Flow (Shipments) • ORDER_ITEMS (1) → SHIPMENT_ITEMS (N) คือสายส่งที่ทำ Partial Shipment ได้</p>
 
       <p>แกนหลัก 3 เส้นของโมเดลนี้:</p>
       <ol>
@@ -356,5 +247,24 @@
 </div>
 <script src="script.js"></script>
 <script src="tts.js"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    securityLevel: 'loose',
+    theme: 'base',
+    themeVariables: {
+      fontFamily: "'Noto Sans Thai', 'Leelawadee UI', Tahoma, sans-serif",
+      fontSize: '14px',
+      primaryColor: '#fff3ea',
+      primaryBorderColor: '#fff3ea',
+      primaryTextColor: '#1d2333',
+      lineColor: '#64748b',
+      secondaryColor: '#ea580c',
+      tertiaryColor: '#fafbfe'
+    },
+    flowchart: { curve: 'basis', htmlLabels: true, nodeSpacing: 36, rankSpacing: 44 }
+  });
+</script>
 </body>
 </html>

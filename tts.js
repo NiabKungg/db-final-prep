@@ -130,7 +130,7 @@
   /* ---------- ดึงข้อความจาก DOM ---------- */
   function cleanText(root) {
     const clone = root.cloneNode(true);
-    clone.querySelectorAll('script, style, input, select, button, svg, .tts-btn, .quiz-opts, .quiz-explain, .prevnext').forEach((n) => n.remove());
+    clone.querySelectorAll('script, style, input, select, button, svg, pre.mermaid, .tts-btn, .quiz-opts, .quiz-explain, .prevnext, .video-wrap').forEach((n) => n.remove());
     /* details ที่ยังไม่เปิด → อ่านแค่หัวข้อคำถาม ไม่หลุดอ่านเฉลยที่ซ่อนอยู่ */
     clone.querySelectorAll('details:not([open])').forEach((d) => {
       const s = d.querySelector('summary');

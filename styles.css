@@ -501,6 +501,42 @@ details.sol .sol-body { padding: 0 18px 14px; border-top: 1px dashed var(--line)
   transition: width .1s;
 }
 
+/* ---------- Mermaid diagram ---------- */
+pre.mermaid {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  margin: 18px 0;
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+pre.mermaid svg { max-width: 100%; height: auto; }
+.mermaid-caption {
+  text-align: center;
+  font-size: .87rem;
+  color: var(--muted);
+  margin: -8px 0 18px;
+}
+
+/* ---------- Video embed (สไลด์/วิดีโออาจารย์) ---------- */
+.video-wrap {
+  position: relative;
+  padding-top: 56.25%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  margin: 16px 0;
+  background: #101736;
+}
+.video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-note {
+  font-size: .85rem; color: var(--muted); margin: -6px 0 18px;
+}
+.video-note a { color: var(--primary); font-weight: 700; }
+
 @media print {
   .sidebar, .topbar, .backdrop, #progressBar, .prevnext, .quiz-opts { display: none !important; }
   .content { max-width: 100%; padding: 0; }
