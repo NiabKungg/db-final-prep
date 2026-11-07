@@ -97,16 +97,25 @@ flowchart TD
 
       <h3>ข้อมูลตัวอย่าง (จากสไลด์อาจารย์)</h3>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <tr><th>S#</th><th>SNAME</th><th>STATUS</th><th>CITY</th><th>P#</th><th>PNAME</th><th>COLOR</th><th>WEIGHT</th><th>QTY</th></tr>
-        <tr><td>S1</td><td>Smith</td><td>20</td><td>London</td><td>P1</td><td>Nut</td><td>Red</td><td>12</td><td>300</td></tr>
-        <tr><td>S1</td><td>Smith</td><td>20</td><td>London</td><td>P2</td><td>Bolt</td><td>Green</td><td>17</td><td>200</td></tr>
-        <tr><td>S2</td><td>Jones</td><td>10</td><td>Paris</td><td>P1</td><td>Nut</td><td>Red</td><td>12</td><td>300</td></tr>
-        <tr><td>S3</td><td>Blake</td><td>10</td><td>Paris</td><td>P2</td><td>Bolt</td><td>Green</td><td>17</td><td>200</td></tr>
-        <tr><td>S4</td><td>Clark</td><td>20</td><td>London</td><td>P4</td><td>Screw</td><td>Red</td><td>14</td><td>200</td></tr>
-        <tr><td>S5</td><td>Adams</td><td>30</td><td>Athens</td><td>P5</td><td>Cam</td><td>Blue</td><td>12</td><td>100</td></tr>
+        <tr><th>S#</th><th>Sname</th><th>City</th><th>Status</th><th>P#</th><th>Pname</th><th>Color</th><th>Qty</th></tr>
+        <tr><td>S1</td><td>Smith</td><td>London</td><td>20</td><td>P1</td><td>Nut</td><td>Red</td><td>200</td></tr>
+        <tr><td>S2</td><td>Jones</td><td>Paris</td><td>10</td><td>P3</td><td>Screw</td><td>Blue</td><td>400</td></tr>
+        <tr><td>S2</td><td>Jones</td><td>Paris</td><td>10</td><td>P5</td><td>Cam</td><td>Blue</td><td>100</td></tr>
+        <tr><td>S3</td><td>Blake</td><td>Paris</td><td>10</td><td>P3</td><td>Screw</td><td>Blue</td><td>200</td></tr>
+        <tr><td>S3</td><td>Blake</td><td>Paris</td><td>10</td><td>P4</td><td>Screw</td><td>Red</td><td>500</td></tr>
+        <tr><td>S4</td><td>Clark</td><td>London</td><td>20</td><td>P6</td><td>Cog</td><td>Red</td><td>300</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P1</td><td>Nut</td><td>Red</td><td>100</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P2</td><td>Bolt</td><td>Green</td><td>200</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P3</td><td>Screw</td><td>Blue</td><td>200</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P4</td><td>Screw</td><td>Red</td><td>800</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P5</td><td>Cam</td><td>Blue</td><td>500</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P6</td><td>Cog</td><td>Red</td><td>200</td></tr>
       </table></div>
-      <p class="video-note">📌 สังเกตความซ้ำในตาราง: ข้อมูล Smith ซ้ำ 2 แถว, ข้อมูล P1 Nut ซ้ำ 2 แถว — นี่คือสัญญาณว่าต้อง Normalize
-      (ข้อมูลปรับให้สอดคล้องกฎธุรกิจ CITY → STATUS: เมืองหนึ่งมี STATUS เดียว)</p>
+      <p class="video-note">📌 นี่คือตาราง 1NF แล้ว (อาจารย์เริ่มจาก UNF ที่ S2/S3/S5 มีรายการสั่งซื้อหลายบรรทัดโดยช่องซัพพลายเออร์ว่าง แล้ว "เติมข้อมูลซ้ำลงในช่องว่างให้เต็ม" ตามที่ขีดเขียนสีเขียวในสไลด์) — สังเกตว่าข้อมูล Jones/Paris ซ้ำ และ P3 Screw ซ้ำถึง 3 แถว = ความซ้ำซ้อนที่ต้อง Normalize</p>
+      <figure class="diagram">
+        <img src="assets/slides/slide_0021_640.jpg" alt="สไลด์อาจารย์: ตาราง SupplyPart ตัวอย่างจริง พร้อมการเติมข้อมูลซ้ำแบบ 1NF" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 สไลด์จริงของอาจารย์ (Live 0021): ข้อมูล SupplyPart — เห็นการ "เติมข้อมูลซ้ำลงช่องว่าง" เพื่อทำ 1NF ด้วยปากกาเขียว</figcaption>
+      </figure>
 
       <h3>ขั้นที่ 1: ทำ 1NF — ทุกเซลล์ Atomic + กำหนด PK</h3>
       <p>ตารางนี้ทุกเซลล์เป็นค่าเดียวแล้ว (เติมข้อมูลซ้ำให้เต็มทุกแถวเรียบร้อย)
@@ -141,31 +150,39 @@ flowchart TD
 
       <p>ผลลัพธ์เป็นตารางจริง:</p>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">S_2NF — ข้อมูลซัพพลายเออร์ (ความซ้ำลดลง)</caption>
-        <tr><th>S#</th><th>SNAME</th><th>STATUS</th><th>CITY</th></tr>
-        <tr><td>S1</td><td>Smith</td><td>20</td><td>London</td></tr>
-        <tr><td>S2</td><td>Jones</td><td>10</td><td>Paris</td></tr>
-        <tr><td>S3</td><td>Blake</td><td>10</td><td>Paris</td></tr>
-        <tr><td>S4</td><td>Clark</td><td>20</td><td>London</td></tr>
-        <tr><td>S5</td><td>Adams</td><td>30</td><td>Athens</td></tr>
+        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">S_2NF — ข้อมูลซัพพลายเออร์ (จาก 12 แถว เหลือ 5 แถว)</caption>
+        <tr><th>S#</th><th>Sname</th><th>City</th><th>Status</th></tr>
+        <tr><td>S1</td><td>Smith</td><td>London</td><td>20</td></tr>
+        <tr><td>S2</td><td>Jones</td><td>Paris</td><td>10</td></tr>
+        <tr><td>S3</td><td>Blake</td><td>Paris</td><td>10</td></tr>
+        <tr><td>S4</td><td>Clark</td><td>London</td><td>20</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td></tr>
       </table></div>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">P_2NF — ข้อมูลสินค้า (เหลือ 4 แถว ไม่ซ้ำเลย)</caption>
-        <tr><th>P#</th><th>PNAME</th><th>COLOR</th><th>WEIGHT</th></tr>
-        <tr><td>P1</td><td>Nut</td><td>Red</td><td>12</td></tr>
-        <tr><td>P2</td><td>Bolt</td><td>Green</td><td>17</td></tr>
-        <tr><td>P4</td><td>Screw</td><td>Red</td><td>14</td></tr>
-        <tr><td>P5</td><td>Cam</td><td>Blue</td><td>12</td></tr>
+        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">P_2NF — ข้อมูลสินค้า (เหลือ 6 แถว ไม่ซ้ำเลย)</caption>
+        <tr><th>P#</th><th>Pname</th><th>Color</th></tr>
+        <tr><td>P1</td><td>Nut</td><td>Red</td></tr>
+        <tr><td>P2</td><td>Bolt</td><td>Green</td></tr>
+        <tr><td>P3</td><td>Screw</td><td>Blue</td></tr>
+        <tr><td>P4</td><td>Screw</td><td>Red</td></tr>
+        <tr><td>P5</td><td>Cam</td><td>Blue</td></tr>
+        <tr><td>P6</td><td>Cog</td><td>Red</td></tr>
       </table></div>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">SP_2NF — การส่งมอบ (คีย์ผสมเดิม + QTY)</caption>
-        <tr><th>S#</th><th>P#</th><th>QTY</th></tr>
-        <tr><td>S1</td><td>P1</td><td>300</td></tr>
-        <tr><td>S1</td><td>P2</td><td>200</td></tr>
-        <tr><td>S2</td><td>P1</td><td>300</td></tr>
-        <tr><td>S3</td><td>P2</td><td>200</td></tr>
-        <tr><td>S4</td><td>P4</td><td>200</td></tr>
-        <tr><td>S5</td><td>P5</td><td>100</td></tr>
+        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">SP_2NF — การสั่งซื้อ (คีย์ผสมเดิม + Qty)</caption>
+        <tr><th>S#</th><th>P#</th><th>Qty</th></tr>
+        <tr><td>S1</td><td>P1</td><td>200</td></tr>
+        <tr><td>S2</td><td>P3</td><td>400</td></tr>
+        <tr><td>S2</td><td>P5</td><td>100</td></tr>
+        <tr><td>S3</td><td>P3</td><td>200</td></tr>
+        <tr><td>S3</td><td>P4</td><td>500</td></tr>
+        <tr><td>S4</td><td>P6</td><td>300</td></tr>
+        <tr><td>S5</td><td>P1</td><td>100</td></tr>
+        <tr><td>S5</td><td>P2</td><td>200</td></tr>
+        <tr><td>S5</td><td>P3</td><td>200</td></tr>
+        <tr><td>S5</td><td>P4</td><td>800</td></tr>
+        <tr><td>S5</td><td>P5</td><td>500</td></tr>
+        <tr><td>S5</td><td>P6</td><td>200</td></tr>
       </table></div>
 
       <h3>ขั้นที่ 3: ตัด Transitive Dependency → ผ่าน 3NF</h3>
@@ -207,6 +224,14 @@ erDiagram
   }
       </pre>
       <p class="mermaid-caption">ภาพที่ 5: ผลลัพธ์สุดท้าย S • City_Status • P • SP เชื่อมกันด้วย FK — ข้อมูลแต่ละเรื่องเก็บที่เดียว</p>
+      <figure class="diagram">
+        <img src="assets/slides/slide_0021_2890.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 2NF แยก 3 ตาราง S P SP" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 สไลด์จริง (Live 0021): ผลการแยก 2NF — S • P • SP สามตารางตาม FD ที่วิเคราะห์</figcaption>
+      </figure>
+      <figure class="diagram">
+        <img src="assets/slides/slide_0021_3340.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 3NF พร้อมลูกศรชี้ความสัมพันธ์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 สไลด์จริง (Live 0021): ผลลัพธ์ 3NF สุดท้าย — แยก City_Status ออกจาก S ตามสายโซ่ S# → CITY → STATUS</figcaption>
+      </figure>
 
       <div class="box box-tip">
         <p class="box-title">✅ พิสูจน์ว่าดีขึ้นจริง (ตอบคำถาม "ทำไมต้อง Normalize")</p>
@@ -217,8 +242,7 @@ erDiagram
         </ul>
       </div>
 
-      <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/jxWHagxEvFQ" title="KRIS : Live - 0021 : Normalization [ 1NF 2NF 3NF ]" loading="lazy" allowfullscreen></iframe></div>
-      <p class="video-note">🎬 วิดีโอต้นฉบับของอาจารย์: <a href="https://www.youtube.com/watch?v=jxWHagxEvFQ" target="_blank" rel="noopener">KRIS : Live - 0021 : Normalization [ 1NF 2NF 3NF ]</a> — ย้อนดูสไลด์จริงประกอบการอ่าน</p>
+      <p class="video-note">🎬 วิดีโอต้นฉบับของอาจารย์: <a href="https://www.youtube.com/watch?v=jxWHagxEvFQ" target="_blank" rel="noopener">KRIS : Live - 0021 : Normalization [ 1NF 2NF 3NF ]</a></p>
 
       <hr class="sep">
 
@@ -263,8 +287,11 @@ flowchart TD
         ดังนั้น <strong>ผ่าน BCNF = ผ่าน 3NF เสมอ แต่ย้อนกลับไม่จริง</strong></p>
       </div>
 
-      <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/VYe97bKa5JI" title="KRIS : Live - 0022 : Normalization [ BCNF ]" loading="lazy" allowfullscreen></iframe></div>
-      <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=VYe97bKa5JI" target="_blank" rel="noopener">KRIS : Live - 0022 : Normalization [ BCNF ]</a></p>
+      <figure class="diagram">
+        <img src="assets/slides/slide_0022_1650.jpg" alt="สไลด์อาจารย์: FD diagram มือเขียนของ SupplyPart พร้อมการขีดฆ่า S# to STATUS" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 สไลด์จริง (Live 0022): อาจารย์เขียน FD ทั้งหมดของ SupplyPart — ขีดฆ่าแดง S# → STATUS เพราะเป็น Transitive (ผ่าน CITY) และวงกลมแดงโต้ง "ถ้านิยาม S# เป็น PK จะไม่ผ่าน BCNF ถ้ายังเก็บ CITY/STATUS ไว้ในตารางเดียวกัน"</figcaption>
+      </figure>
+      <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=VYe97bKa5JI" target="_blank" rel="noopener">Live 0022 [BCNF]</a></p>
 
       <hr class="sep">
 
@@ -303,8 +330,15 @@ flowchart TD
         4NF บังคับแยก "สาขา" กับ "รสชาติ" คนละตาราง แล้วถ้าต้องการคู่ทั้งหมดค่อย JOIN (ได้ผลเท่าเดิมเป๊ะ)</p>
       </div>
 
-      <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/RCtYZ7AE6AU" title="KRIS : Live - 0023 : Normalization [ 4NF ]" loading="lazy" allowfullscreen></iframe></div>
-      <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=RCtYZ7AE6AU" target="_blank" rel="noopener">KRIS : Live - 0023 : Normalization [ 4NF ]</a></p>
+      <figure class="diagram">
+        <img src="assets/slides/slide_0023_2160.jpg" alt="สไลด์อาจารย์: ตาราง CTX Course Teacher Text" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 สไลด์จริง (Live 0023): ตาราง CTX(Course, Teacher, Text) — Physics × {Green, Brown} × {Basic, University Physics} = 4 แถวผลคูณทุกคู่</figcaption>
+      </figure>
+      <figure class="diagram">
+        <img src="assets/slides/slide_0023_2470.jpg" alt="สไลด์อาจารย์: การ split CTX เป็นสองตาราง Course Teacher และ Course Text" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 สไลด์จริง (Live 0023): การ Split เป็น Course_Teacher + Course_Text — ตัวอย่างที่อาจารย์เติมเอง (มะระ เรียนวิชา a, b, c) อยู่ในสไลด์เดียวกัน</figcaption>
+      </figure>
+      <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=RCtYZ7AE6AU" target="_blank" rel="noopener">Live 0023 [4NF]</a></p>
 
       <hr class="sep">
 
@@ -340,9 +374,11 @@ flowchart TD
         เหมือนจับคู่เดท 3 เส้า ที่รู้แค่ "A ชอบ B" กับ "B ชอบ C" ไม่พอ ต้องรู้ "A ชอบ C" ด้วยถึงจะสรุปถูก</p>
       </div>
 
-      <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/ab8Yl7gf3Vk" title="KRIS : Live - 0025 : Normalization [ 5NF ]" loading="lazy" allowfullscreen></iframe></div>
-      <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=ab8Yl7gf3Vk" target="_blank" rel="noopener">KRIS : Live - 0025 : Normalization [ 5NF ]</a>
-      • ทบทวนรวม 1NF–4NF: <a href="https://www.youtube.com/watch?v=h-TxER9iLEA" target="_blank" rel="noopener">Live 0024 Review</a></p>
+      <figure class="diagram">
+        <img src="assets/slides/slide_0025_2880.jpg" alt="สไลด์อาจารย์: ตารางฝึก Employee Skill Project ลุมฟา เนตรนภา ถามว่า 4NF หรือไม่ และให้ Split" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 โจทย์ฝึกจริงของอาจารย์ (Live 0025): ตาราง Employee-Skill-Project — ลุมฟา/เนตรนภา มีทักษะและโปรเจกต์หลายรายการ อาจารย์ถามว่า <b>"อยู่ใน 4NF หรือไม่? แล้ว Split ยังไง?"</b> — ลองทำตามเช็คลิสต์ด้านบน: เนตรนภา →→ {M.Excel, MySQL} และ →→ {การวิเยิมลาด, MIS} โดยสองกลุ่มอิสระกัน = MVD → แยกเป็น Employee_Skill + Employee_Project</figcaption>
+      </figure>
+      <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=ab8Yl7gf3Vk" target="_blank" rel="noopener">Live 0025 [5NF]</a> • ทบทวนรวม: <a href="https://www.youtube.com/watch?v=h-TxER9iLEA" target="_blank" rel="noopener">Live 0024 Review 1NF-4NF</a></p>
 
       <hr class="sep">
 
