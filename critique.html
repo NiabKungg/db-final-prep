@@ -70,13 +70,17 @@
 
       <h2>โมเดลที่ 1: Bill-Centric (ร้านอาหารหน้าร้าน / POS คิดเงินทันที)</h2>
       <pre class="mermaid">
-erDiagram
-  CUSTOMERS ||--o{ BILLS : "มีบิล (1:N)"
-  BILLS ||--|{ BILL_ITEMS : "รายการในบิล (1:N)"
-  BILL_ITEMS }o--|| MENU_ITEMS : "อ้างสินค้า (N:1)"
-  BILLS ||--o{ PAYMENTS : "ชำระเงิน (1:N)"
+flowchart LR
+  CUS["CUSTOMERS"] ---|1| HB{"มีบิล"}
+  HB ---|N| BIL["BILLS"]
+  BIL ---|1| IT{"มีรายการ"}
+  IT ---|N| ITM["BILL_ITEMS"]
+  ITM ---|N| MI{"อ้างถึง"}
+  MI ---|1| MENU["MENU_ITEMS"]
+  BIL ---|1| PAY{"ชำระเงิน"}
+  PAY ---|N| PMT["PAYMENTS"]
       </pre>
-      <p class="mermaid-caption">ภาพที่ 1: Bill-Centric — ทุกอย่างหมุนรอบ "บิล" สั่งและจ่ายพร้อมกัน</p>
+      <p class="mermaid-caption">ภาพที่ 1 (Chen Model): Bill-Centric — ทุกอย่างหมุนรอบ "บิล" สั่งและจ่ายพร้อมกัน</p>
 
       <div class="grid grid-2">
         <div class="card">
@@ -92,13 +96,17 @@ erDiagram
 
       <h2>โมเดลที่ 2: Order-Centric (สั่งจองล่วงหน้า / สั่งผลิต)</h2>
       <pre class="mermaid">
-erDiagram
-  CUSTOMERS ||--o{ ORDERS : "สั่งซื้อ (1:N)"
-  ORDERS ||--|{ ORDER_ITEMS : "รายการ (1:N)"
-  ORDER_ITEMS }o--|| MENU_ITEMS : "อ้างสินค้า (N:1)"
-  ORDERS ||--o{ PAYMENTS : "จ่ายเข้าออเดอร์ (1:N)"
+flowchart LR
+  CUS["CUSTOMERS"] ---|1| PL{"สั่งซื้อ"}
+  PL ---|N| ORD["ORDERS"]
+  ORD ---|1| OI{"มีรายการ"}
+  OI ---|N| OIT["ORDER_ITEMS"]
+  OIT ---|N| MI{"อ้างถึง"}
+  MI ---|1| MENU["MENU_ITEMS"]
+  ORD ---|1| PP{"จ่ายเข้าออเดอร์"}
+  PP ---|N| PMT["PAYMENTS"]
       </pre>
-      <p class="mermaid-caption">ภาพที่ 2: Order-Centric — เน้นบันทึก "เจตนาซื้อ" ก่อน จ่ายเข้าออเดอร์ตรง ๆ รองรับสถานะรอดำเนินการ</p>
+      <p class="mermaid-caption">ภาพที่ 2 (Chen Model): Order-Centric — เน้นบันทึก "เจตนาซื้อ" ก่อน จ่ายเข้าออเดอร์ตรง ๆ รองรับสถานะรอดำเนินการ</p>
 
       <div class="grid grid-2">
         <div class="card">
@@ -113,15 +121,21 @@ erDiagram
 
       <h2>โมเดลที่ 3: Enterprise Commerce (อีคอมเมิร์ซเต็มรูปแบบ)</h2>
       <pre class="mermaid">
-erDiagram
-  CUSTOMERS ||--o{ ORDERS : "สั่งซื้อ (1:N)"
-  ORDERS ||--|{ ORDER_ITEMS : "รายการ (1:N)"
-  ORDER_ITEMS }o--o{ SHIPMENT_ITEMS : "ทยอยส่ง (1:N)"
-  SHIPMENT_ITEMS }o--|| SHIPMENTS : "อยู่ในรอบส่ง"
-  ORDERS ||--o{ BILLS : "เปิดบิล (1:N)"
-  BILLS ||--o{ PAYMENTS : "ชำระ (1:N)"
+flowchart LR
+  CUS["CUSTOMERS"] ---|1| PL{"สั่งซื้อ"}
+  PL ---|N| ORD["ORDERS"]
+  ORD ---|1| OI{"มีรายการ"}
+  OI ---|N| OIT["ORDER_ITEMS"]
+  OIT ---|N| SHI{"ถูกจัดส่ง"}
+  SHI ---|N| SI["SHIPMENT_ITEMS"]
+  SI ---|N| SR{"อยู่ในรอบส่ง"}
+  SR ---|1| SHM["SHIPMENTS"]
+  ORD ---|1| BB{"เปิดบิล"}
+  BB ---|N| BIL["BILLS"]
+  BIL ---|1| PP{"ชำระเงิน"}
+  PP ---|N| PMT["PAYMENTS"]
       </pre>
-      <p class="mermaid-caption">ภาพที่ 3: Enterprise Commerce — แยก 3 แกน: Commercial Intent (Orders) / Financial Flow (Bills+Payments) / Logistics Flow (Shipments) • ORDER_ITEMS (1) → SHIPMENT_ITEMS (N) คือสายส่งที่ทำ Partial Shipment ได้</p>
+      <p class="mermaid-caption">ภาพที่ 3 (Chen Model): Enterprise Commerce — แยก 3 แกน: Commercial Intent (Orders) / Financial Flow (Bills+Payments) / Logistics Flow (Shipments) • ORDER_ITEMS (1) → SHIPMENT_ITEMS (N) คือสายส่งที่ทำ Partial Shipment ได้</p>
 
       <p>แกนหลัก 3 เส้นของโมเดลนี้:</p>
       <ol>

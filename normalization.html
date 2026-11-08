@@ -89,6 +89,34 @@ flowchart TD
         </ul>
       </div>
 
+      <h2>📖 ศัพท์เฉพาะที่ใช้ในบทนี้ (Glossary) — อ่านก่อนเดินตาราง</h2>
+      <p>ทุกครั้งที่เห็นคำว่า "วิเคราะห์ FD" หรือ "ตัด Partial Dependency" ในหน้านี้ ให้กลับมาดูตารางนี้ — อธิบายด้วยภาษาคน พร้อมตัวอย่างจากตาราง SupplyPart ของอาจารย์</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>ศัพท์</th><th>อ่านว่า</th><th>ความหมายแบบเข้าใจง่าย</th><th>เห็นจากตาราง SupplyPart</th></tr>
+        <tr><td><strong>Attribute</strong></td><td>แอตทริบิวต์</td><td>คอลัมน์ 1 คอลัมน์ของตาราง</td><td>Sname, City, Qty</td></tr>
+        <tr><td><strong>Atomic Value</strong></td><td>อะตอมมิก</td><td>ค่าที่แยกย่อยไม่ได้อีก — 1 ช่อง = 1 ค่า ห้ามยัดหลายค่า</td><td>ช่อง City = "Paris" ค่าเดียว</td></tr>
+        <tr><td><strong>Repeating Group</strong></td><td>รีพีตติง กรุ๊ป</td><td>กลุ่มแถวที่ช่องบางช่องว่างลอย (เกิดจาก 1 รายการจริงมีหลายบรรทัดย่อย)</td><td>S2 สั่ง 2 รายการ — แถว P5 Cam ช่อง S# ว่าง</td></tr>
+        <tr><td><strong>Primary Key (PK)</strong></td><td>พรายมารี คีย์</td><td>คอลัมน์/กลุ่มคอลัมน์ที่ระบุแถวได้ไม่ซ้ำ ห้ามซ้ำ ห้ามว่าง</td><td>(S#, P#)</td></tr>
+        <tr><td><strong>Candidate Key (CK)</strong></td><td>แคนดิเดต คีย์</td><td>คีย์ทุกตัวที่ระบุแถวได้แบบ "น้อยที่สุด" — PK คือ CK ที่ถูกเลือกมา 1 ตัว</td><td>ตาราง Advisor: (Std,Subj) และ (Std,Adv)</td></tr>
+        <tr><td><strong>Non-key attribute</strong></td><td>นอน-คีย์</td><td>คอลัมน์ที่ไม่ได้เป็นคีย์ — ตัวปัญหาของทุก NF</td><td>Sname, City, Status, Pname, Qty</td></tr>
+        <tr><td><strong>FD (Functional Dependency)</strong></td><td>เอฟ-ดี<br>ฟังก์ชันนัล ดีเพนเดนซี</td><td>ความสัมพันธ์แบบ <strong>"รู้ฝั่งซ้าย = รู้ฝั่งขวาทันทีเสมอ"</strong> เขียนว่า X → Y (X กำหนด Y) — "วิเคราะห์ FD" คือการไล่หาคู่แบบนี้ให้ครบทุกคอลัมน์</td><td>S# → Sname (รู้รหัส S1 = รู้ชื่อ Smith ทันที)</td></tr>
+        <tr><td><strong>Determinant</strong></td><td>ดีเทอร์มิแนนต์</td><td>ฝั่งซ้ายของ FD = "ตัวกำหนดค่า" (ใน X → Y คือ X)</td><td>S# และ P# ในตาราง 1NF</td></tr>
+        <tr><td><strong>FFD (Full FD)</strong></td><td>เอฟเอฟดี</td><td>ขึ้นกับ PK <strong>"ทั้งก้อน"</strong> — เอาส่วนใดส่วนหนึ่งออกไม่ได้แล้ว</td><td>(S#, P#) → Qty</td></tr>
+        <tr><td><strong>Partial Dependency</strong></td><td>พาร์เชียล<br>ดีเพนเดนซี</td><td>Non-key ขึ้นกับ PK เพียง <strong>"บางส่วน"</strong> (เกิดเฉพาะเมื่อ PK เป็นคีย์ผสม) — สาเหตุที่ต้องทำ 2NF</td><td>S# → Sname (รู้แค่ S# ก็รู้ ทั้งที่ PK มี 2 คอลัมน์)</td></tr>
+        <tr><td><strong>Transitive Dependency</strong></td><td>ทรานซิทีฟ<br>ดีเพนเดนซี</td><td>Non-key กำหนดค่า Non-key อีกตัว — เกิด "สายโซ่" X → Y → Z โดย X=PK แต่ Y, Z เป็น Non-key — สาเหตุที่ต้องทำ 3NF</td><td>S# → City → Status</td></tr>
+        <tr><td><strong>Decomposition</strong></td><td>ดีคอมโพซิชัน</td><td>การสปลิตตารางใหญ่ 1 ตารางออกเป็นหลายตารางย่อยที่เชื่อมกันด้วย FK</td><td>1NF แตกเป็น S_2NF, P_2NF, SP_2NF</td></tr>
+        <tr><td><strong>Prime Attribute</strong></td><td>ไพรม์</td><td>คอลัมน์ที่เป็น "ส่วนหนึ่งของ CK ใด ๆ" — ตัวตัดสินว่าผ่าน 3NF แต่ BCNF หรือไม่</td><td>Subject ในตาราง Advisor (เป็นส่วนของ CK)</td></tr>
+        <tr><td><strong>MVD (Multivalued Dependency)</strong></td><td>เอ็มวีดี</td><td>รู้ X 1 ค่า ได้<strong>"เซตของ Y หลายค่า"</strong> โดย Y อิสระจาก Z ในตารางเดียวกัน (เขียน X →→ Y) — สาเหตุที่ต้องทำ 4NF</td><td>Course →→ Teacher และ Course →→ Text_Book</td></tr>
+        <tr><td><strong>Join Dependency (JD)</strong></td><td>เจดี</td><td>ความสัมพันธ์ "สามเส้า" ที่ต้องแตกครบ 3 คู่ แล้ว JOIN กลับถึงจะได้ตารางเดิม — สาเหตุที่ต้องทำ 5NF</td><td>*((Supplier,Part),(Part,Project),(Supplier,Project))</td></tr>
+        <tr><td><strong>Lossless Join</strong></td><td>ลอสเลส จอยน์</td><td>แตกแล้ว JOIN กลับได้ข้อมูลเดิม 100% — ไม่หาย ไม่เกิน</td><td>การสปลิต 2NF/3NF ทุกครั้งต้อง lossless</td></tr>
+        <tr><td><strong>Spurious Tuple</strong></td><td>สเปียเรียส ทูเพิล</td><td>"แถวหลอก" ที่โผล่มาหลัง JOIN ตารางที่แตกไม่ถูกวิธี — ข้อมูลที่ไม่เคยมีอยู่จริง</td><td>(S2, P1, J2) ในตัวอย่าง 5NF</td></tr>
+      </table></div>
+      <div class="box box-mem">
+        <p class="box-title">🧠 จำสั้น ๆ: FD ดูยังไงในข้อสอบ</p>
+        <p>ยึดหลักเดียว: <strong>"รู้ฝั่งซ้ายแล้ว รู้ฝั่งขวาทันทีไหม?"</strong> — ถ้าโจทย์ให้ตารางข้อมูล ให้เทียบแถวจริง:
+        คอลัมน์เดียวกันค่าเดียวกัน แล้วคอลัมน์อื่นค่าเดิมทุกครั้ง = มี FD • ค่าเดียวกันแต่คอลัมน์อื่น<em>ไม่</em>คงที่ = ไม่มี FD</p>
+      </div>
+
       <hr class="sep">
 
       <h2>🎯 ตัวอย่างหลักของอาจารย์ (Live 0021): ตาราง SupplyPart — เดินครบ UNF → 3NF</h2>
@@ -298,31 +326,15 @@ flowchart LR
       </div>
 
       <pre class="mermaid">
-erDiagram
-  CITY ||--o{ S : "เมืองที่ตั้ง"
-  S ||--o{ SP : "สั่งซื้อ"
-  P ||--o{ SP : "ถูกสั่ง"
-  S {
-    string Snum PK
-    string Sname
-    string City FK
-  }
-  CITY {
-    string City PK
-    int Status
-  }
-  P {
-    string Pnum PK
-    string Pname
-    string Color
-  }
-  SP {
-    string Snum PK
-    string Pnum PK
-    int Qty
-  }
+flowchart LR
+  st(("Status")) -.- CITY["CITY_STATUS<br>(City, Status)"]
+  CITY ---|1| LV{"ตั้งอยู่"}
+  LV ---|N| S["S<br>(S#, Sname, City)"]
+  S ---|M| OD{"สั่งซื้อ"}
+  OD ---|N| P["P<br>(P#, Pname, Color)"]
+  qty(("Qty")) -.- OD
       </pre>
-      <p class="mermaid-caption">ภาพที่ 5: ผลลัพธ์สุดท้าย 4 ตาราง (ER) — CITY → S → SP ← P เชื่อมด้วย FK</p>
+      <p class="mermaid-caption">ภาพที่ 5 (Chen Model): ผลลัพธ์สุดท้าย — SP ไม่ใช่ตารางลอย ๆ แต่คือ "ความสัมพันธ์ สั่งซื้อ M:N" ระหว่าง S กับ P ที่มี Attribute Qty แขวนอยู่ (ตามแบบที่อาจารย์สอน)</p>
 
       <figure class="diagram">
         <img src="assets/slides/slide_0021_3340.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 3NF พร้อมลูกศรชี้ความสัมพันธ์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">

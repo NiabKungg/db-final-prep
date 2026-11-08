@@ -155,21 +155,21 @@ flowchart LR
       </div>
 
       <pre class="mermaid">
-erDiagram
-  DIM_TIME ||--o{ FACT_SALES : ""
-  DIM_CUSTOMER ||--o{ FACT_SALES : ""
-  DIM_PRODUCT ||--o{ FACT_SALES : ""
-  DIM_STORE ||--o{ FACT_SALES : ""
+flowchart TB
+  DT["Dim_Time"] --- F["FACT_SALES<br>(Sales_Amount, Qty)"]
+  DC["Dim_Customer"] --- F
+  DP["Dim_Product"] --- F
+  DS["Dim_Store"] --- F
       </pre>
       <p class="mermaid-caption">⭐ Star Schema — ทุก Dimension เชื่อมตรงกับ Fact ชั้นเดียวจบ: JOIN น้อย Query เร็ว เข้าใจง่าย</p>
       <pre class="mermaid">
-erDiagram
-  DIM_TIME ||--o{ FACT_SALES : ""
-  DIM_CUSTOMER ||--o{ FACT_SALES : ""
-  DIM_PRODUCT ||--o{ FACT_SALES : ""
-  DIM_STORE ||--o{ FACT_SALES : ""
-  DIM_DISTRICT ||--o{ DIM_STORE : ""
-  DIM_PROVINCE ||--o{ DIM_DISTRICT : ""
+flowchart TB
+  DT["Dim_Time"] --- F["FACT_SALES<br>(Sales_Amount, Qty)"]
+  DC["Dim_Customer"] --- F
+  DP["Dim_Product"] --- F
+  F --- DS["Dim_Store"]
+  DS --- DD["Dim_District"]
+  DD --- DPV["Dim_Province"]
       </pre>
       <p class="mermaid-caption">❄️ Snowflake Schema — Dim_Store ถูก Normalize (3NF) แตกกิ่งเป็น Dim_District / Dim_Province: ซ้ำน้อยแต่ JOIN เยอะ ช้าลงนิด</p>
 

@@ -278,21 +278,40 @@ flowchart LR
 
       <hr class="sep">
 
-      <h2>🎨 ตัวอย่าง ER Diagram ของอาจารย์ (จากวิดีโอ Live 0004–0013)</h2>
+      <h2>🎨 ตัวอย่าง ER Diagram ของอาจารย์ (จากวิดีโอ Live 0004–0013) — เขียนแบบ Chen Model</h2>
       <p>รุ่นพี่รีวิวว่าข้อสอบ Final มี <strong>ER Diagram 3 ข้อ</strong> — อาจารย์ใช้โจทย์ชุดนี้สอนซ้ำทุกปี
       จำ "โครง + กับดัก" ของแต่ละตัวอย่างได้ = เขียน ER ในห้องสอบได้ทันที</p>
 
       <h3>ตัวอย่างที่ 1: Dept-Emp (Live 0004–0005) — ตัวอย่างคลาสสิกที่ต้องเก่งที่สุด</h3>
       <pre class="mermaid">
-erDiagram
-  DEPARTMENT ||--o{ EMPLOYEE : "Work_In (1:N)"
-  EMPLOYEE ||--o| DEPARTMENT : "Manages (1:1)"
-  DEPARTMENT ||--o{ PROJECT : "Controls (1:N)"
-  EMPLOYEE }o--o{ PROJECT : "Work_On (M:N)"
-  EMPLOYEE ||--o{ DEPENDENT : "Has_Dependent (1:N)"
-  EMPLOYEE ||--o{ EMPLOYEE : "Supervise (recursive)"
+flowchart LR
+  E["สี่เหลี่ยม = Entity<br>(ตาราง/สิ่งที่เก็บข้อมูล)"]
+  R{"ข้าวหลามตัด =<br>Relationship"}
+  A(("วงรี = Attribute"))
+  E ---|"เส้นเชื่อม + ป้าย<br>1 / N / M<br>= Cardinality"| R
+  K(("🔑 Key<br>(ขีดเส้นใต้ในตำรา)")) -.- E
       </pre>
-      <p class="mermaid-caption">ภาพ ER 1: Dept-Emp — จุดเด่น: Employee–Department มีความสัมพันธ์ 2 เส้นแยกกัน (สังกัด 1:N / จัดการ 1:1) และ Supervise เป็น Recursive</p>
+      <p class="mermaid-caption">ภาพ ER 0: สัญลักษณ์ Chen Notation ที่อาจารย์ใช้สอน — สี่เหลี่ยมผืนผ้า = Entity • ข้าวหลามตัด = Relationship • วงรี = Attribute • 🔑 = Key (ขีดเส้นใต้) • ตัวเลข 1/N/M บนเส้น = Cardinality</p>
+      <pre class="mermaid">
+flowchart TB
+  eid(("🔑 Emp_ID")) -.- EMP["EMPLOYEE"]
+  EMP ---|M| WI{"Work_In"}
+  WI ---|1| DEP["DEPARTMENT"]
+  did(("🔑 Dept_Code")) -.- DEP
+  EMP ---|1| MG{"Manage"}
+  MG ---|1| DEP
+  EMP ---|M| WO{"Work_On"}
+  WO ---|N| PRJ["PROJECT"]
+  hrs(("Hours")) -.- WO
+  DEP ---|1| CT{"Controls"}
+  CT ---|N| PRJ
+  EMP ---|1| SUP{"Supervise"}
+  SUP ---|N| EMP
+  EMP ---|1| HD{"Has_Dependent"}
+  HD ---|N| DEP2["DEPENDENT<br>(Weak Entity)"]
+  dn(("Dependent_Name")) -.- DEP2
+      </pre>
+      <p class="mermaid-caption">ภาพ ER 1 (Chen Model): Dept-Emp — จุดเด่น: Employee–Department มีความสัมพันธ์ 2 เส้นแยกกัน (สังกัด 1:N / จัดการ 1:1) และ Supervise เป็น Recursive</p>
 <figure class="diagram">
         <img src="assets/slides/slide_0004_245.jpg" alt="สไลด์โจทย์ System Requirement ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0004): โจทย์ System Requirement — อาจารย์ขีดเส้นใต้แดง "ข้อมูลพนักงาน / ข้อมูลแผนก / ข้อมูลโครงการ" และวงเหลือง "จัดทำโครงงานได้หลายคน" = จุดที่บอก Entity และ M:N</figcaption>
@@ -314,12 +333,23 @@ erDiagram
 
       <h3>ตัวอย่างที่ 2: Food and Drink (Live 0009) — ร้านอาหาร/POS</h3>
       <pre class="mermaid">
-erDiagram
-  CUSTOMER ||--o{ RECEIPT : "Issue (1:N)"
-  RECEIPT }o--o{ PRODUCT : "Contains (M:N)"
-  PRODUCT_TYPE ||--o{ PRODUCT : "Belongs_To (1:N)"
+flowchart TB
+  cid(("🔑 Cust_ID")) -.- CUS["CUSTOMER"]
+  CUS ---|1| ISS{"Issue<br>(ออกใบเสร็จ)"}
+  ISS ---|N| REC["RECEIPT"]
+  rid(("🔑 Receipt_No")) -.- REC
+  REC ---|M| CON{"Contains"}
+  CON ---|N| PRD["PRODUCT"]
+  pid(("🔑 Product_ID")) -.- PRD
+  qty(("Qty")) -.- CON
+  price(("Price")) -.- CON
+  disc(("Discount")) -.- CON
+  TYP["PRODUCT_TYPE"]
+  tid(("🔑 Type_ID")) -.- TYP
+  TYP ---|1| BL{"Belongs_To"}
+  BL ---|N| PRD
       </pre>
-      <p class="mermaid-caption">ภาพ ER 2: Food and Drink — ต้องมี Receipt คั่นกลางระหว่าง Customer กับ Product เสมอ (บนความสัมพันธ์ M:N มี Qty, Price, Discount)</p>
+      <p class="mermaid-caption">ภาพ ER 2 (Chen Model): Food and Drink — ต้องมี Receipt คั่นกลางระหว่าง Customer กับ Product เสมอ (บนความสัมพันธ์ M:N มี Qty, Price, Discount)</p>
 <figure class="diagram">
         <img src="assets/slides/slide_0009_2880.jpg" alt="สไลด์ ER Diagram มือเขียนร้านอาหาร ลูกค้า รายการ สินค้า ประเภทสินค้า ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0009): ER มือเขียน — ลูกค้า (รหัส, Name) → รายการ (Date, แต้มสม้น?, Total) → สินค้า (Code, Name, CostUnit) และประเภทสินค้า (Code, Name, PriceUnit, CostUnit) พร้อม M:N และ "??" ที่อาจารย์ทิ้งไว้ให้คิดว่า PriceUnit ควรอยู่ที่ไหน</figcaption>
@@ -335,10 +365,13 @@ erDiagram
 
       <h3>ตัวอย่างที่ 3: Product Package / BOM (Live 0010) — ชุดเซ็ต/สูตรการผลิต</h3>
       <pre class="mermaid">
-erDiagram
-  PRODUCT ||--o{ PRODUCT : "BOM (M:N) • Quantity_Used"
+flowchart TB
+  pid(("🔑 Product_ID")) -.- PRD["PRODUCT"]
+  PRD ---|M| BOM{"BOM<br>(Consists_Of)"}
+  BOM ---|N| PRD
+  qu(("Qty_Used")) -.- BOM
       </pre>
-      <p class="mermaid-caption">ภาพ ER 3: BOM — "ชุดเซ็ตก็คือสินค้าตัวหนึ่ง" ที่มีสูตรประกอบ (M:N กับตัวเอง) เช่น ชุด A ประกอบจากแก้ว + กาแฟ + น้ำตาล</p>
+      <p class="mermaid-caption">ภาพ ER 3 (Chen Model): BOM — "ชุดเซ็ตก็คือสินค้าตัวหนึ่ง" ที่มีสูตรประกอบ (M:N กับตัวเอง) เช่น ชุด A ประกอบจากแก้ว + กาแฟ + น้ำตาล</p>
 <figure class="diagram">
         <img src="assets/slides/slide_0010_1620.jpg" alt="สไลด์ BOM ตารางวัตถุดิบและชุดเซ็ตของอาจารย์" loading="lazy" width="854" height="480" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0010): กระดานไล่ดีไซน์ — ลูกค้า–รายการ–สินค้า–ประเภทสินค้า และวงแดงประ (ตัวอย่างชุดเซ็ต) ที่อาจารย์ใช้โชว์ว่า "ชุดเซ็ต = Product ที่มีสูตร BOM ย่อยลงไป" พร้อมเครื่องหมายถูก/กากบาทดีไซน์ที่ผิด</figcaption>
@@ -353,16 +386,23 @@ erDiagram
 
       <h3>ตัวอย่างที่ 4: SCM DVD (Live 0011–0012) — โครง "อาจารย์บอกว่าใช้ได้ ~65% ของระบบจริง"</h3>
       <pre class="mermaid">
-erDiagram
-  SUPPLIER ||--o{ PURCHASE_ORDER : "Issue_PO (1:N)"
-  PURCHASE_ORDER }o--o{ ALBUM : "PO_Detail (M:N)"
-  TRANSFER_ORDER }o--o{ ALBUM : "Transfer_Detail (M:N)"
-  SALES_RECEIPT }o--o{ ALBUM : "Sales_Detail (M:N)"
-  HQ ||--o{ TRANSFER_ORDER : "ส่งของ (1:N)"
-  BRANCH ||--o{ TRANSFER_ORDER : "รับของ (1:N)"
-  BRANCH ||--o{ SALES_RECEIPT : "ขายหน้าร้าน (1:N)"
+flowchart TB
+  SUP["SUPPLIER"] ---|1| IP{"Issue_PO"}
+  IP ---|N| PO["PURCHASE_ORDER"]
+  PO ---|M| PD{"PO_Detail"}
+  PD ---|N| ALB["ALBUM"]
+  HQ["HQ"] ---|1| TR{"สั่งโอน"}
+  TR ---|N| TO["TRANSFER_ORDER"]
+  BR["BRANCH"] ---|1| RC{"รับของ"}
+  RC ---|N| TO
+  TO ---|M| TD{"Transfer_Detail"}
+  TD ---|N| ALB
+  BR ---|1| SS{"ขายหน้าร้าน"}
+  SS ---|N| SR["SALES_RECEIPT"]
+  SR ---|M| SD{"Sales_Detail"}
+  SD ---|N| ALB
       </pre>
-      <p class="mermaid-caption">ภาพ ER 4: SCM — โครง Header-Detail 3 ชุด: สั่งซื้อเข้า HQ / โอนไปสาขา / ขายหน้าร้าน ล้วนเป็น "ใบหลัก + รายการย่อย + M:N กับสินค้า"</p>
+      <p class="mermaid-caption">ภาพ ER 4 (Chen Model): SCM — โครง Header-Detail 3 ชุด: สั่งซื้อเข้า HQ / โอนไปสาขา / ขายหน้าร้าน ล้วนเป็น "ใบหลัก + รายการย่อย + M:N กับสินค้า"</p>
 <figure class="diagram">
         <img src="assets/slides/slide_0011_2220.jpg" alt="สไลด์ ER Diagram มือเขียน SCM Supplier Album ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0011): ER มือเขียน SCM — Supplier (รหัส ชื่อ Tel ที่อยู่ composite อีเมล โทรศัพท์) → ใบสั่งซื้อ (M) → Album (Qty, ราคาทุน) พร้อมตารางราคาทุนฉบับจริงที่อาจารย์ไล่ให้ดูว่าของชุดเดียวกันราคาทุนต่างกันตามรอบสั่ง</figcaption>
@@ -375,15 +415,21 @@ erDiagram
 
       <h3>ตัวอย่างที่ 5: Condo for Rental and Sale (Live 0013) — คอนโดขาย+เช่า</h3>
       <pre class="mermaid">
-erDiagram
-  TENANT ||--o{ RENT_CONTRACT : "ทำสัญญาเช่า (1:N)"
-  RENT_CONTRACT ||--|| ROOM : "เช่า 1 ห้อง (1:1)"
-  RENT_CONTRACT ||--o{ OCCUPANT : "ผู้พักจริง (Weak)"
-  BUYER ||--o{ SALE_CONTRACT : "ซื้อ (1:N)"
-  SALE_CONTRACT ||--|| ROOM : "ซื้อ 1 ห้อง (1:1)"
-  SALE_CONTRACT ||--o{ GUARANTOR : "ผู้ค้ำ (1:N)"
+flowchart TB
+  TEN["TENANT"] ---|1| RC{"ทำสัญญาเช่า"}
+  RC ---|N| RENT["RENT_CONTRACT"]
+  RENT ---|1| CO{"เช่าห้อง"}
+  CO ---|1| ROOM["ROOM"]
+  RENT ---|1| OC{"มีผู้พักอาศัย"}
+  OC ---|N| OCC["OCCUPANT<br>(Weak Entity)"]
+  BUY["BUYER"] ---|1| SC{"ทำสัญญาซื้อ"}
+  SC ---|N| SALE["SALE_CONTRACT"]
+  SALE ---|1| CV{"ซื้อห้อง"}
+  CV ---|1| ROOM
+  SALE ---|1| GU{"มีผู้ค้ำ"}
+  GU ---|N| GAR["GUARANTOR"]
       </pre>
-      <p class="mermaid-caption">ภาพ ER 5: Condo — ผู้เช่า/ผู้ซื้อต้องผ่าน "สัญญา" ก่อนถึงห้องเสมอ (เก็บประวัติเปลี่ยนมือได้)</p>
+      <p class="mermaid-caption">ภาพ ER 5 (Chen Model): Condo — ผู้เช่า/ผู้ซื้อต้องผ่าน "สัญญา" ก่อนถึงห้องเสมอ (เก็บประวัติเปลี่ยนมือได้)</p>
 <figure class="diagram">
         <img src="assets/slides/slide_0013_3970.jpg" alt="สไลด์ ER Diagram มือเขียนคอนโดขายและเช่า ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0013): ER มือเขียนคอนโด — ผู้ซื้อ → ซื้อขาย → Room (Code, เลขห้อง) → ผู้เช่า → สัญญาเช่า → ผู้ค้ำประกัน → ผู้พักอาศัย (Weak Entity) พร้อม cardinality ทุกเส้น — วงเขียวใหญ่คือช่วง "ตัดสินใจหลัก" ของอาจารย์</figcaption>
