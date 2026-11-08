@@ -97,7 +97,7 @@ flowchart TD
       <code>R(S#, Sname, City, Status, P#, Pname, Color, Qty)</code></p>
 
       <figure class="diagram">
-        <img src="assets/slides/slide_0021_640.jpg" alt="สไลด์อาจารย์: ตาราง SupplyPart ตัวอย่างจริง พร้อมการเติมข้อมูลซ้ำแบบ 1NF" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0021_640.jpg" alt="สไลด์อาจารย์: ตาราง SupplyPart ตัวอย่างจริง พร้อมการเติมข้อมูลซ้ำแบบ 1NF" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริงของอาจารย์ (Live 0021): ตารางเริ่มต้นก่อน 1NF — ช่องซัพพลายเออร์ว่างลอยในแถวที่สั่งซื้อหลายรายการ และปากกาเขียวคือการ "เติมข้อมูลซ้ำ" เพื่อทำ 1NF</figcaption>
       </figure>
 
@@ -241,7 +241,7 @@ flowchart TD
       </div>
 
       <figure class="diagram">
-        <img src="assets/slides/slide_0021_2890.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 2NF แยก 3 ตาราง S P SP" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0021_2890.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 2NF แยก 3 ตาราง S P SP" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0021): ผลการแยก 2NF — S • P • SP สามตารางตาม FD ที่วิเคราะห์</figcaption>
       </figure>
 
@@ -325,7 +325,7 @@ erDiagram
       <p class="mermaid-caption">ภาพที่ 5: ผลลัพธ์สุดท้าย 4 ตาราง (ER) — CITY → S → SP ← P เชื่อมด้วย FK</p>
 
       <figure class="diagram">
-        <img src="assets/slides/slide_0021_3340.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 3NF พร้อมลูกศรชี้ความสัมพันธ์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0021_3340.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 3NF พร้อมลูกศรชี้ความสัมพันธ์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0021): ผลลัพธ์ 3NF สุดท้ายของอาจารย์ — S, City_Status, P, SP พร้อมลูกศรความสัมพันธ์</figcaption>
       </figure>
 
@@ -385,7 +385,7 @@ erDiagram
       </div>
 
       <figure class="diagram">
-        <img src="assets/slides/slide_0022_1650.jpg" alt="สไลด์อาจารย์: FD diagram มือเขียนของ SupplyPart พร้อมการขีดฆ่า S# to STATUS" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0022_1650.jpg" alt="สไลด์อาจารย์: FD diagram มือเขียนของ SupplyPart พร้อมการขีดฆ่า S# to STATUS" loading="lazy" width="854" height="480" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0022): อาจารย์เขียน FD ทั้งหมดของ SupplyPart — ขีดฆ่าแดง S# → STATUS เพราะเป็น Transitive (ผ่าน CITY) พร้อมโน้ต "ถ้านิยาม S# เป็น PK จะยังเก็บ CITY/STATUS ไว้ด้วยกันไม่ได้"</figcaption>
       </figure>
       <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=VYe97bKa5JI" target="_blank" rel="noopener">Live 0022 [BCNF]</a></p>
@@ -447,11 +447,11 @@ erDiagram
       </div>
 
       <figure class="diagram">
-        <img src="assets/slides/slide_0023_2160.jpg" alt="สไลด์อาจารย์: ตาราง CTX Course Teacher Text" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0023_2160.jpg" alt="สไลด์อาจารย์: ตาราง CTX Course Teacher Text" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0023): ตาราง CTX(Course, Teacher, Text) — Physics × {Green, Brown} × {Basic, University Physics} = 4 แถวผลคูณทุกคู่</figcaption>
       </figure>
       <figure class="diagram">
-        <img src="assets/slides/slide_0023_2470.jpg" alt="สไลด์อาจารย์: การ split CTX เป็นสองตาราง Course Teacher และ Course Text" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0023_2470.jpg" alt="สไลด์อาจารย์: การ split CTX เป็นสองตาราง Course Teacher และ Course Text" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0023): การ Split เป็น Course_Teacher + Course_Text — พร้อมโจทย์ฝึกของอาจารย์ (มะระ เรียนวิชา a, b, c)</figcaption>
       </figure>
       <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=RCtYZ7AE6AU" target="_blank" rel="noopener">Live 0023 [4NF]</a></p>

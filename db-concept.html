@@ -294,11 +294,11 @@ erDiagram
       </pre>
       <p class="mermaid-caption">ภาพ ER 1: Dept-Emp — จุดเด่น: Employee–Department มีความสัมพันธ์ 2 เส้นแยกกัน (สังกัด 1:N / จัดการ 1:1) และ Supervise เป็น Recursive</p>
 <figure class="diagram">
-        <img src="assets/slides/slide_0004_245.jpg" alt="สไลด์โจทย์ System Requirement ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0004_245.jpg" alt="สไลด์โจทย์ System Requirement ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0004): โจทย์ System Requirement — อาจารย์ขีดเส้นใต้แดง "ข้อมูลพนักงาน / ข้อมูลแผนก / ข้อมูลโครงการ" และวงเหลือง "จัดทำโครงงานได้หลายคน" = จุดที่บอก Entity และ M:N</figcaption>
       </figure>
       <figure class="diagram">
-        <img src="assets/slides/slide_0004_1215.jpg" alt="สไลด์ ER Diagram มือเขียน Dept Employee Project ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0004_1215.jpg" alt="สไลด์ ER Diagram มือเขียน Dept Employee Project ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0004): ER มือเขียนฉบับสมบูรณ์ — Employee (Work-In M:1 Department, Manage 1:1, Work-Proj M:N Project) พร้อม Attribute ครบ: Dept Code/Dept Name/Tel, Emp ID, St-MgnDate, Proj Code/Proj Name/Work Hours</figcaption>
       </figure>
       <div class="box box-warn">
@@ -321,7 +321,7 @@ erDiagram
       </pre>
       <p class="mermaid-caption">ภาพ ER 2: Food and Drink — ต้องมี Receipt คั่นกลางระหว่าง Customer กับ Product เสมอ (บนความสัมพันธ์ M:N มี Qty, Price, Discount)</p>
 <figure class="diagram">
-        <img src="assets/slides/slide_0009_2880.jpg" alt="สไลด์ ER Diagram มือเขียนร้านอาหาร ลูกค้า รายการ สินค้า ประเภทสินค้า ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0009_2880.jpg" alt="สไลด์ ER Diagram มือเขียนร้านอาหาร ลูกค้า รายการ สินค้า ประเภทสินค้า ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0009): ER มือเขียน — ลูกค้า (รหัส, Name) → รายการ (Date, แต้มสม้น?, Total) → สินค้า (Code, Name, CostUnit) และประเภทสินค้า (Code, Name, PriceUnit, CostUnit) พร้อม M:N และ "??" ที่อาจารย์ทิ้งไว้ให้คิดว่า PriceUnit ควรอยู่ที่ไหน</figcaption>
       </figure>
       <div class="box box-warn">
@@ -340,7 +340,7 @@ erDiagram
       </pre>
       <p class="mermaid-caption">ภาพ ER 3: BOM — "ชุดเซ็ตก็คือสินค้าตัวหนึ่ง" ที่มีสูตรประกอบ (M:N กับตัวเอง) เช่น ชุด A ประกอบจากแก้ว + กาแฟ + น้ำตาล</p>
 <figure class="diagram">
-        <img src="assets/slides/slide_0010_1620.jpg" alt="สไลด์ BOM ตารางวัตถุดิบและชุดเซ็ตของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0010_1620.jpg" alt="สไลด์ BOM ตารางวัตถุดิบและชุดเซ็ตของอาจารย์" loading="lazy" width="854" height="480" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0010): กระดานไล่ดีไซน์ — ลูกค้า–รายการ–สินค้า–ประเภทสินค้า และวงแดงประ (ตัวอย่างชุดเซ็ต) ที่อาจารย์ใช้โชว์ว่า "ชุดเซ็ต = Product ที่มีสูตร BOM ย่อยลงไป" พร้อมเครื่องหมายถูก/กากบาทดีไซน์ที่ผิด</figcaption>
       </figure>
       <div class="box box-warn">
@@ -364,7 +364,7 @@ erDiagram
       </pre>
       <p class="mermaid-caption">ภาพ ER 4: SCM — โครง Header-Detail 3 ชุด: สั่งซื้อเข้า HQ / โอนไปสาขา / ขายหน้าร้าน ล้วนเป็น "ใบหลัก + รายการย่อย + M:N กับสินค้า"</p>
 <figure class="diagram">
-        <img src="assets/slides/slide_0011_2220.jpg" alt="สไลด์ ER Diagram มือเขียน SCM Supplier Album ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0011_2220.jpg" alt="สไลด์ ER Diagram มือเขียน SCM Supplier Album ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0011): ER มือเขียน SCM — Supplier (รหัส ชื่อ Tel ที่อยู่ composite อีเมล โทรศัพท์) → ใบสั่งซื้อ (M) → Album (Qty, ราคาทุน) พร้อมตารางราคาทุนฉบับจริงที่อาจารย์ไล่ให้ดูว่าของชุดเดียวกันราคาทุนต่างกันตามรอบสั่ง</figcaption>
       </figure>
       <div class="box box-tip">
@@ -385,7 +385,7 @@ erDiagram
       </pre>
       <p class="mermaid-caption">ภาพ ER 5: Condo — ผู้เช่า/ผู้ซื้อต้องผ่าน "สัญญา" ก่อนถึงห้องเสมอ (เก็บประวัติเปลี่ยนมือได้)</p>
 <figure class="diagram">
-        <img src="assets/slides/slide_0013_3970.jpg" alt="สไลด์ ER Diagram มือเขียนคอนโดขายและเช่า ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <img src="assets/slides/slide_0013_3970.jpg" alt="สไลด์ ER Diagram มือเขียนคอนโดขายและเช่า ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0013): ER มือเขียนคอนโด — ผู้ซื้อ → ซื้อขาย → Room (Code, เลขห้อง) → ผู้เช่า → สัญญาเช่า → ผู้ค้ำประกัน → ผู้พักอาศัย (Weak Entity) พร้อม cardinality ทุกเส้น — วงเขียวใหญ่คือช่วง "ตัดสินใจหลัก" ของอาจารย์</figcaption>
       </figure>
       <div class="box box-warn">
