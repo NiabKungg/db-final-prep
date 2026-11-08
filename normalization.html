@@ -557,15 +557,58 @@ flowchart LR
         <tr><td>เนตรนภา</td><td>MySQL</td><td>MIS</td></tr>
       </table></div>
       <div class="box box-mem">
-        <p class="box-title">🧠 เฉลยตามสูตร 4NF</p>
-        <p><strong>ไล่จริงทีละคน:</strong> ดูเนตรนภา (มี 4 แถว) — Skill = {M.Excel, MySQL} และ Project = {การวิจัยตลาด, MIS}
-        ตารางมีครบทุกคู่ 2×2 = 4 แถวพอดี (M.Excel × ทั้งสองโปรเจกต์, MySQL × ทั้งสองโปรเจกต์)
-        ดูลุมฟา (มี 2 แถว) — Skill = {M.Word, M.Excel}, Project = {การวิจัยตลาด} ก็ครบ 2×1 = 2<br>
-        = <code>Employee →→ Skill</code> และ <code>Employee →→ Project</code> โดยสองกลุ่มอิสระกัน → <strong>ไม่ผ่าน 4NF</strong> ❌<br>
-        <strong>ทดสอบปัญหาจริง:</strong> เนตรนภาเรียนเพิ่ม Python = ต้องเพิ่ม <strong>2 แถว</strong> (ต่อโปรเจกต์ทั้งสองอัน) ทั้งที่แค่ "เรียน Python 1 อย่าง"<br>
-        <strong>Split:</strong> <code>Employee_Skill(Employee, Skill)</code> = {(ลุมฟา,M.Word), (ลุมฟา,M.Excel), (เนตรนภา,M.Excel), (เนตรนภา,MySQL)} — 4 แถว
-        + <code>Employee_Project(Employee, Project)</code> = {(ลุมฟา,การวิจัยตลาด), (เนตรนภา,การวิจัยตลาด), (เนตรนภา,MIS)} — 3 แถว
-        → เพิ่ม Python = เพิ่มแค่ 1 แถวพอ ✅ — JOIN กลับได้ 6 แถวเดิมเป๊ะ</p>
+        <p class="box-title">🧠 เฉลยละเอียดทีละขั้น (ตามสูตร 4NF) — โจทย์: ตารางนี้อยู่ใน 4NF หรือไม่?</p>
+
+        <p><strong>ขั้นที่ 1: นับข้อมูลจริงของแต่ละคน — แยกเป็น 2 กลุ่มที่ไม่เกี่ยวกัน</strong></p>
+        <ul>
+          <li><strong>ลุมฟา</strong> → Skill = {M.Word, M.Excel} (2 อย่าง) • Project = {การวิจัยตลาด} (1 อัน)</li>
+          <li><strong>เนตรนภา</strong> → Skill = {M.Excel, MySQL} (2 อย่าง) • Project = {การวิจัยตลาด, MIS} (2 อัน)</li>
+        </ul>
+
+        <p><strong>ขั้นที่ 2: ตรวจว่า Skill กับ Project "ผูกกัน" หรือ "อิสระกัน"</strong></p>
+        <p>ดูเนตรนภาในตาราง — M.Excel ปรากฏกับ <strong>ทั้ง</strong> การวิจัยตลาด และ MIS • MySQL ก็ปรากฏกับ <strong>ทั้งสองโปรเจกต์</strong>เช่นกัน
+        แปลว่าไม่มีกฎว่า "ทักษะนี้ใช้กับโปรเจกต์นี้เท่านั้น" — ทักษะกับโปรเจกต์<strong>จับคู่กันได้ทุกแบบ</strong> = <strong>อิสระกันโดยสิ้นเชิง</strong></p>
+
+        <p><strong>ขั้นที่ 3: เพราะอิสระกัน → เกิด MVD และตารางต้องเก็บ "ผลคูณทุกคู่"</strong></p>
+        <p><code>Employee →→ Skill</code> (คนหนึ่งมีหลายทักษะ) และ <code>Employee →→ Project</code> (คนหนึ่งทำหลายโปรเจกต์)
+        เพราะสองอย่างอิสระกัน ตาราง 3 คอลัมน์นี้ต้องเก็บ<strong>ครบทุกคู่ที่จับกันได้</strong>:</p>
+        <ul>
+          <li>เนตรนภา: 2 ทักษะ × 2 โปรเจกต์ = <strong>4 แถว</strong> (M.Excel×การวิจัยตลาด, M.Excel×MIS, MySQL×การวิจัยตลาด, MySQL×MIS)</li>
+          <li>ลุมฟา: 2 ทักษะ × 1 โปรเจกต์ = <strong>2 แถว</strong></li>
+          <li>รวม 4 + 2 = <strong>6 แถว = ตรงกับตารางโจทย์เป๊ะ</strong> — พิสูจน์แล้วว่าเป็น MVD จริง</li>
+        </ul>
+
+        <p><strong>ขั้นที่ 4: ทดสอบ "ความบวมของแถว" — จุดที่ทำให้ 4NF ห้าม</strong></p>
+        <ul>
+          <li>เนตรนภาเรียนเพิ่ม Python (<strong>1 อย่าง</strong>) → ต้องเพิ่ม <strong>2 แถว</strong>: (เนตรนภา, Python, การวิจัยตลาด) + (เนตรนภา, Python, MIS) — เพราะถ้าใส่แถวเดียว เราจะไม่รู้ว่า Python ใช้กับอีกโปรเจกต์ด้วยหรือไม่</li>
+          <li>เธอได้โปรเจกต์ใหม่ 1 อัน → ต้องเพิ่มอีก 2 แถว (ต่อ Skill ทุกอย่างที่มีอยู่)</li>
+        </ul>
+        <p>→ ข้อมูลเพิ่ม 1 ชิ้นแต่ตารางบวมหลายแถว = <strong>ไม่ผ่าน 4NF ❌</strong></p>
+
+        <p><strong>ขั้นที่ 5: Split — แยก 2 กลุ่มที่อิสระกันออกจากกัน (แต่ละตารางเก็บ MVD เดียว)</strong></p>
+
+        <p><strong>ตารางที่ 1: Employee_Skill</strong> — ตัด Project ทิ้ง เหลือแค่ "ใครมีทักษะอะไร" (4 แถว)</p>
+        <div class="tbl-wrap"><table class="tbl nowrap compact">
+          <tr><th>Employee 🔑</th><th>Skill 🔑</th></tr>
+          <tr><td>ลุมฟา</td><td>M.Word</td></tr>
+          <tr><td>ลุมฟา</td><td>M.Excel</td></tr>
+          <tr><td>เนตรนภา</td><td>M.Excel</td></tr>
+          <tr><td>เนตรนภา</td><td>MySQL</td></tr>
+        </table></div>
+
+        <p><strong>ตารางที่ 2: Employee_Project</strong> — ตัด Skill ทิ้ง เหลือแค่ "ใครทำโปรเจกต์ไหน" (3 แถว)</p>
+        <div class="tbl-wrap"><table class="tbl nowrap compact">
+          <tr><th>Employee 🔑</th><th>Project 🔑</th></tr>
+          <tr><td>ลุมฟา</td><td>การวิจัยตลาด</td></tr>
+          <tr><td>เนตรนภา</td><td>การวิจัยตลาด</td></tr>
+          <tr><td>เนตรนภา</td><td>MIS</td></tr>
+        </table></div>
+
+        <p><strong>ขั้นที่ 6: พิสูจน์ Lossless — JOIN กลับบน Employee</strong></p>
+        <p>ลุมฟา: 2 Skill × 1 Project = 2 แถว • เนตรนภา: 2 Skill × 2 Project = 4 แถว → รวม <strong>6 แถว = ตรงตารางเดิมเป๊ะ</strong> ✅</p>
+        <p><strong>ทดสอบซ้ำด้วยสถานการณ์เดิม:</strong> เนตรนภาเรียน Python เพิ่ม → เพิ่มแถวเดียว (เนตรนภา, Python) ใน Employee_Skill พอ — ไม่ต้องแตะ Employee_Project เลย ✅</p>
+
+        <p><strong>สรุปบรรทัดเดียว:</strong> ข้อมูล 2 กลุ่มที่ "หลายค่า + อิสระกัน" (Skill กับ Project ไม่เกี่ยวกัน) ต้องแยกตาราง — นี่คือสาระของ 4NF</p>
       </div>
       <figure class="diagram">
         <img src="assets/docpages/nf4ex_skillproj_p01.jpg" alt="โจทย์ 4NF ตัวจริงของอาจารย์ Employee Skill Project ลุมฟา เนตรนภา" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
