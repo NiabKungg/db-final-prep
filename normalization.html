@@ -81,7 +81,7 @@ flowchart TD
       <p class="mermaid-caption">ภาพที่ 1: บันได Normalization — ขึ้นทีละขั้น ต้องผ่านขั้นล่างก่อนเสมอ</p>
 
       <div class="box box-basics">
-        <p class="box-title">📚 ศัพท์ที่ต้องรู้ก่อนอ่านต่อ</p>
+        <p class="box-title">📚 ศัพท์เร่งด่วน 3 ตัว — ศัพท์อื่น ๆ มีกล่อง 📖 อธิบายแทรกตรงจุดที่ใช้ครั้งแรกทั่วทั้งหน้า</p>
         <ul>
           <li><strong>PK</strong> = คีย์หลักระบุแถวไม่ซ้ำ • <strong>CK (Candidate Key)</strong> = คีย์คู่แข่งทุกตัวที่ระบุแถวได้แบบน้อยที่สุด • <strong>Non-key</strong> = คอลัมน์ที่ไม่ใช่คีย์ (ตัวปัญหาของทุก NF!)</li>
           <li><strong>FD (X → Y)</strong> = Functional Dependency: รู้ค่า X 1 ค่า ระบุค่า Y ได้<strong>เพียงค่าเดียวเสมอ</strong> เช่น รู้รหัสพนักงาน → รู้ชื่อ</li>
@@ -89,33 +89,7 @@ flowchart TD
         </ul>
       </div>
 
-      <h2>📖 ศัพท์เฉพาะที่ใช้ในบทนี้ (Glossary) — อ่านก่อนเดินตาราง</h2>
-      <p>ทุกครั้งที่เห็นคำว่า "วิเคราะห์ FD" หรือ "ตัด Partial Dependency" ในหน้านี้ ให้กลับมาดูตารางนี้ — อธิบายด้วยภาษาคน พร้อมตัวอย่างจากตาราง SupplyPart ของอาจารย์</p>
-      <div class="tbl-wrap"><table class="tbl">
-        <tr><th>ศัพท์</th><th>อ่านว่า</th><th>ความหมายแบบเข้าใจง่าย</th><th>เห็นจากตาราง SupplyPart</th></tr>
-        <tr><td><strong>Attribute</strong></td><td>แอตทริบิวต์</td><td>คอลัมน์ 1 คอลัมน์ของตาราง</td><td>Sname, City, Qty</td></tr>
-        <tr><td><strong>Atomic Value</strong></td><td>อะตอมมิก</td><td>ค่าที่แยกย่อยไม่ได้อีก — 1 ช่อง = 1 ค่า ห้ามยัดหลายค่า</td><td>ช่อง City = "Paris" ค่าเดียว</td></tr>
-        <tr><td><strong>Repeating Group</strong></td><td>รีพีตติง กรุ๊ป</td><td>กลุ่มแถวที่ช่องบางช่องว่างลอย (เกิดจาก 1 รายการจริงมีหลายบรรทัดย่อย)</td><td>S2 สั่ง 2 รายการ — แถว P5 Cam ช่อง S# ว่าง</td></tr>
-        <tr><td><strong>Primary Key (PK)</strong></td><td>พรายมารี คีย์</td><td>คอลัมน์/กลุ่มคอลัมน์ที่ระบุแถวได้ไม่ซ้ำ ห้ามซ้ำ ห้ามว่าง</td><td>(S#, P#)</td></tr>
-        <tr><td><strong>Candidate Key (CK)</strong></td><td>แคนดิเดต คีย์</td><td>คีย์ทุกตัวที่ระบุแถวได้แบบ "น้อยที่สุด" — PK คือ CK ที่ถูกเลือกมา 1 ตัว</td><td>ตาราง Advisor: (Std,Subj) และ (Std,Adv)</td></tr>
-        <tr><td><strong>Non-key attribute</strong></td><td>นอน-คีย์</td><td>คอลัมน์ที่ไม่ได้เป็นคีย์ — ตัวปัญหาของทุก NF</td><td>Sname, City, Status, Pname, Qty</td></tr>
-        <tr><td><strong>FD (Functional Dependency)</strong></td><td>เอฟ-ดี<br>ฟังก์ชันนัล ดีเพนเดนซี</td><td>ความสัมพันธ์แบบ <strong>"รู้ฝั่งซ้าย = รู้ฝั่งขวาทันทีเสมอ"</strong> เขียนว่า X → Y (X กำหนด Y) — "วิเคราะห์ FD" คือการไล่หาคู่แบบนี้ให้ครบทุกคอลัมน์</td><td>S# → Sname (รู้รหัส S1 = รู้ชื่อ Smith ทันที)</td></tr>
-        <tr><td><strong>Determinant</strong></td><td>ดีเทอร์มิแนนต์</td><td>ฝั่งซ้ายของ FD = "ตัวกำหนดค่า" (ใน X → Y คือ X)</td><td>S# และ P# ในตาราง 1NF</td></tr>
-        <tr><td><strong>FFD (Full FD)</strong></td><td>เอฟเอฟดี</td><td>ขึ้นกับ PK <strong>"ทั้งก้อน"</strong> — เอาส่วนใดส่วนหนึ่งออกไม่ได้แล้ว</td><td>(S#, P#) → Qty</td></tr>
-        <tr><td><strong>Partial Dependency</strong></td><td>พาร์เชียล<br>ดีเพนเดนซี</td><td>Non-key ขึ้นกับ PK เพียง <strong>"บางส่วน"</strong> (เกิดเฉพาะเมื่อ PK เป็นคีย์ผสม) — สาเหตุที่ต้องทำ 2NF</td><td>S# → Sname (รู้แค่ S# ก็รู้ ทั้งที่ PK มี 2 คอลัมน์)</td></tr>
-        <tr><td><strong>Transitive Dependency</strong></td><td>ทรานซิทีฟ<br>ดีเพนเดนซี</td><td>Non-key กำหนดค่า Non-key อีกตัว — เกิด "สายโซ่" X → Y → Z โดย X=PK แต่ Y, Z เป็น Non-key — สาเหตุที่ต้องทำ 3NF</td><td>S# → City → Status</td></tr>
-        <tr><td><strong>Decomposition</strong></td><td>ดีคอมโพซิชัน</td><td>การสปลิตตารางใหญ่ 1 ตารางออกเป็นหลายตารางย่อยที่เชื่อมกันด้วย FK</td><td>1NF แตกเป็น S_2NF, P_2NF, SP_2NF</td></tr>
-        <tr><td><strong>Prime Attribute</strong></td><td>ไพรม์</td><td>คอลัมน์ที่เป็น "ส่วนหนึ่งของ CK ใด ๆ" — ตัวตัดสินว่าผ่าน 3NF แต่ BCNF หรือไม่</td><td>Subject ในตาราง Advisor (เป็นส่วนของ CK)</td></tr>
-        <tr><td><strong>MVD (Multivalued Dependency)</strong></td><td>เอ็มวีดี</td><td>รู้ X 1 ค่า ได้<strong>"เซตของ Y หลายค่า"</strong> โดย Y อิสระจาก Z ในตารางเดียวกัน (เขียน X →→ Y) — สาเหตุที่ต้องทำ 4NF</td><td>Course →→ Teacher และ Course →→ Text_Book</td></tr>
-        <tr><td><strong>Join Dependency (JD)</strong></td><td>เจดี</td><td>ความสัมพันธ์ "สามเส้า" ที่ต้องแตกครบ 3 คู่ แล้ว JOIN กลับถึงจะได้ตารางเดิม — สาเหตุที่ต้องทำ 5NF</td><td>*((Supplier,Part),(Part,Project),(Supplier,Project))</td></tr>
-        <tr><td><strong>Lossless Join</strong></td><td>ลอสเลส จอยน์</td><td>แตกแล้ว JOIN กลับได้ข้อมูลเดิม 100% — ไม่หาย ไม่เกิน</td><td>การสปลิต 2NF/3NF ทุกครั้งต้อง lossless</td></tr>
-        <tr><td><strong>Spurious Tuple</strong></td><td>สเปียเรียส ทูเพิล</td><td>"แถวหลอก" ที่โผล่มาหลัง JOIN ตารางที่แตกไม่ถูกวิธี — ข้อมูลที่ไม่เคยมีอยู่จริง</td><td>(S2, P1, J2) ในตัวอย่าง 5NF</td></tr>
-      </table></div>
-      <div class="box box-mem">
-        <p class="box-title">🧠 จำสั้น ๆ: FD ดูยังไงในข้อสอบ</p>
-        <p>ยึดหลักเดียว: <strong>"รู้ฝั่งซ้ายแล้ว รู้ฝั่งขวาทันทีไหม?"</strong> — ถ้าโจทย์ให้ตารางข้อมูล ให้เทียบแถวจริง:
-        คอลัมน์เดียวกันค่าเดียวกัน แล้วคอลัมน์อื่นค่าเดิมทุกครั้ง = มี FD • ค่าเดียวกันแต่คอลัมน์อื่น<em>ไม่</em>คงที่ = ไม่มี FD</p>
-      </div>
+
 
       <hr class="sep">
 
@@ -156,6 +130,14 @@ flowchart TD
           <li><strong>ไม่มี PK:</strong> ยังระบุแถวด้วยคอลัมน์ใดคอลัมน์เดียวไม่ได้เลย</li>
         </ul>
       </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: Repeating Group</span> <span class="term-read">— อ่านว่า "รีพีตติง กรุ๊ป (กลุ่มซ้ำ)"</span></p>
+        <p><strong>ความหมาย:</strong> กลุ่มแถวที่มาจาก "รายการจริง 1 รายการ แต่มีหลายบรรทัดย่อย" ทำให้ช่องบางช่องต้องว่างลอย — เป็นสัญญาณอันดับแรกว่าตารางยังไม่ผ่าน 1NF<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> S2 สั่งสินค้า 2 รายการ → แถว P5 Cam ต้องเป็นของ S2 แต่ช่อง S#/Sname/City กลับว่างลอย</p>
+      </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: Atomic Value</span> <span class="term-read">— อ่านว่า "อะตอมมิก (ค่าอะตอม)"</span></p>
+        <p><strong>ความหมาย:</strong> ค่าที่แยกย่อยไม่ได้อีก — 1 ช่อง = 1 ค่า ห้ามยัดหลายค่า เช่น ห้ามเขียน "P3, P5" ในช่องเดียว<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> ช่อง City = "Paris" ค่าเดียวจบ = Atomic ✅</p>
+      </div>
 
       <h3>📈 ตารางหลังแปลง (1NF) — เติมข้อมูลซ้ำลงทุกช่องว่าง</h3>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
@@ -184,6 +166,10 @@ flowchart TD
         </ol>
         <p>⚠️ ข้อสังเกต: 1NF <strong>ยังไม่ลดความซ้ำ</strong> — Jones/Paris ซ้ำ 2 แถว, Adam/Athens ซ้ำ 6 แถว, P3 Screw ซ้ำ 3 แถว — ความซ้ำพวกนี้คือสาเหตุที่ต้องไปต่อ 2NF</p>
       </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: Primary Key (PK) / Composite Key</span> <span class="term-read">— อ่านว่า "พรายมารี คีย์ / คีย์ผสม"</span></p>
+        <p><strong>ความหมาย:</strong> PK = คอลัมน์(หรือกลุ่มคอลัมน์)ที่ระบุแถวได้<strong>ไม่ซ้ำ</strong> ห้ามว่าง — Composite Key คือ PK ที่ต้องใช้ <strong>2 คอลัมน์ขึ้นไปประกอบกัน</strong> ถึงจะระบุแถวได้<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> S# เดี่ยว ๆ ซ้ำ (S2, S5 โผล่หลายแถว), P# เดี่ยว ๆ ก็ซ้ำ (P3 โผล่ 3 แถว) → ต้องใช้ (S#, P#) คู่กันถึงระบุแถวได้พอดี</p>
+      </div>
 <figure class="diagram">
         <img src="assets/docpages/nf123_p01.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 1 นิยาม 1NF และตาราง SupplyPart" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📄 หนังสือเรียนของอาจารย์ (Normalization, หน้า 1/10): นิยาม 1NF + ตาราง SupplyPart ตั้งต้น — สรุปสีแดงของอาจารย์: "1NF: ตารางไม่มีค่าอะเรย์ของ Column ในแต่ละ Row"</figcaption>
@@ -195,6 +181,14 @@ flowchart TD
       ขั้นนี้ไม่ได้เปลี่ยนข้อมูล แต่<strong>วิเคราะห์ FD แล้วสปลิตตาราง</strong></p>
 
       <h3>🔍 วิเคราะห์ FD ทั้งหมดของตาราง 1NF</h3>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: FD (Functional Dependency)</span> <span class="term-read">— อ่านว่า "เอฟ-ดี (ฟังก์ชันนัล ดีเพนเดนซี)"</span></p>
+        <p><strong>ความหมาย:</strong> ความสัมพันธ์แบบ <strong>"รู้ฝั่งซ้าย = รู้ฝั่งขวาทันทีเสมอ"</strong> เขียนว่า X → Y (อ่านว่า X กำหนด Y) — ดังนั้นคำว่า "วิเคราะห์ FD" คือ <strong>การไล่หาคู่แบบนี้ให้ครบทุกคอลัมน์</strong> โดยเทียบจากข้อมูลจริงในตาราง<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> รู้ S# = S1 → รู้ทันทีว่า Sname = Smith (ทุกแถวที่ S#=S1 ชื่อเดิมเสมอ) = มี FD ว่า S# → Sname</p>
+      </div>
+      <div class="term">
+        <p><span class="term-word">📖 ศัพท์: Determinant</span> <span class="term-read">— อ่านว่า "ดีเทอร์มิแนนต์ (ตัวกำหนดค่า)"</span></p>
+        <p><strong>ความหมาย:</strong> ฝั่งซ้ายของ FD — ใน X → Y ตัว X นั่นแหละคือ Determinant (เวลาอาจารย์พูด "สปลิตตาม Determinant" หมายถึง ให้แยกตารางโดยยึดฝั่งซ้ายของ FD เป็นหลัก)<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> ใน S# → Sname, Determinant คือ S#</p>
+      </div>
       <pre class="mermaid">
 flowchart LR
   SP(("(S#, P#)<br>Pk คีย์ผสม")) -->|"FFD ✅<br>รู้ทั้งคู่ถึงรู้ Qty"| QTY["Qty"]
@@ -211,6 +205,14 @@ flowchart LR
           <li>Qty ล่ะ? (S1,P1)=200 แต่ (S5,P1)=100 — S# เดิม P# ต่าง Qty ต่าง / (S2,P3)=400 แต่ (S3,P3)=200 — P# เดิม S# ต่าง Qty ต่าง → ต้องรู้<strong>ทั้งคู่</strong>จึงรู้ Qty = <code>(S#, P#) → Qty</code> ✅ <strong>FFD</strong> (Fully Functional Dependency)</li>
         </ul>
       </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: FFD (Full Functional Dependency)</span> <span class="term-read">— อ่านว่า "เอฟเอฟดี (การขึ้นกันแบบสมบูรณ์)"</span></p>
+        <p><strong>ความหมาย:</strong> Non-key ที่ขึ้นกับ PK <strong>"ทั้งก้อน"</strong> — เอาส่วนใดส่วนหนึ่งของ PK ออกแล้วรู้ค่าไม่ได้อีกเลย นี่คือแบบที่ถูกต้อง ไม่ต้องแก้อะไร<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> Qty: (S1,P1)=200 แต่ (S5,P1)=100 → รู้แค่ S# หรือแค่ P# ไม่พอ ต้องรู้ทั้งคู่ = FFD ✅</p>
+      </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: Partial Dependency</span> <span class="term-read">— อ่านว่า "พาร์เชียล ดีเพนเดนซี (การขึ้นกันบางส่วน)"</span></p>
+        <p><strong>ความหมาย:</strong> เมื่อ PK เป็น<strong>คีย์ผสม</strong> แล้วมี Non-key ที่ขึ้นกับ PK เพียง "บางส่วน" (รู้แค่ครึ่งเดียวของ PK ก็รู้ค่านั้นแล้ว) — นี่คือสิ่งที่ 2NF สั่งห้าม<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> S# → Sname: รู้แค่ S# (ครึ่งเดียวของ PK) ก็รู้ Sname แล้ว = Partial ❌</p>
+      </div>
 
       <p><strong>แก้: สปลิตตาม Determinant — กลุ่ม FD ไหนขึ้นกับใคร ก็ไปอยู่ตารางของมัน</strong></p>
       <pre class="mermaid">
@@ -221,6 +223,10 @@ flowchart TD
   R --> SP2["SP_2NF(S#, P#, Qty)<br>PK: (S#, P#) — 12 แถว<br>เพราะ (S#, P#) → Qty"]
       </pre>
       <p class="mermaid-caption">ภาพที่ 3: ต้นไม้การสปลิต 2NF — 1 ตารางใหญ่กลายเป็น 3 ตารางย่อย</p>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: Decomposition</span> <span class="term-read">— อ่านว่า "ดีคอมโพซิชัน (การแยกตาราง)"</span></p>
+        <p><strong>ความหมาย:</strong> การสปลิตตารางใหญ่ 1 ตารางออกเป็นหลายตารางย่อยที่เชื่อมกันด้วย FK — เงื่อนไขเดียวที่ห้ามลืม: <strong>ต้อง Lossless</strong> (JOIN กลับแล้วได้ข้อมูลเดิมครบ 100% ไม่หาย ไม่เกิน)<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> การแยก 2NF ข้างบน: 1 ตาราง → 3 ตาราง ข้อมูลครบทุกคอลัมน์ ไม่มีอะไรหาย</p>
+      </div>
 
       <h3>📈 ตารางหลังแปลง (2NF) — 3 ตาราง</h3>
 
@@ -303,6 +309,10 @@ flowchart LR
         <p>ดูตาราง S_2NF: <strong>London มี Status 20 เสมอ</strong> (ทั้ง S1 และ S4) • <strong>Paris มี Status 10 เสมอ</strong> (ทั้ง S2 และ S3) • Athens = 30<br>
         แปลว่า <code>City → Status</code> (รู้เมือง = รู้สถานะ ไม่ต้องรู้รหัสพนักงาน) — เกิดสายโซ่ <code>S# → City → Status</code>
         โดยที่ City และ Status เป็น Non-key ทั้งคู่ = <strong>Transitive Dependency ❌</strong></p>
+      </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: Transitive Dependency</span> <span class="term-read">— อ่านว่า "ทรานซิทีฟ ดีเพนเดนซี (การขึ้นกันเชิงส่งผ่าน)"</span></p>
+        <p><strong>ความหมาย:</strong> Non-key กำหนดค่าให้ Non-key อีกตัว — เกิด "สายโซ่" X → Y → Z โดย X = PK แต่ Y และ Z เป็น Non-key ทั้งคู่ — นี่คือสิ่งที่ 3NF สั่งห้าม<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> S# → City → Status: รู้ City = "Paris" ก็รู้ Status = 10 ทันที โดยไม่ต้องรู้ S#</p>
       </div>
 
       <h3>📈 ตารางหลังแปลง (3NF) — S ถูกแบ่งเป็น 2 ตาราง</h3>
@@ -388,6 +398,10 @@ flowchart LR
           <strong>BCNF ไม่ยอม:</strong> Advisor_Name คือ Determinant แต่<strong>ไม่ใช่ CK ทั้งตัว</strong> → ไม่ผ่าน BCNF ❌</li>
         </ul>
       </div>
+      <div class="term">
+        <p><span class="term-word">📖 ศัพท์: Prime Attribute</span> <span class="term-read">— อ่านว่า "ไพรม์ แอตทริบิวต์" (คอลัมน์สำคัญ)</span></p>
+        <p><strong>ความหมาย:</strong> คอลัมน์ที่เป็น "ส่วนหนึ่งของ Candidate Key ใด ๆ" — ตัวตัดสิน 3NF vs BCNF: 3NF ยอมให้ Determinant ไม่ใช่ CK ได้ <em>เฉพาะเมื่อ</em> ฝั่งที่ถูกกำหนด (Y) เป็น Prime Attribute<br><strong>ตัวอย่างจากตาราง Advisor:</strong> Subject เป็นส่วนหนึ่งของ CK (Student_ID, Subject) = Prime → 3NF จึงยอม FD: Advisor_Name → Subject ได้</p>
+      </div>
 
       <h3>📈 ตารางหลังแปลง (BCNF) — แยกฝั่ง Determinant ออกไปตั้งตารางใหม่</h3>
 
@@ -459,6 +473,10 @@ flowchart LR
         <p>อาจารย์ 2 คน × หนังสือ 2 เล่ม = <strong>4 แถวเป๊ะ ๆ</strong> — ข้อมูลจริงมีแค่ 2+2 = 4 ชิ้น แต่เก็บเป็น 4 คู่จับกัน
         เพิ่มหนังสือ 1 เล่ม = ต้องเพิ่ม 2 แถว (หนึ่งแถวต่ออาจารย์) เพิ่มอาจารย์ 1 คน = อีก 2 แถว<br>
         นี่คือ MVD: <code>Course →→ Teacher</code> และ <code>Course →→ Text_Book</code> ที่<strong>อิสระกันโดยสิ้นเชิง</strong></p>
+      </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: MVD (Multivalued Dependency)</span> <span class="term-read">— อ่านว่า "เอ็มวีดี (การขึ้นกันหลายค่า)"</span></p>
+        <p><strong>ความหมาย:</strong> รู้ X 1 ค่า ได้<strong>"เซตของ Y หลายค่า"</strong> เขียน X →→ Y (ลูกศรสองหัว) — และ Y ต้องเป็นอิสระจากคอลัมน์อื่น (Z) โดยสิ้นเชิง ถ้า Y กับ Z เกี่ยวกัน = ไม่ใช่ MVD — นี่คือสิ่งที่ 4NF สั่งห้าม<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> Course = Physics → อาจารย์ {Green, Brown} และหนังสือ {Basic, University} ครบทุกคู่ 2×2 = 4 แถว = MVD</p>
       </div>
 
       <h3>📈 ตารางหลังแปลง (4NF) — แยก 2 กลุ่มที่อิสระกันออกจากกัน</h3>
@@ -537,6 +555,10 @@ flowchart LR
 
       <p>ความสัมพันธ์<strong>สามเส้า (Ternary)</strong>: ใคร (Supplier) ส่งชิ้นส่วนอะไร (Part) ให้โครงการไหน (Project)
       — เกิด JD: <code>*((Supplier, Part), (Part, Project), (Supplier, Project))</code></p>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: JD (Join Dependency)</span> <span class="term-read">— อ่านว่า "เจดี (การขึ้นกันแบบเชื่อมโยง)"</span></p>
+        <p><strong>ความหมาย:</strong> ความสัมพันธ์ "สามเส้า" ที่ต้องแตกครบทั้ง 3 คู่ (A,B), (B,C), (A,C) แล้ว JOIN กลับพร้อมกันถึงจะได้ตารางเดิม — นี่คือสิ่งที่ 5NF จัดการ (5NF จึงถูกเรียกอีกชื่อว่า PJNF = Project-Join NF)<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> SPJ: ต้องเก็บครบ (Supplier,Part), (Part,Project), (Supplier,Project) — ขาดคู่ใด JOIN กลับไม่ครบ</p>
+      </div>
 
       <h3>📉 ตารางก่อนแปลง (ผ่าน 4NF แล้ว — แต่ยังแตก 5NF ได้)</h3>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
@@ -579,6 +601,14 @@ flowchart LR
         (S2, P1) จาก SP เจอ (P1, J2) จาก PJ → เกิดแถวใหม่ <code>(S2, P1, J2)</code> ❌<br>
         ทั้งที่ข้อมูลจริง<strong>ไม่เคยมี</strong> S2 ส่ง P1 ให้ J2 — นี่คือ <strong>Spurious Tuple (ข้อมูลหลอก)</strong><br>
         แต่พอ JOIN ครบทั้ง 3 ตาราง SJ จะไม่มี (S2, J2) มาให้ แถวหลอกถูกตัดทิ้ง → ได้ตารางเดิม 4 แถวพอดี ✅ (Lossless)</p>
+      </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: Spurious Tuple</span> <span class="term-read">— อ่านว่า "สเปียเรียส ทูเพิล (แถวหลอก)"</span></p>
+        <p><strong>ความหมาย:</strong> แถวข้อมูลปลอมที่โผล่มาหลัง JOIN ตารางที่แตกไม่ถูกวิธี — เป็นข้อมูลที่<strong>ไม่เคยมีอยู่จริง</strong> แต่ปรากฏในผลลัพธ์ อันตรายมากเพราะดูไม่ออก<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> (S2, P1, J2) — ไม่เคยมี S2 ส่ง P1 ให้ J2 แต่แถวนี้โผล่มาหลัง JOIN แค่ 2 ตาราง</p>
+      </div>
+<div class="term">
+        <p><span class="term-word">📖 ศัพท์: Lossless Join</span> <span class="term-read">— อ่านว่า "ลอสเลส จอยน์ (การรวมกลับแบบไม่สูญเสีย)"</span></p>
+        <p><strong>ความหมาย:</strong> การแตกตารางที่ "JOIN กลับแล้วได้ข้อมูลเดิมครบ 100%" — ไม่หาย ไม่เกิน — ทุกการสปลิตใน Normalization ต้อง lossless เสมอ ถ้าแตกแล้วเกิดแถวหลอก = แตกผิด<br><strong>ตัวอย่างจากตาราง SupplyPart:</strong> การแตก 2NF/3NF ทั้งหมดในหน้านี้ lossless — ส่วนการแตก 5NF ต้องแตกครบ 3 คู่จึงจะ lossless</p>
       </div>
 
       <div class="box box-analogy">

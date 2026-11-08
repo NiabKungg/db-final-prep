@@ -501,6 +501,20 @@ details.sol .sol-body { padding: 0 18px 14px; border-top: 1px dashed var(--line)
   transition: width .1s;
 }
 
+/* ---------- Term card (ศัพท์เฉพาะแทรกตรงจุดใช้) ---------- */
+.term {
+  background: #fbfaff;
+  border: 1.5px dashed #c9c2f0;
+  border-left: 5px solid var(--accent);
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin: 16px 0;
+  font-size: .95rem;
+}
+.term p { margin: 3px 0; }
+.term .term-word { font-weight: 800; color: var(--accent); }
+.term .term-read { font-weight: 600; color: var(--muted); font-size: .8rem; }
+
 /* ---------- Mermaid diagram ---------- */
 pre.mermaid {
   background: var(--card);
