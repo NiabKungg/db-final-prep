@@ -259,6 +259,79 @@ stateDiagram-v2
 
       <hr class="sep">
 
+      <h2>🧪 จำลองกระดาษข้อสอบ — Recovery จาก Log</h2>
+      <p>ข้อนี้<strong>เขียนตอบเป็นขั้นตอน</strong> กระดาษข้อสอบจะให้มา <strong>2 ชิ้นคงที่</strong>: (1) ลำดับ Log File (2) จุดเวลาที่ระบบล่ม + คำถาม
+      — หน้าเว็บนี้มีตัวอย่าง A/B/C ไว้แล้ว ตรงนี้จึงซ้อมด้วยธุรกิจ <strong>"การเช่าหนังสือ"</strong> ตัวอย่างเดินของอาจารย์</p>
+
+      <div class="box box-tip">
+        <p class="box-title">📋 แนวคำถามจริงของข้อสอบ</p>
+        <p><em>"ระบบล่ม ณ จุดที่กำหนด — จงบอกว่า Transaction ใดต้องถูก UNDO และใดต้องถูก REDO พร้อมเหตุผล และจงหาค่าของรายการข้อมูลแต่ละรายการหลัง Recovery"</em> — ต้องเดินค่าทีละขั้น ไม่ตอบชื่อ T เปล่า ๆ</p>
+      </div>
+
+      <div class="box box-exam">
+        <p class="box-title">📄 โจทย์จำลอง (ธุรกิจเช่าหนังสือ)</p>
+        <p>T1 = สมาชิกมายืมหนังสือ BK01 (ลดสต็อก 1 เล่ม + บันทึกค้างชำระ 35 บาท) • T2 = สมาชิกอีกคนรับคืนหนังสือ BK02 พร้อมเคลียร์ค้างชำระ</p>
+        <div class="tbl-wrap"><table class="tbl compact">
+          <tr><th>Log Record</th><th>ความหมาย</th></tr>
+          <tr><td><code>&lt;START T1&gt;</code></td><td>T1 เริ่มทำงาน (ยืม BK01)</td></tr>
+          <tr><td><code>&lt;WRITE T1, Stock_BK01, 5, 4&gt;</code></td><td>สต็อก BK01: 5 → 4 เล่ม</td></tr>
+          <tr><td><code>&lt;WRITE T1, Unpaid_BK01, 0, 35&gt;</code></td><td>ค้างชำระ BK01: 0 → 35 บาท</td></tr>
+          <tr><td><code>&lt;START T2&gt;</code></td><td>T2 เริ่มทำงาน (รับคืน BK02)</td></tr>
+          <tr><td><code>&lt;WRITE T2, Stock_BK02, 3, 4&gt;</code></td><td>สต็อก BK02: 3 → 4 เล่ม</td></tr>
+          <tr><td><code>&lt;COMMIT T1&gt;</code></td><td>T1 ยืนยันสำเร็จ ✅</td></tr>
+          <tr><td><code>&lt;WRITE T2, Unpaid_BK02, 20, 0&gt;</code></td><td>ค้างชำระ BK02: 20 → 0 บาท</td></tr>
+          <tr><td style="background:#fff1f0;"><strong>💥 SYSTEM CRASH</strong></td><td style="background:#fff1f0;">ระบบล่ม ณ จุดนี้</td></tr>
+        </table></div>
+        <p><strong>คำถาม:</strong> (1) T ใดต้อง UNDO ใดต้อง REDO เพราะอะไร? (2) ค่าสุดท้ายของ Stock_BK01, Unpaid_BK01, Stock_BK02, Unpaid_BK02?</p>
+      </div>
+
+      <details class="sol"><summary>ดูเฉลยทีละขั้น (ตามสูตร 3 ขั้นเดียวกับโจทย์ A/B/C)</summary>
+        <div class="sol-body">
+          <p><strong>ขั้นที่ 1 — สแกนจัดกลุ่ม (มองหา COMMIT ก่อนเสมอ):</strong></p>
+          <ul>
+            <li>T1: มี START + มี COMMIT → <strong>Redo-List = {T1}</strong></li>
+            <li>T2: มี START ไม่มี COMMIT → <strong>Undo-List = {T2}</strong></li>
+          </ul>
+          <p><strong>ขั้นที่ 2 — UNDO (เดินจากล่างขึ้นบน):</strong> คืน Before Image ทีละแถว — T2: คืน Unpaid_BK02 = 20 แล้วบันทึก <code>&lt;ABORT T2&gt;</code></p>
+          <p><strong>ขั้นที่ 3 — REDO (เดินจากบนลงล่าง):</strong> ทำซ้ำ After Image — T1: เขียน Stock_BK01 = 4, Unpaid_BK01 = 35 ซ้ำลงฐานข้อมูล</p>
+          <div class="tbl-wrap"><table class="tbl compact">
+            <tr><th>รายการ</th><th>จุดตั้งใจของ T</th><th>กลไก</th><th>ค่าสุดท้าย</th></tr>
+            <tr><td>Stock_BK01</td><td>5 → 4</td><td>REDO (มี COMMIT)</td><td><strong>4</strong></td></tr>
+            <tr><td>Unpaid_BK01</td><td>0 → 35</td><td>REDO (มี COMMIT)</td><td><strong>35</strong></td></tr>
+            <tr><td>Stock_BK02</td><td>3 → 4</td><td>UNDO (ไม่มี COMMIT)</td><td><strong>3</strong></td></tr>
+            <tr><td>Unpaid_BK02</td><td>20 → 0</td><td>UNDO (ไม่มี COMMIT)</td><td><strong>20</strong></td></tr>
+          </table></div>
+          <p><strong>ผูกกลับ ACID:</strong> T1 ทำสำเร็จทั้งกลุ่มต้องคงอยู่ครบสองตาราง (Durability → REDO) — T2 ค้างกลางถูกเลิกเสมือนไม่เคยเกิด (Atomicity → UNDO) — ปลายทางคือ Consistent State 100% ✅</p>
+        </div>
+      </details>
+
+      <h3>เกณฑ์ให้คะแนนข้อ Recovery — ตารางตรวจก่อนส่ง</h3>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>องค์ประกอบคำตอบ</th><th>น้ำหนัก</th><th>เช็กลิสต์</th></tr>
+        <tr><td>จัดกลุ่ม Redo-List / Undo-List ถูก</td><td>~3</td><td>ยึดเกณฑ์เดียว: มี COMMIT = REDO / ไม่มี = UNDO</td></tr>
+        <tr><td>ทิศทางเดิน Log ถูก</td><td>~2</td><td>UNDO จาก<b>ล่างขึ้นบน</b> • REDO จาก<b>บนลงล่าง</b> — ทิศสลับ = เสียคะแนนส่วนนี้</td></tr>
+        <tr><td>ค่าสุดท้ายครบทุกรายการ</td><td>~3</td><td>เขียนตารางค่าทีละรายการ พร้อมป้าย Before/After Image</td></tr>
+        <tr><td>เหตุผลผูกกับ ACID</td><td>~2</td><td>บอกว่า UNDO รักษา Atomicity / REDO รักษา Durability</td></tr>
+      </table></div>
+
+      <h3>ลำดับลงมือตอนสอบ (~10 นาที)</h3>
+      <ol class="steps">
+        <li><span class="step-title">วงจงใส START/COMMIT ของแต่ละ T (1 นาที)</span><p>ขีดเส้นใต้ทุกบรรทัด จดสรุปสั้น ๆ ว่า T ไหนมี COMMIT ไหนไม่มี — นี่คือข้อมูลชี้ขาดทั้งข้อ</p></li>
+        <li><span class="step-title">แบ่ง Redo-List / Undo-List (1 นาที)</span><p>เขียนสองก้อนชัด ๆ กันสลับ จำ: ตัวที่ START แล้วยังไม่ได้ WRITE อะไรเลยก็อยู่ Undo-List เหมือนกัน (แค่ไม่มีอะไรต้องคืน)</p></li>
+        <li><span class="step-title">เดิน UNDO จากล่างขึ้นบน (3-4 นาที)</span><p>ทีละแถว คืนค่าก่อน (Before Image) แล้วเขียน ABORT ต่อท้าย — เดินข้ามตัวที่อยู่ Redo-List</p></li>
+        <li><span class="step-title">เดิน REDO จากบนลงล่าง แล้วรวมตารางคำตอบ (3-4 นาที)</span><p>ทำซ้ำค่าใหม่ (After Image) ของตัวที่ COMMIT แล้วเขียนตารางค่าสุดท้ายทุกรายการ ปิดท้ายด้วยประโยคผูก ACID</p></li>
+      </ol>
+
+      <div class="box box-warn">
+        <p class="box-title">🚨 ข้อผิดพลาดที่หักคะแนนทันที</p>
+        <p>1) ตอบแค่ "T1 REDO T2 UNDO" โดยไม่เดินค่าทีละรายการ — ได้ครึ่งเดียว
+        2) จำสลับ: ใช้ค่าเก่า (Before) ตอน REDO หรือค่าใหม่ (After) ตอน UNDO — ให้ผลตรงข้ามทั้งข้อ
+        3) เดิน UNDO จากบนลงล่าง / REDO จากล่างขึ้นบน — ทิศกลับทั้งคู่
+        4) ลืมตัวที่แค่ START แต่ยังไม่เขียนอะไรเลย — ยังต้องระบุว่าอยู่ Undo-List</p>
+      </div>
+
+      <hr class="sep">
+
       <h2>📝 แนวข้อสอบ Recovery + ตัวอย่างคำตอบ</h2>
       <details class="sol"><summary>ข้อ 1: Transaction คืออะไร พร้อมตัวอย่าง</summary>
         <div class="sol-body"><p>Transaction คือ กลุ่มคำสั่ง DML หลายคำสั่งที่ทำงานต่อเนื่องกันเป็นหน่วยงานเชิงตรรกะเดียว (LUW)

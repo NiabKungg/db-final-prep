@@ -226,6 +226,87 @@ flowchart LR
 
       <hr class="sep">
 
+      <h2>🧪 จำลองกระดาษข้อสอบ — เดิน Schedule (ปี 67 ออก 2 ข้อใหญ่!)</h2>
+      <p>ข้อนี้ให้มา <strong>2 ชิ้นคงที่</strong>: ตารางเวลา (T1 สลับ T2 ทีละ action) + ชุดคำถาม — ต้องตอบด้วยการ<strong>เดินตารางครบทุกแถว</strong>
+      พร้อมเขียน "ค่าที่อ่านได้" ทุกครั้ง หน้านี้มีตัวอย่างบัญชี A=100 ไว้แล้ว ตรงนี้ซ้อมด้วยโจทย์ใหม่ 2 ชุด</p>
+
+      <h3>ชุดที่ 1: โจทย์เดิน schedule จับ Lost Update</h3>
+      <div class="box box-exam">
+        <p class="box-title">📄 โจทย์จำลอง — สต็อกสินค้า X = 100 ชิ้น</p>
+        <p>T1 ขายออก 10 ชิ้น (คำนวณ X = X−10) • T2 ขายออก 5 ชิ้น (คำนวณ X = X−5) — ทำงานพร้อมกันได้ schedule ดังนี้:</p>
+        <div class="tbl-wrap"><table class="tbl compact nowrap">
+          <tr><th>t</th><th>T1</th><th>T2</th><th>ค่า X ใน DB</th></tr>
+          <tr><td>t1</td><td><strong>READ(X)</strong> → ได้ 100</td><td>—</td><td>100</td></tr>
+          <tr><td>t2</td><td>—</td><td><strong>READ(X)</strong> → ได้ 100</td><td>100</td></tr>
+          <tr><td>t3</td><td>X = 100 − 10</td><td>—</td><td>100</td></tr>
+          <tr><td>t4</td><td>—</td><td>X = 100 − 5</td><td>100</td></tr>
+          <tr><td>t5</td><td><strong>WRITE(X)</strong> = 90</td><td>—</td><td>90</td></tr>
+          <tr><td>t6</td><td>—</td><td><strong>WRITE(X)</strong> = 95</td><td><strong style="color:#c62a30">95 ❌</strong></td></tr>
+        </table></div>
+        <p><strong>คำถาม:</strong> (1) ค่าสุดท้ายของ X เท่าไหร่? (2) เกิดปัญหาอะไร เพราะอะไร? (3) ถ้าทำแบบ Serial (ทีละตัว) ค่าควรเป็นเท่าไหร่?</p>
+      </div>
+
+      <details class="sol"><summary>ดูเฉลยชุดที่ 1 — เดินสองตารางเทียบกัน</summary>
+        <div class="sol-body">
+          <p><strong>(1) ค่าสุดท้าย = 95</strong> — ดูแถว t6 เป็นหลัก: T2 เขียนทับหลังสุด</p>
+          <p><strong>(2) ปัญหา = Lost Update</strong> — T2 อ่านค่าเก่า 100 ตั้งแต่ t2 แล้วเอาไปคำนวณต่อ ไม่รู้ว่า T1 แก้เป็น 90 ไปแล้ว → เขียน 95 ทับ → <strong>การขาย 10 ชิ้นของ T1 ระเหยหายไป</strong> (จาก 100 ควรเหลือ 85 แต่เหลือ 95)</p>
+          <p><strong>(3) Serial ทั้งสองลำดับให้ 85 เท่ากัน:</strong></p>
+          <div class="tbl-wrap"><table class="tbl compact">
+            <tr><th>ลำดับ</th><th>เดินผล</th><th>X สุดท้าย</th></tr>
+            <tr><td>T1 ก่อน → T2</td><td>100 − 10 = 90 แล้ว 90 − 5 = <strong>85</strong></td><td>85 ✅</td></tr>
+            <tr><td>T2 ก่อน → T1</td><td>100 − 5 = 95 แล้ว 95 − 10 = <strong>85</strong></td><td>85 ✅</td></tr>
+          </table></div>
+          <p>ข้อสังเกตที่ใช้ตอบคะแนน: schedule นี้ผลต่างจาก Serial ทั้งสองทาง จึงไม่ Serializable และเสีย Consistency —
+          <strong>วิธีแก้:</strong> เปิด X-Lock ตามกฎ 2PL เหมือนโจทย์เดินเต็มสเต็ปด้านบน → T2 ต้อง WAIT ที่ t3 จน T1 UNLOCK ที่ t5 จึงอ่านค่า 90 ต่อ → จบที่ <strong>85 ถูกต้อง ✅</strong></p>
+        </div>
+      </details>
+
+      <h3>ชุดที่ 2: โจทย์ Deadlock + Wait-Die / Wound-Wait</h3>
+      <div class="box box-exam">
+        <p class="box-title">📄 โจทย์จำลอง — T1 กับ T2 ยึดข้อมูลคนละตัว</p>
+        <div class="tbl-wrap"><table class="tbl compact nowrap">
+          <tr><th>t</th><th>T1</th><th>T2</th></tr>
+          <tr><td>t1</td><td><strong>LOCK-X(A)</strong> สำเร็จ</td><td>—</td></tr>
+          <tr><td>t2</td><td>—</td><td><strong>LOCK-X(B)</strong> สำเร็จ</td></tr>
+          <tr><td>t3</td><td>ขอ <strong>LOCK-X(B)</strong> → ถูก T2 ถืออยู่ → <strong>WAIT ⏳</strong></td><td>—</td></tr>
+          <tr><td>t4</td><td>(รออยู่)</td><td>ขอ <strong>LOCK-X(A)</strong> → ถูก T1 ถืออยู่ → <strong>WAIT ⏳</strong></td></tr>
+        </table></div>
+        <p><strong>คำถาม:</strong> (1) เกิดอะไรขึ้นตรงจุดไหน? (2) เขียน Wait-For Graph (3) ถ้าแก้ด้วยเกณฑ์ Timestamp โดย T1 เก่ากว่า T2 (Ts(T1) &lt; Ts(T2)) — ใครถูก Abort ทั้งแบบ Wait-Die และ Wound-Wait?</p>
+      </div>
+
+      <details class="sol"><summary>ดูเฉลยชุดที่ 2 — วงกลม + สูตรจำ 2 แบบ</summary>
+        <div class="sol-body">
+          <p><strong>(1)</strong> จาก t4 เป็นต้นไป: T1 ถือ A รอ B / T2 ถือ B รอ A — <strong>รอซึ่งกันและกันเป็นวงวน (Circular Wait) = Deadlock</strong> ค้างชะงักถาวร ไม่มีใครเดินต่อ</p>
+          <p><strong>(2) Wait-For Graph:</strong> T1 → T2 (T1 รอ T2 ปลด B) และ T2 → T1 (T2 รอ T1 ปลด A) — เส้นสร้าง<strong>วงกลม T1→T2→T1</strong> เมื่อมี Cycle = มี Deadlock (อาจารย์เรียก Deadly Embrace)</p>
+          <p><strong>(3) เกณฑ์ Timestamp — T1 เก่ากว่า (Ts(T1) &lt; Ts(T2)):</strong></p>
+          <div class="tbl-wrap"><table class="tbl compact">
+            <tr><th>สูตร</th><th>จำง่าย</th><th>เกิดอะไรกับ T1 (เก่า) ขอ Lock ที่ T2 ถือ</th><th>เกิดอะไรกับ T2 (ใหม่) ขอ Lock ที่ T1 ถือ</th></tr>
+            <tr><td>Wait-Die</td><td>"เก่ารอ ใหม่ตาย"</td><td>เก่า → <strong>WAIT</strong> (รอได้)</td><td>ใหม่ → <strong>DIE</strong> (ถูก Abort + Restart)</td></tr>
+            <tr><td>Wound-Wait</td><td>"เก่าขับ ใหม่รอ"</td><td>เก่า → <strong>WOUND</strong> (บังคับ Abort T2 แล้วได้ B ทันที)</td><td>ใหม่ → <strong>WAIT</strong> (รอได้)</td></tr>
+          </table></div>
+          <p>ทั้งสองสูตรพาให้วงกลมแตก (ตัวใดตัวหนึ่ง Abort → ปลด Lock ให้อีกตัวเดินต่อ) — ข้อดีคือ <strong>Deadlock ไม่เกิดขึ้นเลย</strong> เพราะตัดสินตั้งแต่ยังขอ Lock (Prevention) ไม่ต้องรอตรวจพบทีหลัง</p>
+        </div>
+      </details>
+
+      <h3>เกณฑ์ให้คะแนนข้อ Concurrency — ตารางตรวจก่อนส่ง</h3>
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>องค์ประกอบคำตอบ</th><th>น้ำหนัก</th><th>เช็กลิสต์</th></tr>
+        <tr><td>เดิน schedule ครบทุกแถวพร้อมค่า</td><td>~3</td><td>ทุก READ ต้องเขียน "ได้ค่าเท่าไหร่" ทุก WRITE เขียนค่าที่ตั้งใจ</td></tr>
+        <tr><td>ระบุปัญหาเป๊ะ + เหตุผล</td><td>~3</td><td>Lost Update / Dirty Read / Deadlock — ชี้แถวก่อเหตุด้วย (เช่น "T2 อ่านค่าเก่าที่ t2")</td></tr>
+        <tr><td>เทียบ Serial / ผลที่ถูกต้อง</td><td>~2</td><td>เดินให้ครบทั้งสองลำดับถ้าคำนวณสลับทางได้</td></tr>
+        <tr><td>Lock / Wait-For Graph / เกณฑ์ Timestamp ถูก</td><td>~2-3</td><td>เขียน WAIT ชัดทุกจุดที่ Lock ชน • Graph มีวงกลม = Deadlock</td></tr>
+      </table></div>
+
+      <div class="box box-warn">
+        <p class="box-title">🚨 ข้อผิดพลาดที่หักคะแนนทันที</p>
+        <p>1) เดิน schedule แต่ไม่เขียนค่าที่อ่านได้แต่ละแถว — หลักฐานหาย อาจารย์ให้ครึ่งเดียว
+        2) ลืมเขียน "WAIT ⏳" ตรงจุดที่ Lock ชน
+        3) ตอบ Deadlock ทั้งที่รอเป็นเส้นตรง (ไม่มีวงกลม) — Deadlock ต้องมี Cycle เท่านั้น
+        4) สลับสูตร: Wait-Die ตามให้ตัวเก่า "ตาย" (จริง ๆ เก่ารอ) / Wound-Wait ตอม่อให้เก่า "รอ" (จริง ๆ เก่าขับ)</p>
+      </div>
+
+      <hr class="sep">
+
       <h2>📝 แนวข้อสอบ Concurrency + ตัวอย่างคำตอบ</h2>
       <details class="sol"><summary>ข้อ 1: Concurrency Control คืออะไร พร้อมตัวอย่าง</summary>
         <div class="sol-body"><p>Concurrency Control คือ กลไกของ DBMS ที่ควบคุมการประมวลผลของหลาย Transaction ที่ทำงานพร้อมกัน
