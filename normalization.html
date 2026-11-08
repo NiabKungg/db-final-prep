@@ -638,6 +638,39 @@ flowchart LR
         <tr><td>S2</td><td>P1</td><td>J1</td></tr>
       </table></div>
 
+      <h3>ขั้นที่ 1: ลองแตกแบบ "ธรรมดา" ก่อน — แบ่งเป็น 2 ตาราง (เหมือนที่ทำใน 4NF)</h3>
+      <p>แตก SPJ เป็น SP(Supplier, Part) กับ PJ(Part, Project):</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th colspan="2" style="text-align:center;">SP — ใครส่งอะไร</th><th colspan="2" style="text-align:center;border-left:2px solid #c9c2f0;">PJ — อะไรใช้ในโปรเจกต์ไหน</th></tr>
+        <tr><th>Supplier 🔑</th><th>Part 🔑</th><th style="border-left:2px solid #c9c2f0;">Part 🔑</th><th>Project 🔑</th></tr>
+        <tr><td>S1</td><td>P1</td><td style="border-left:2px solid #c9c2f0;">P1</td><td>J1</td></tr>
+        <tr><td>S1</td><td>P2</td><td style="border-left:2px solid #c9c2f0;">P1</td><td>J2</td></tr>
+        <tr><td>S2</td><td>P1</td><td style="border-left:2px solid #c9c2f0;">P2</td><td>J1</td></tr>
+      </table></div>
+      <p>จากนั้น JOIN SP ⋈ PJ กลับ (จับคู่ทุกแถวที่ <strong>Part เท่ากัน</strong>) — ไล่ทีละคู่ให้เห็นชัด:</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>จับคู่จาก SP</th><th>กับจาก PJ</th><th>ได้แถวใหม่</th><th>ตรวจกับตารางเดิม</th></tr>
+        <tr><td>(S1, P1)</td><td>(P1, J1)</td><td>S1, P1, J1</td><td style="background:#effaf3;">มีจริง ✓</td></tr>
+        <tr><td>(S1, P1)</td><td>(P1, J2)</td><td>S1, P1, J2</td><td style="background:#effaf3;">มีจริง ✓</td></tr>
+        <tr><td>(S1, P2)</td><td>(P2, J1)</td><td>S1, P2, J1</td><td style="background:#effaf3;">มีจริง ✓</td></tr>
+        <tr><td>(S2, P1)</td><td>(P1, J1)</td><td>S2, P1, J1</td><td style="background:#effaf3;">มีจริง ✓</td></tr>
+        <tr style="background:#fff1f0;"><td>(S2, P1)</td><td>(P1, J2)</td><td><strong>S2, P1, J2</strong></td><td style="background:#fff1f0;"><strong>ไม่มีในตารางเดิม! ❌ Spurious Tuple</strong></td></tr>
+      </table></div>
+      <p><strong>ผล JOIN = 5 แถว (เดิมมีแค่ 4!)</strong> — เกิดแถวหลอก (S2, P1, J2) เพราะ (S2, P1) จาก SP ไปจับกับ (P1, J2) จาก PJ
+      ทั้งที่ข้อมูลจริง<strong>ไม่เคยมี</strong> S2 ส่ง P1 ให้ J2 — ถ้าเอาตารางนี้ไปใช้จริง เราจะเข้าใจผิดว่า S2 ส่งของให้โปรเจกต์ J2 ด้วย! นี่คือเหตุผลที่ "แตก 2 ตาราง" ยังไม่พอ</p>
+
+      <h3>ขั้นที่ 2: เพิ่มตารางที่ 3 เข้ามา — แถวหลอกถูก "กรองทิ้ง" อัตโนมัติ</h3>
+      <p>แตกเพิ่มอีกตาราง: SJ(Supplier, Project):</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Supplier 🔑</th><th>Project 🔑</th></tr>
+        <tr><td>S1</td><td>J1</td></tr>
+        <tr><td>S1</td><td>J2</td></tr>
+        <tr><td>S2</td><td>J1</td></tr>
+      </table></div>
+      <p>เมื่อ JOIN <strong>ครบทั้ง 3 ตาราง</strong> แถวหลอก (S2, P1, J2) จะรอดไม่ได้ — เพราะแถวนี้บอกว่า "S2 ทำโปรเจกต์ J2"
+      แต่ใน SJ <strong>ไม่มีคู่ (S2, J2)</strong> เลย → ตอน JOIN กับ SJ แถวหลอกจับคู่ไม่ได้ จึงถูกตัดทิ้ง
+      → เหลือ <strong>4 แถว = ตรงกับตารางเดิมเป๊ะ ✅ (Lossless Join)</strong></p>
+
       <h3>📈 ตารางหลังแปลง (5NF) — แตกครบทั้ง 3 คู่</h3>
 
       <p><strong>ตารางที่ 1: Supplier_Part</strong> — ใครส่งอะไร (จากตารางเดิม เอาเฉพาะ 2 คอลัมน์แรก + ตัดซ้ำ)</p>
@@ -664,12 +697,21 @@ flowchart LR
         <tr><td>S2</td><td>J1</td></tr>
       </table></div>
 
-      <div class="box box-warn">
-        <p class="box-title">⚠️ ทำไมแตกแค่ 2 ตารางไม่พอ? — พิสูจน์ด้วยข้อมูล</p>
-        <p>ลองแตกแค่ SP ⋈ PJ (เอา Supplier_Project ทิ้ง):<br>
-        (S2, P1) จาก SP เจอ (P1, J2) จาก PJ → เกิดแถวใหม่ <code>(S2, P1, J2)</code> ❌<br>
-        ทั้งที่ข้อมูลจริง<strong>ไม่เคยมี</strong> S2 ส่ง P1 ให้ J2 — นี่คือ <strong>Spurious Tuple (ข้อมูลหลอก)</strong><br>
-        แต่พอ JOIN ครบทั้ง 3 ตาราง SJ จะไม่มี (S2, J2) มาให้ แถวหลอกถูกตัดทิ้ง → ได้ตารางเดิม 4 แถวพอดี ✅ (Lossless)</p>
+      <h3>ขั้นที่ 3: ทำไมต้องเก็บครบทั้ง 3 คู่ — เพราะข้อมูล 3 อย่างนี้ "ผูกกัน" ในโลกจริง</h3>
+      <p>ต่างจาก 4NF (Skill กับ Project อิสระกัน แยกได้เลย) — ข้อมูล SPJ มี<strong>กฎธุรกิจเชื่อมกันทั้งสาม:</strong></p>
+      <ul>
+        <li>ถ้า S ส่ง Part P (มีใน Supplier_Part)</li>
+        <li>และ Part P ถูกใช้ใน Project J (มีใน Part_Project)</li>
+        <li>และ S รับผิดชอบ Project J (มีใน Supplier_Project)</li>
+        <li>→ กฎธุรกิจบังคับว่า <strong>S ต้องส่ง P ให้ J เสมอ</strong> — ขาดเงื่อนไขข้อใดข้อหนึ่งไป สรุปไม่ได้เลยว่า "ใครส่งอะไรให้ใคร"</li>
+      </ul>
+      <p>เพราะข้อมูลทั้ง 3 ผูกกันหมด จึง<strong>แยกเป็น 2 กลุ่มอิสระไม่ได้</strong> (ต่างจาก 4NF ที่แยกได้ทันที)
+      — ต้องเก็บครบทั้ง 3 คู่ นี่คือ Join Dependency: <code>*((Supplier, Part), (Part, Project), (Supplier, Project))</code>
+      — และแถวหลอก (S2, P1, J2) ข้างบนก็คือข้อมูลที่<strong>ละเมิดกฎนี้</strong> (S2 ไม่ได้ทำ J2 แต่ JOIN 2 ตารางบังคับให้มันโผล่)</p>
+      <div class="box box-mem">
+        <p class="box-title">🧠 จำสั้น ๆ: 4NF vs 5NF</p>
+        <p><strong>4NF:</strong> ข้อมูล 2 กลุ่ม "อิสระกันจริง ๆ" (Skill ไม่เกี่ยว Project) → แยก 2 ตาราง จบ<br>
+        <strong>5NF:</strong> ข้อมูล 3 อย่าง "ผูกกันด้วยกฎ" → แตกได้ แต่ต้องแตกครบทั้ง 3 คู่ — แตก 2 คู่จะเกิดแถวหลอกทันที</p>
       </div>
 <div class="term">
         <p><span class="term-word">📖 ศัพท์: Spurious Tuple</span> <span class="term-read">— อ่านว่า "สเปียเรียส ทูเพิล (แถวหลอก)"</span></p>
