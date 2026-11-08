@@ -324,7 +324,7 @@ figure.diagram {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
-figure.diagram svg { display: block; margin: 0 auto; height: auto; }
+figure.diagram svg { display: block; margin: 0 auto; height: auto; max-width: 100%; }
 figure.diagram figcaption {
   text-align: center;
   font-size: .87rem;

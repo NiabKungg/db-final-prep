@@ -139,19 +139,107 @@
         <figcaption>📄 หนังสือ SQL ของอาจารย์ (JOIN Outer 22/31): ตัวอย่าง Right Outer Join แบบ Oracle เก่า "(+)" เทียบกับ ANSI RIGHT OUTER JOIN — ผลลัพธ์ 15 แถว พร้อมแถว "No Data" (NULL) ของพนักงานที่ไม่มีหัวหน้า</figcaption>
       </figure>
 
-      <h3>1.3 ลองเห็นผลจริงด้วยข้อมูลจิ๋ว</h3>
+      <h3>1.3 ทดลองรันจริง — ตารางก่อน → คำสั่ง → ผลลัพธ์ (ข้อมูลจิ๋ว)</h3>
+      <p>ทดลองด้วยฐานข้อมูลจิ๋ว 2 ตาราง ที่มี <strong>"แถวกับดัก" 3 ตัว</strong> ตั้งใจใส่ไว้ให้เห็นความต่างของ JOIN แต่ละแบบชัด ๆ
+      — สังเกตตารางก่อนใช้คำสั่ง แล้วไล่ดูว่าคำสั่งแต่ละแบบ "จัดการ" แถวกับดักอย่างไร</p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>📋 ตารางก่อนใช้คำสั่ง: Employee (5 แถว)</h4>
+          <div class="tbl-wrap"><table class="tbl compact">
+            <tr><th>Emp_ID</th><th>Emp_Name</th><th>Sex</th><th>Dept_Code</th><th>Salary</th></tr>
+            <tr><td>E01</td><td>สมชาย</td><td>ช.</td><td>D01</td><td>25,000</td></tr>
+            <tr><td>E02</td><td>สมหญิง</td><td>ญ.</td><td>D01</td><td>32,000</td></tr>
+            <tr><td>E03</td><td>สมศรี</td><td>ญ.</td><td>D02</td><td>20,000</td></tr>
+            <tr><td>E04</td><td>สมศักดิ์</td><td>ช.</td><td style="background:#fff1f0"><strong style="color:#c62a30">D99 ⚠️ ไม่มีจริง</strong></td><td>40,000</td></tr>
+            <tr><td>E05</td><td>ประเสริฐ</td><td>ช.</td><td style="background:#fff1f0"><strong style="color:#c62a30">NULL ⚠️ ยังไม่มีแผนก</strong></td><td>22,000</td></tr>
+          </table></div>
+        </div>
+        <div class="card">
+          <h4>📋 ตารางก่อนใช้คำสั่ง: Department (3 แถว)</h4>
+          <div class="tbl-wrap"><table class="tbl compact">
+            <tr><th>Dept_Code</th><th>Dept_Name</th></tr>
+            <tr><td>D01</td><td>ขาย</td></tr>
+            <tr><td>D02</td><td>บัญชี</td></tr>
+            <tr><td>D03</td><td style="background:#fff1f0"><strong style="color:#c62a30">การตลาด ⚠️ ไม่มีใครสังกัด</strong></td></tr>
+          </table></div>
+          <p style="margin-top:8px">สองตารางเชื่อมกันด้วยคอลัมน์ <code>Dept_Code</code> — แถวกับดักคือ <strong>สมศักดิ์ (D99 ไม่มีคู่)</strong>, <strong>ประเสริฐ (ไม่มีค่าคู่เลย)</strong> และ <strong>แผนกการตลาด (ไม่มีคู่)</strong></p>
+        </div>
+      </div>
+
+      <p><strong>ขั้นที่ 1 — INNER JOIN:</strong> จับคู่เฉพาะแถวที่ Dept_Code ตรงกัน "ทั้งสองฝั่ง"</p>
+      <pre class="code"><span class="kw">SELECT</span> E.Emp_Name, E.Sex, D.Dept_Name
+<span class="kw">FROM</span> Employee E
+<span class="kw">INNER JOIN</span> Department D <span class="kw">ON</span> E.Dept_Code = D.Dept_Code;</pre>
       <div class="tbl-wrap"><table class="tbl compact">
-        <tr><th>Employee</th><th>Dept_Code</th><th style="border-left:2px solid #e3e7f0">Department</th><th>Dept_Code</th></tr>
-        <tr><td>สมชาย</td><td>D01</td><td style="border-left:2px solid #e3e7f0">ขาย</td><td>D01</td></tr>
-        <tr><td>สมหญิง</td><td>D02</td><td style="border-left:2px solid #e3e7f0">บัญชี</td><td>D02</td></tr>
-        <tr><td>สมศักดิ์</td><td><strong style="color:#c62a30">D99 (ไม่มีจริง)</strong></td><td style="border-left:2px solid #e3e7f0">การตลาด</td><td><strong style="color:#c62a30">D03 (ไม่มีใครสังกัด)</strong></td></tr>
+        <tr><th>Emp_Name</th><th>Sex</th><th>Dept_Name</th><th>จับคู่ด้วย</th></tr>
+        <tr><td>สมชาย</td><td>ช.</td><td>ขาย</td><td>D01 = D01</td></tr>
+        <tr><td>สมหญิง</td><td>ญ.</td><td>ขาย</td><td>D01 = D01</td></tr>
+        <tr><td>สมศรี</td><td>ญ.</td><td>บัญชี</td><td>D02 = D02</td></tr>
       </table></div>
-      <ul>
-        <li><strong>INNER:</strong> ได้ 2 แถว (สมชาย-ขาย, สมหญิง-บัญชี) — สมศักดิ์กับการตลาดหายไป</li>
-        <li><strong>LEFT (Employee นำ):</strong> ได้ 3 แถว — สมศักดิ์โผล่มา ช่อง Dept_Name เป็น NULL</li>
-        <li><strong>RIGHT (Department นำ):</strong> ได้ 3 แถว — "การตลาด" โผล่มา ช่อง Emp_Name เป็น NULL</li>
-        <li><strong>FULL:</strong> ได้ 4 แถว — ทั้งสมศักดิ์และการตลาดครบ</li>
-      </ul>
+      <div class="box box-warn"><p class="box-title">🚨 ผลของ INNER JOIN กับแถวกับดัก</p>
+      <p><strong>สมศักดิ์, ประเสริฐ และแผนก "การตลาด" หายไปเงียบ ๆ ทั้ง 3 แถว</strong> (เหลือแค่ 3 แถวจาก 5+3) — ไม่มี error ไม่มีเตือน ข้อสอบที่ใช้ INNER JOIN แล้วโจทย์ต้องการ "ครบทุกแถว" จึงเสียคะแนนโดยไม่รู้ตัว</p></div>
+
+      <div class="term">
+        <p><span class="term-word">📖 ศัพท์: NULL</span> <span class="term-read">— อ่านว่า "นัลล์"</span></p>
+        <p><strong>ความหมาย:</strong> ช่องที่ <strong>ไม่มีค่าอยู่เลย</strong> (Unknown/Missing) — ต่างจาก 0 และต่างจากช่องเว้นว่าง<br>
+        <strong>ในการ JOIN:</strong> แถวที่ไม่มีคู่จะถูก "เติม" ทุกช่องของฝั่งตรงข้ามด้วย NULL เวลาใช้ OUTER JOIN — อย่างประเสริฐที่ไม่มีแผนก ช่อง Dept_Name จะเป็น NULL<br>
+        <strong>ข้อควรระวัง:</strong> กรองแถว NULL ใน WHERE ต้องใช้ <code>IS NULL</code> / <code>IS NOT NULL</code> เท่านั้น — ห้ามเขียน <code>= NULL</code> เพราะผลเป็นเท็จเสมอ</p>
+      </div>
+
+      <p><strong>ขั้นที่ 2 — LEFT OUTER JOIN:</strong> ยึดตารางซ้าย (Employee) เป็นหลัก แสดงครบทุกแถวฝั่งซ้าย แถวไร้คู่เติม NULL ฝั่งขวา</p>
+      <pre class="code"><span class="kw">SELECT</span> E.Emp_Name, E.Sex, D.Dept_Name
+<span class="kw">FROM</span> Employee E
+<span class="kw">LEFT OUTER JOIN</span> Department D <span class="kw">ON</span> E.Dept_Code = D.Dept_Code;</pre>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Emp_Name</th><th>Sex</th><th>Dept_Name</th><th>หมายเหตุ</th></tr>
+        <tr><td>สมชาย</td><td>ช.</td><td>ขาย</td><td>จับคู่ได้</td></tr>
+        <tr><td>สมหญิง</td><td>ญ.</td><td>ขาย</td><td>จับคู่ได้</td></tr>
+        <tr><td>สมศรี</td><td>ญ.</td><td>บัญชี</td><td>จับคู่ได้</td></tr>
+        <tr style="background:#eff6ff"><td>สมศักดิ์</td><td>ช.</td><td><strong style="color:#c62a30">NULL</strong></td><td>D99 ไม่มีคู่ → เติม NULL ฝั่งขวา</td></tr>
+        <tr style="background:#eff6ff"><td>ประเสริฐ</td><td>ช.</td><td><strong style="color:#c62a30">NULL</strong></td><td>ไม่มีค่าคู่เลย → เติม NULL ฝั่งขวา</td></tr>
+      </table></div>
+      <p>ได้ <strong>5 แถว (ครบทุกพนักงาน)</strong> — แต่ให้สังเกต: แผนก "การตลาด" <strong>ยังไม่โผล่</strong> เพราะ LEFT ดูแลแค่ฝั่งซ้าย คนโดดเดี่ยวรอด แต่แผนกโดดเดี่ยวฝั่งขวาไม่รอด</p>
+
+      <p><strong>ขั้นที่ 3 — RIGHT OUTER JOIN:</strong> ยึดตารางขวา (Department) เป็นหลัก — ตอนนี้ "การตลาด" รอด แต่พนักงานไร้คู่หาย</p>
+      <pre class="code"><span class="kw">SELECT</span> E.Emp_Name, E.Sex, D.Dept_Name
+<span class="kw">FROM</span> Employee E
+<span class="kw">RIGHT OUTER JOIN</span> Department D <span class="kw">ON</span> E.Dept_Code = D.Dept_Code;</pre>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Emp_Name</th><th>Sex</th><th>Dept_Name</th><th>หมายเหตุ</th></tr>
+        <tr><td>สมชาย</td><td>ช.</td><td>ขาย</td><td>จับคู่ได้</td></tr>
+        <tr><td>สมหญิง</td><td>ญ.</td><td>ขาย</td><td>จับคู่ได้</td></tr>
+        <tr><td>สมศรี</td><td>ญ.</td><td>บัญชี</td><td>จับคู่ได้</td></tr>
+        <tr style="background:#eff6ff"><td><strong style="color:#c62a30">NULL</strong></td><td><strong style="color:#c62a30">NULL</strong></td><td>การตลาด</td><td>D03 ไม่มีคู่ → เติม NULL ฝั่งซ้าย</td></tr>
+      </table></div>
+      <p>ได้ <strong>4 แถว (ครบทุกแผนก)</strong> — สมศักดิ์กับประเสริฐหายไปแล้ว เพราะพวกเขาอยู่ฝั่งซ้ายซึ่งไม่ใช่ "หลัก" ของ RIGHT</p>
+
+      <p><strong>ขั้นที่ 4 — FULL OUTER JOIN:</strong> ยึดทั้งสองฝั่งเป็นหลัก — ทุกแถวจากทุกตารางรอดหมด</p>
+      <pre class="code"><span class="kw">SELECT</span> E.Emp_Name, E.Sex, D.Dept_Name
+<span class="kw">FROM</span> Employee E
+<span class="kw">FULL OUTER JOIN</span> Department D <span class="kw">ON</span> E.Dept_Code = D.Dept_Code;
+<span class="cm">-- หมายเหตุ: FULL เป็นรูปแบบ ANSI — Oracle เก่าแบบ (+) ทำ FULL ไม่ได้ ต้อง UNION ของ LEFT + RIGHT</span></pre>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Emp_Name</th><th>Sex</th><th>Dept_Name</th><th>หมายเหตุ</th></tr>
+        <tr><td>สมชาย</td><td>ช.</td><td>ขาย</td><td>จับคู่ได้</td></tr>
+        <tr><td>สมหญิง</td><td>ญ.</td><td>ขาย</td><td>จับคู่ได้</td></tr>
+        <tr><td>สมศรี</td><td>ญ.</td><td>บัญชี</td><td>จับคู่ได้</td></tr>
+        <tr style="background:#eff6ff"><td>สมศักดิ์</td><td>ช.</td><td><strong style="color:#c62a30">NULL</strong></td><td>ฝั่งซ้ายไร้คู่</td></tr>
+        <tr style="background:#eff6ff"><td>ประเสริฐ</td><td>ช.</td><td><strong style="color:#c62a30">NULL</strong></td><td>ฝั่งซ้ายไร้คู่</td></tr>
+        <tr style="background:#eff6ff"><td><strong style="color:#c62a30">NULL</strong></td><td><strong style="color:#c62a30">NULL</strong></td><td>การตลาด</td><td>ฝั่งขวาไร้คู่</td></tr>
+      </table></div>
+      <p>ได้ <strong>6 แถว — ไม่มีใครหาย</strong> ทุกแถวกับดักรอดพร้อม NULL เติมฝั่งตรงข้าม</p>
+
+      <div class="tbl-wrap"><table class="tbl">
+        <tr><th>ประเภท JOIN</th><th>จำนวนแถวที่ได้</th><th>ใครรอด / ใครหาย (จากข้อมูลจิ๋วนี้)</th></tr>
+        <tr><td>INNER</td><td>3</td><td>หาย: สมศักดิ์, ประเสริฐ, การตลาด — <strong>หายเงียบ ๆ</strong></td></tr>
+        <tr><td>LEFT OUTER</td><td>5</td><td>รอด: พนักงานครบทุกคน • หาย: การตลาด</td></tr>
+        <tr><td>RIGHT OUTER</td><td>4</td><td>รอด: แผนกครบทุกแผนก • หาย: สมศักดิ์, ประเสริฐ</td></tr>
+        <tr><td>FULL OUTER</td><td>6</td><td>ครบทุกแถวทั้งสองตาราง</td></tr>
+      </table></div>
+      <div class="box box-mem"><p class="box-title">🧠 สูตรนับแถว (ใช้ตรวจคำตอบในข้อสอบได้)</p>
+      <p><strong>INNER</strong> = จำนวนคู่ที่จับได้ • <strong>LEFT</strong> = INNER + (แถวซ้ายไร้คู่) • <strong>RIGHT</strong> = INNER + (แถวขวาไร้คู่) • <strong>FULL</strong> = INNER + (ไร้คู่ทั้งสองฝั่ง)
+      — ตรวจจากข้อมูลจิ๋วนี้: INNER 3 + ซ้ายไร้คู่ 2 = LEFT 5 ✓ + ขวาไร้คู่ 1 = FULL 6 ✓</p></div>
 
       <h2>2. Subquery (คำสั่งสอบถามย่อย)</h2>
       <p><strong>Subquery</strong> คือ การเขียน <code>SELECT</code> ซ้อนอยู่ใน SELECT อีกชั้น (Inner Query ใน Outer Query)
@@ -162,8 +250,26 @@
       <pre class="code"><span class="kw">SELECT</span> Emp_Name, Salary
 <span class="kw">FROM</span> Employee
 <span class="kw">WHERE</span> Salary &gt; (
-    <span class="kw">SELECT</span> <span class="fn">AVG</span>(Salary) <span class="kw">FROM</span> Employee   <span class="cm">-- วงในคำนวณค่าเฉลี่ยก่อน (เช่น 25,000)</span>
-);                                      <span class="cm">-- วงนอกค่อยกรอง Salary &gt; 25,000</span></pre>
+    <span class="kw">SELECT</span> <span class="fn">AVG</span>(Salary) <span class="kw">FROM</span> Employee   <span class="cm">-- วงในรันครั้งเดียว: หาค่าเฉลี่ยก่อน</span>
+);                                      <span class="cm">-- จากข้อมูลจิ๋ว 1.3 ได้ 27,800 → วงนอกกลายเป็น WHERE Salary &gt; 27,800</span></pre>
+      <p>ไล่การทำงานจริงด้วยตาราง Employee ข้อมูลจิ๋วจากหัวข้อ 1.3 (5 แถว: สมชาย 25,000 / สมหญิง 32,000 / สมศรี 20,000 / สมศักดิ์ 40,000 / ประเสริฐ 22,000):</p>
+      <ol class="steps">
+        <li><span class="step-title">ขั้น 1 — รันวงในก่อนครั้งเดียว</span>
+        <p><code>SELECT AVG(Salary) FROM Employee</code> = (25,000+32,000+20,000+40,000+22,000) ÷ 5 = 139,000 ÷ 5 = <strong>27,800</strong></p></li>
+        <li><span class="step-title">ขั้น 2 — วงใน "หดตัวเป็นค่าเดียว" แทนที่ตัวเองในวงนอก</span>
+        <p>คำสั่งวงนอกจึงเหมือนเขียน <code>WHERE Salary &gt; 27,800</code> โดยไม่ต้อง Hard-code เลขเอง</p></li>
+        <li><span class="step-title">ขั้น 3 — วงนอกกรองทีละแถว</span>
+        <p>สมชาย 25,000 ✗ • สมหญิง 32,000 ✓ • สมศรี 20,000 ✗ • สมศักดิ์ 40,000 ✓ • ประเสริฐ 22,000 ✗</p></li>
+      </ol>
+      <p><strong>ตารางผลลัพธ์ (2 แถว):</strong></p>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Emp_Name</th><th>Salary</th></tr>
+        <tr><td>สมหญิง</td><td>32,000</td></tr>
+        <tr><td>สมศักดิ์</td><td>40,000</td></tr>
+      </table></div>
+      <div class="box box-tip"><p class="box-title">💡 ทำไมต้อง Subquery ถ้าเขียน WHERE Salary &gt; 27,800 ตรง ๆ ก็ได้?</p>
+      <p>เพราะเมื่อ<strong>ข้อมูลเปลี่ยน</strong> ค่าเฉลี่ยเปลี่ยน — เขียนเลขตายตัวจะพังทันที ส่วน Subquery คำนวณใหม่เสมอ
+      และข้อสอบมักถาม "เฉลี่ยของ X" ที่ต้องคำนวณจากข้อมูลจริงก่อนเท่านั้น</p></div>
       <p>ใช้ร่วมกับ <code>=, &gt;, &lt;, IN, NOT IN, ANY, ALL</code> ได้</p>
 
       <h3>2.2 อยู่ใน FROM — ทำตารางเสมือน (Derived Table)</h3>
@@ -175,12 +281,31 @@
     <span class="kw">GROUP BY</span> Dept_Code
 ) Dept_Summary                        <span class="cm">-- ผลลัพธ์วงในถูกมองเป็น "ตารางชั่วคราว"</span>
 <span class="kw">WHERE</span> Dept_Summary.Total_Salary &gt; 100000;</pre>
+      <p>ทดลองรันวงในด้วยข้อมูลจิ๋ว 1.3 (รวม Salary ตามกลุ่ม Dept_Code):</p>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Dept_Code</th><th>Total_Salary</th><th>มาจากแถวไหน</th></tr>
+        <tr><td>D01</td><td>57,000</td><td>สมชาย 25,000 + สมหญิง 32,000</td></tr>
+        <tr><td>D02</td><td>20,000</td><td>สมศรี 20,000</td></tr>
+        <tr style="background:#fff1f0"><td><strong style="color:#c62a30">D99</strong></td><td>40,000</td><td>สมศักดิ์ (แถวกับดัก! จับกลุ่มเองได้เพราะ GROUP BY ไม่เช็คคู่)</td></tr>
+        <tr><td>(NULL)</td><td>22,000</td><td>ประเสริฐ — GROUP BY ถือว่า NULL เป็น "กลุ่มของตัวเอง"</td></tr>
+      </table></div>
+      <p>ตารางชั่วคราว 4 แถวนี้คือ <code>Dept_Summary</code> ที่วงนอกใช้ — จากนั้นวงนอกกรอง <code>Total_Salary &gt; 100,000</code> → ไม่มีกลุ่มไหนเกิน → <strong>ผลลัพธ์ว่าง (0 แถว)</strong> ซึ่งเป็นผลที่ถูกต้อง ไม่ใช่ error (ใช้ข้อมูลบริษัทจริงที่ยอดใหญ่กว่านี้เกณฑ์ 100,000 จึงมีแถว) — และสังเกตว่า <strong>GROUP BY ไม่ต้อง "มีคู่" จึงกลืนแถวกับดัก D99 ได้ทั้งกลุ่ม</strong> ต่างจาก JOIN</p>
 
       <h3>2.3 อยู่ใน SELECT — Scalar Subquery (คืน 1 ค่า)</h3>
       <p><strong>โจทย์:</strong> แสดงชื่อพนักงาน เงินเดือน และเงินเดือนสูงสุดของบริษัท ไว้ข้างกัน</p>
       <pre class="code"><span class="kw">SELECT</span> Emp_Name, Salary,
        (<span class="kw">SELECT</span> <span class="fn">MAX</span>(Salary) <span class="kw">FROM</span> Employee) <span class="kw">AS</span> Max_Company_Salary
 <span class="kw">FROM</span> Employee;</pre>
+      <p>ทดลองรันด้วยข้อมูลจิ๋ว 1.3 — วงในคืนค่าเดียว <code>MAX = 40,000</code> แล้ว "ฉีด" ค่านั้นเป็นคอลัมน์ที่ 3 ของทุกแถว:</p>
+      <div class="tbl-wrap"><table class="tbl compact">
+        <tr><th>Emp_Name</th><th>Salary</th><th>Max_Company_Salary</th></tr>
+        <tr><td>สมชาย</td><td>25,000</td><td style="background:#effaf3">40,000</td></tr>
+        <tr><td>สมหญิง</td><td>32,000</td><td style="background:#effaf3">40,000</td></tr>
+        <tr><td>สมศรี</td><td>20,000</td><td style="background:#effaf3">40,000</td></tr>
+        <tr style="background:#effaf3"><td><strong>สมศักดิ์</strong></td><td><strong>40,000</strong></td><td style="background:#effaf3">40,000</td></tr>
+        <tr><td>ประเสริฐ</td><td>22,000</td><td style="background:#effaf3">40,000</td></tr>
+      </table></div>
+      <p>คอลัมน์ที่ 3 ซ้ำกันทุกแถว = 40,000 เพราะ Subquery แบบ Scalar <strong>คืนค่าเดียวของทั้งบริษัท</strong> ไม่ผูกกับแถวใด (ต่างจาก Correlated ที่ค่าเปลี่ยนตามแถว) — แถวของสมศักดิ์ (พื้นเขียว) คือแถวเดียวที่ Salary เท่ากับ MAX พอดี</p>
 
       <h2>3. Correlated Subquery — วงในอ้างอิงวงนอก</h2>
       <p><strong>Correlated Subquery</strong> คือ Subquery วงในที่<strong>อ้างอิงคอลัมน์ของตารางวงนอก</strong>
