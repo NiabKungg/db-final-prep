@@ -97,6 +97,10 @@
 
       <h2>3. เทคนิคแก้ปัญหา</h2>
       <h3>3.1 Locking — ล็อกข้อมูลก่อนใช้</h3>
+      <figure class="diagram">
+        <img src="assets/docpages/tx_p72.jpg" alt="สไลด์ Lock Granularity page-level lock ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 สไลด์จริงของอาจารย์ (KRIS TxProc หน้า 72): Lock Granularity — ตัวอย่าง page-level lock: T1 ล็อก Page 1 สำเร็จ ส่วน T2 ขอล็อก Page 1 ซ้ำต้อง Wait จนกว่า T1 Unlock — ตรงกับหลัก Exclusive Lock</figcaption>
+      </figure>
       <div class="grid grid-2">
         <div class="card">
           <h4>📖 Shared Lock (S-Lock)</h4>
@@ -126,6 +130,10 @@
       <div class="box box-mem"><p class="box-title">🧠 วิธีจำ</p><p>ยอมเฉพาะ <strong>S+S</strong> (อ่านพร้อมกันได้) ที่เหลือล็อกกันหมด — เพราะ "อ่านพร้อมกันได้ แต่แก้ต้องคนเดียว"</p></div>
 
       <h3>3.2 Two-Phase Locking (2PL) — กฎล็อก 2 ระยะ</h3>
+      <figure class="diagram">
+        <img src="assets/docpages/tx_p77.jpg" alt="สไลด์ Two-Phase Locking to Ensure Serializability ของอาจารย์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 สไลด์จริงของอาจารย์ (KRIS TxProc หน้า 77): Two-Phase Locking to Ensure Serializability — Growing phase (acquires all required locks โดยห้ามปลดล็อก) / Shrinking phase (releases all locks โดยห้ามขอใหม่) — โน้ตสำคัญ: "การันตี Serializability แต่ไม่ป้องกัน Deadlock"</figcaption>
+      </figure>
       <p>กฎข้อบังคับการขอ/คืน Lock เพื่อ<strong>การันตีว่า Schedule เป็น Serializable 100%</strong></p>
       <pre class="mermaid">
 flowchart LR

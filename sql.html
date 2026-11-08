@@ -134,6 +134,10 @@
 <span class="kw">FROM</span> Set_Province P
 <span class="kw">LEFT OUTER JOIN</span> Employee E <span class="kw">ON</span> P.SPV_Code = E.SPV_Code;</pre>
       <div class="box box-warn"><p class="box-title">⚠️ จุดพลาดคลาสสิก</p><p>โจทย์พวก "แสดง<strong>ครบทุกแถว</strong>แม้ไม่มีข้อมูลคู่" หรือ "รวมถึงคนที่ยังไม่มี..." = <strong>สัญญาณของ OUTER JOIN</strong> ถ้าใช้ INNER JOIN แถวไร้คู่จะหายไปเงียบ ๆ (เสียคะแนนโดยไม่รู้ตัว)</p></div>
+<figure class="diagram">
+        <img src="assets/docpages/sqlo_p13.jpg" alt="หนังสือ SQL ของอาจารย์ Right Outer Join พร้อมผลลัพธ์" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือ SQL ของอาจารย์ (JOIN Outer 22/31): ตัวอย่าง Right Outer Join แบบ Oracle เก่า "(+)" เทียบกับ ANSI RIGHT OUTER JOIN — ผลลัพธ์ 15 แถว พร้อมแถว "No Data" (NULL) ของพนักงานที่ไม่มีหัวหน้า</figcaption>
+      </figure>
 
       <h3>1.3 ลองเห็นผลจริงด้วยข้อมูลจิ๋ว</h3>
       <div class="tbl-wrap"><table class="tbl compact">
@@ -206,6 +210,11 @@
       </ol>
 
       <h3>3.2 โจทย์คลาสสิก + ไล่รันทีละแถว</h3>
+      <p class="video-note">💡 โจทย์ Correlated Subquery ในหนังสือของอาจารย์ (ข้อ 48): เปรียบเทียบพนักงานกับ "หัวหน้าของตัวเอง" — Salary &gt; Salary ของหัวหน้า ใช้ทั้ง Self-JOIN และ Correlated Subquery แก้ได้</p>
+      <figure class="diagram">
+        <img src="assets/docpages/sqls_p06.jpg" alt="หนังสือ SQL ของอาจารย์ Correlated Subquery ข้อ 48" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือ SQL ของอาจารย์ (Subquery/Correlated 30/31): ข้อ 48 "กรณีโจทย์ที่ทำลำได้" — เทียบ Self-JOIN กับ Correlated Subquery (Emp.Salary > Super.Salary โดย Super = หัวหน้าของ Emp) พร้อมผลลัพธ์จริง</figcaption>
+      </figure>
       <p><strong>โจทย์:</strong> หาพนักงานที่เงินเดือนสูงกว่า<strong>เฉลี่ยของแผนกตัวเอง</strong></p>
       <pre class="code"><span class="kw">SELECT</span> E1.Emp_Name, E1.Dept_Code, E1.Salary
 <span class="kw">FROM</span> Employee E1

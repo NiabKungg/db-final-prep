@@ -136,6 +136,10 @@ stateDiagram-v2
         <tr><td>After Image (New Value)</td><td>ค่า<strong>หลัง</strong>แก้ไข → ใช้ทำ <strong>REDO</strong> (ทำซ้ำ)</td></tr>
       </table></div>
 
+      <figure class="diagram">
+        <img src="assets/docpages/tx_p44.jpg" alt="สไลด์ Transaction Processing ของอาจารย์ Log File มือเขียน" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 สไลด์จริงของอาจารย์ (KRIS TxProc หน้า 44): Log File มือเขียน — Transaction ใน buffer (วงกลม A–K) เขียนลง Log File ตอน Commit ครั้งที่ I และ II — ถ้าระบบ Fail กลางทาง (TX3, TX4) ข้อมูลที่ยังไม่ Commit จะไม่ถูกเขียนลง Log เสมือนไม่เคยเกิด</figcaption>
+      </figure>
       <div class="box box-warn">
         <p class="box-title">⚠️ กฎเหล็ก: Write-Ahead Logging (WAL)</p>
         <p>ต้อง<strong>เขียน Log ลง Hard Disk ก่อนเขียนข้อมูลจริงเสมอ</strong> — เพราะถ้าข้อมูลจริงเปลี่ยนไปแต่ Log ยังไม่มี

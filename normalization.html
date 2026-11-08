@@ -184,6 +184,10 @@ flowchart TD
         </ol>
         <p>⚠️ ข้อสังเกต: 1NF <strong>ยังไม่ลดความซ้ำ</strong> — Jones/Paris ซ้ำ 2 แถว, Adam/Athens ซ้ำ 6 แถว, P3 Screw ซ้ำ 3 แถว — ความซ้ำพวกนี้คือสาเหตุที่ต้องไปต่อ 2NF</p>
       </div>
+<figure class="diagram">
+        <img src="assets/docpages/nf123_p01.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 1 นิยาม 1NF และตาราง SupplyPart" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียนของอาจารย์ (Normalization, หน้า 1/10): นิยาม 1NF + ตาราง SupplyPart ตั้งต้น — สรุปสีแดงของอาจารย์: "1NF: ตารางไม่มีค่าอะเรย์ของ Column ในแต่ละ Row"</figcaption>
+      </figure>
 
       <h2>🟣 ขั้นที่ 2: 1NF → 2NF (ตัด Partial Dependency)</h2>
 
@@ -267,6 +271,14 @@ flowchart TD
           <li><strong>แต่ยังไม่จบ!</strong> ใน S_2NF ยังมีความซ้ำแฝง: London/20 ซ้ำ 2 แถว, Paris/10 ซ้ำ 2 แถว — นี่คือเบาะแสของขั้น 3NF</li>
         </ul>
       </div>
+<figure class="diagram">
+        <img src="assets/docpages/nf123_p02.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 2 นิยาม 2NF และตาราง SupplyPart เต็ม" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 2/10): นิยาม 2NF — "ตารางอยู่ใน 1NF และ attribute ทุกตัวที่ไม่ใช่ key ต้อง Full functional dependant on the primary key"</figcaption>
+      </figure>
+<figure class="diagram">
+        <img src="assets/docpages/nf123_p04.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 4 การแยก 2NF เป็น S2NF P2NF SP2NF" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 4/10): การแยก 2NF ในหนังสือ — S2NF(S#, Sname, City, Status) • P2NF(P#, Pname, Color) • SP2NF(S#, P#, Qty) ตรงกับที่เดินในหน้านี้</figcaption>
+      </figure>
 
       <figure class="diagram">
         <img src="assets/slides/slide_0021_2890.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 2NF แยก 3 ตาราง S P SP" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
@@ -324,6 +336,14 @@ flowchart LR
           <li><strong>จำนวนตารางรวม:</strong> S • City_Status • P • SP = <strong>4 ตาราง</strong> — ผลลัพธ์สุดท้ายของ Live 0021</li>
         </ul>
       </div>
+<figure class="diagram">
+        <img src="assets/docpages/nf123_p05.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 5 นิยาม 3NF" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 5/10): นิยาม 3NF — "ตารางอยู่ใน 2NF และ every non-key attribute is non-transitively dependent on the primary key"</figcaption>
+      </figure>
+<figure class="diagram">
+        <img src="assets/docpages/nf123_p06.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 6 ผลลัพธ์ 3NF 4 ตาราง" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 6/10): ผลลัพธ์ 3NF ในหนังสือ — S • City • P • SP ครบ 4 ตารางพร้อมข้อมูลจริง</figcaption>
+      </figure>
 
       <pre class="mermaid">
 flowchart LR
@@ -401,6 +421,14 @@ flowchart LR
         <figcaption>📷 สไลด์จริง (Live 0022): อาจารย์เขียน FD ทั้งหมดของ SupplyPart — ขีดฆ่าแดง S# → STATUS เพราะเป็น Transitive (ผ่าน CITY) พร้อมโน้ต "ถ้านิยาม S# เป็น PK จะยังเก็บ CITY/STATUS ไว้ด้วยกันไม่ได้"</figcaption>
       </figure>
       <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=VYe97bKa5JI" target="_blank" rel="noopener">Live 0022 [BCNF]</a></p>
+<figure class="diagram">
+        <img src="assets/docpages/nf123_p08.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 8 นิยาม BCNF และ FD diagram" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 8/10): นิยาม BCNF + แผนภาพ FD มือเขียน — S# → Sname/City/Status, City → STATUS (ทับด้วยสีน้ำเงิน), P# → Pname/Color, (S#,P#) → Qty</figcaption>
+      </figure>
+<figure class="diagram">
+        <img src="assets/docpages/nf123_p09.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 9 สรุปเปรียบเทียบ 3NF กับ BCNF" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 9/10): สรุปเปรียบเทียบ 3NF กับ BCNF พร้อมตัวอย่าง Student/Subject/Department/Grade — หน้านี้ตอบข้อสอบ "3NF ต่างจาก BCNF ยังไง" ได้พอดี</figcaption>
+      </figure>
 
       <div class="box box-mem">
         <p class="box-title">🧠 3NF vs BCNF ในหนึ่งบรรทัด (ออกถามความต่างบ่อยมาก)</p>
@@ -466,17 +494,26 @@ flowchart LR
         <img src="assets/slides/slide_0023_2470.jpg" alt="สไลด์อาจารย์: การ split CTX เป็นสองตาราง Course Teacher และ Course Text" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0023): การ Split เป็น Course_Teacher + Course_Text — พร้อมโจทย์ฝึกของอาจารย์ (มะระ เรียนวิชา a, b, c)</figcaption>
       </figure>
+
+      <figure class="diagram">
+        <img src="assets/docpages/nf45_p05.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 5 ตาราง CTX และ MVD arrows" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 5/10 เล่ม 4NF-5NF): ตาราง CTX + ลูกศร MVD Course →→ Teacher และ Course →→ Text</figcaption>
+      </figure>
+      <figure class="diagram">
+        <img src="assets/docpages/nf45_p06.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 6 การ split CTX เป็นสองตารางพร้อมลูกศร join" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 6/10): การ Split CTX → Course_Teacher + Course_Text พร้อมลูกศรแสดงการ JOIN กลับ</figcaption>
+      </figure>
       <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=RCtYZ7AE6AU" target="_blank" rel="noopener">Live 0023 [4NF]</a></p>
 
       <h3>🏋️ โจทย์ฝึกจริงของอาจารย์ (Live 0025): ตาราง Employee-Skill-Project</h3>
       <p>อาจารย์ยกโจทย์นี้ให้ผู้เรียนลองตอบ — <strong>"ตารางนี้อยู่ใน 4NF หรือไม่? ถ้าไม่ จง Split"</strong></p>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
         <tr><th>Employee 🔑</th><th>Skill 🔑</th><th>Project 🔑</th></tr>
-        <tr><td>ลุมฟา</td><td>M.Word</td><td>การวิเยิมลาด</td></tr>
-        <tr><td>ลุมฟา</td><td>M.Excel</td><td>การวิเยิมลาด</td></tr>
-        <tr><td>เนตรนภา</td><td>M.Excel</td><td>การวิเยิมลาด</td></tr>
+        <tr><td>ลุมฟา</td><td>M.Word</td><td>การวิจัยตลาด</td></tr>
+        <tr><td>ลุมฟา</td><td>M.Excel</td><td>การวิจัยตลาด</td></tr>
+        <tr><td>เนตรนภา</td><td>M.Excel</td><td>การวิจัยตลาด</td></tr>
         <tr><td>เนตรนภา</td><td>M.Excel</td><td>MIS</td></tr>
-        <tr><td>เนตรนภา</td><td>MySQL</td><td>การวิเยิมลาด</td></tr>
+        <tr><td>เนตรนภา</td><td>MySQL</td><td>การวิจัยตลาด</td></tr>
         <tr><td>เนตรนภา</td><td>MySQL</td><td>MIS</td></tr>
       </table></div>
       <div class="box box-mem">
@@ -484,8 +521,12 @@ flowchart LR
         <p>ดูเนตรนภา: มี Skill {M.Excel, MySQL} และ Project {การวิยิมลาด, MIS} — ตารางมีครบทุกคู่ 2×2 = 4 แถว
         = <code>Employee →→ Skill</code> และ <code>Employee →→ Project</code> โดยสองกลุ่มอิสระกัน → <strong>ไม่ผ่าน 4NF</strong> ❌<br>
         <strong>Split:</strong> <code>Employee_Skill(Employee, Skill)</code> = {(ลุมฟา,M.Word), (ลุมฟา,M.Excel), (เนตรนภา,M.Excel), (เนตรนภา,MySQL)}
-        + <code>Employee_Project(Employee, Project)</code> = {(ลุมฟา,การวิยิมลาด), (เนตรนภา,การวิยิมลาด), (เนตรนภา,MIS)} — จาก 6 แถว เหลือ 4+3 แถว</p>
+        + <code>Employee_Project(Employee, Project)</code> = {(ลุมฟา,การวิจัยตลาด), (เนตรนภา,การวิจัยตลาด), (เนตรนภา,MIS)} — จาก 6 แถว เหลือ 4+3 แถว</p>
       </div>
+      <figure class="diagram">
+        <img src="assets/docpages/nf4ex_skillproj_p01.jpg" alt="โจทย์ 4NF ตัวจริงของอาจารย์ Employee Skill Project ลุมฟา เนตรนภา" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 ใบโจทย์จริงของอาจารย์ (NF-04_45): "จงแสดงให้เห็นว่าการจัดที่ประกอบขึ้นย Attributes ดังกล่าวนี้ มีคุณสมบัติเป็น 4NF หรือไม่" — ให้ Attribute แยกชุด (Employee/Skill/Project) แล้วให้ลองจับคู่สองแบบ</figcaption>
+      </figure>
 
       <hr class="sep">
 
@@ -546,8 +587,47 @@ flowchart LR
         <strong>5NF</strong> = <strong>สามเส้า</strong> ที่แยกแล้ว JOIN กลับไม่ครบถ้าขาดคู่ใดคู่หนึ่ง → ต้องแตกครบทั้ง 3 คู่พร้อมกัน
         เหมือนจับคู่เดท 3 เส้า ที่รู้แค่ "A ชอบ B" กับ "B ชอบ C" ไม่พอ ต้องรู้ "A ชอบ C" ด้วยถึงจะสรุปถูก</p>
       </div>
+<figure class="diagram">
+        <img src="assets/docpages/nf45_p09.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 9 ตัวอย่าง JD แตกสามทาง" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 9/10): ตัวอย่าง JD ในหนังสือ — Supplier(S_No, S_Name, City, Address) แตกเป็น 3 Projections แล้ว JOIN กลับได้ตารางเดิม</figcaption>
+      </figure>
+<figure class="diagram">
+        <img src="assets/docpages/nf45_p08.jpg" alt="หนังสือ Normalization ของอาจารย์ หน้า 8 นิยาม 5NF PJNF" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 หนังสือเรียน (หน้า 8/10): นิยาม 5NF / Projection-Join Normal Form (PJNF)</figcaption>
+      </figure>
 
       <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=ab8Yl7gf3Vk" target="_blank" rel="noopener">Live 0025 [5NF]</a> • ทบทวนรวม: <a href="https://www.youtube.com/watch?v=h-TxER9iLEA" target="_blank" rel="noopener">Live 0024 Review 1NF-4NF</a></p>
+
+      <hr class="sep">
+
+      <h2>📂 ใบงาน / โจทย์แบบฝึกหัดจริงของอาจารย์ (NF)</h2>
+      <p>ชุดเอกสารที่อาจารย์ใช้เป็น Workshop และแบบฝึกหัดในคลาส — แนวเดียวกับข้อสอบ</p>
+      <div class="grid grid-2">
+        <div class="card"><figure class="diagram">
+        <img src="assets/docpages/nf_supplypart_p01.jpg" alt="ใบงาน SupplyPart ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 ใบงาน NF-04: SupplyPart</figcaption>
+      </figure></div>
+        <div class="card"><figure class="diagram">
+        <img src="assets/docpages/nf_bcnf_supplypart_p01.jpg" alt="ใบงาน BCNF SupplyPart ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 ใบงาน NF-13: BCNF SupplyPart</figcaption>
+      </figure></div>
+        <div class="card"><figure class="diagram">
+        <img src="assets/docpages/nf5_jd_p01.jpg" alt="ใบงาน 5NF JD ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 ใบงาน NF-05: 5NF ตัวอย่างข้อมูล JD</figcaption>
+      </figure></div>
+        <div class="card"><figure class="diagram">
+        <img src="assets/docpages/nf3ex_deptemp_p01.jpg" alt="ใบงาน 3NF DeptEmp ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 ใบงาน NF-04_13: ตัวอย่างข้อมูลเพื่อออกแบบ 3NF — DeptEmp</figcaption>
+      </figure></div>
+        <div class="card"><figure class="diagram">
+        <img src="assets/docpages/nf3ex_empdept_p01.jpg" alt="ใบงาน 3NF EmpDept ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 ใบงาน NF-04_13: ตัวอย่างข้อมูลเพื่อออกแบบ 3NF — EmpDept</figcaption>
+      </figure></div>
+        <div class="card"><figure class="diagram">
+        <img src="assets/docpages/nf4ex_expert_p01.jpg" alt="ใบงาน 4NF EmpExpert ของอาจารย์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 ใบงาน NF-04_45: ตัวอย่างข้อมูลเพื่อออกแบบ 4NF — EmpExpert</figcaption>
+      </figure></div>
+      </div>
 
       <hr class="sep">
 

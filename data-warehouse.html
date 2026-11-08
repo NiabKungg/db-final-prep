@@ -85,11 +85,17 @@
         </div>
       </div>
 
+<figure class="diagram">
+        <img src="assets/docpages/dw_p29.jpg" alt="สไลด์ DW ของอาจารย์ Bill Inmon definition" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 สไลด์จริงของอาจารย์ (KRIS DW หน้า 29): นิยามของ Bill Inmon — "Enterprise data warehouse is an integrated repository of atomic data" ที่ถูกจับใน relational database และใช้ WORM (Write once Read Many) = Non-Volatile</figcaption>
+      </figure>
       <div class="box box-mem">
         <p class="box-title">🧠 วิธีจำ 4 ข้อ</p>
         <p><strong>S-I-T-N</strong> = "<strong>หัวเรื่อง</strong> รวม<strong>เดียว</strong> ผูก<strong>เวลา</strong> ไม่<strong>แก้ไข</strong>"
         (Subject / Integrated / Time-variant / Non-volatile)</p>
       </div>
+
+      <p class="video-note">💡 คำนิยามนี้ตรงกับสไลด์อาจารย์เป๊ะ (KRIS DW หน้า 29) — Bill Inmon ระบุ 4 ลักษณะ พร้อมโน้ต "Data Warehouse designer focus specifically on the data (subject-oriented) rather than on the business process that modify the data"</p>
 
       <h2>3. OLTP vs OLAP / Data Warehouse — ตารางเปรียบเทียบ (ออกบ่อยมาก)</h2>
       <div class="tbl-wrap"><table class="tbl">
@@ -139,6 +145,10 @@ flowchart LR
         <strong>Kimball (Bottom-Up):</strong> สร้าง Data Marts ย่อยรายแผนก<strong>ก่อน</strong> ด้วย Dimensional Model แล้วค่อยรวมเป็นคลังใหญ่</p>
       </div>
 
+      <figure class="diagram">
+        <img src="assets/docpages/dw_p36.jpg" alt="สไลด์ DW ของอาจารย์ Star Schema Basics" loading="lazy" width="1280" height="720" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📄 สไลด์จริงของอาจารย์ (KRIS DW หน้า 36): Star Schema Basics จาก Kimball — "A star schema is a set of tables in a relational database designed according to the principles of dimensional modeling" (อาจารย์ขีดเส้นประเอง)</figcaption>
+      </figure>
       <h2>5. Star Schema vs Snowflake Schema (รู้จักไว้ — เขาบอกว่าไม่ออกออกแบบ แต่ถามนิยามได้)</h2>
 
       <div class="grid grid-2">
