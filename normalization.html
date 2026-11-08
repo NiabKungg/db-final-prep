@@ -160,11 +160,11 @@ flowchart TD
       <div class="box box-tip">
         <p class="box-title">✅ เปลี่ยนไปยังไง — สรุปการแปลง UNF → 1NF</p>
         <ol>
-          <li><strong>เติมข้อมูลซ้ำลงช่องว่าง</strong> — แถว P5 Cam ที่เคยว่าง ตอนนี้เป็น "S2, Jones, Paris, 10" ครบ → แต่ละแถวยืนเดี่ยวได้ ไม่ต้องอาศัยแถวบน</li>
-          <li><strong>ทุกเซลล์เป็น Atomic</strong> — 1 ช่อง = 1 ค่า ไม่มี "P3, P5" ยัดรวมกัน</li>
-          <li><strong>กำหนด PK = (S#, P#)</strong> — ต้องเป็นคีย์ผสม เพราะ S# เดี่ยว ๆ ซ้ำ (S2 มี 2 แถว, S5 มี 6 แถว) และ P# เดี่ยว ๆ ก็ซ้ำ (P3 มี 3 แถว) ต้องจับคู่กันถึงระบุแถวได้พอดี</li>
+          <li><strong>เติมข้อมูลซ้ำลงช่องว่าง — ไล่จริงทีละแถว:</strong> แถว "P5, Cam, Blue, 100" ที่ช่องซัพพลายเออร์ว่าง → เติม "S2, Jones, Paris, 10" ลงไป (เพราะอยู่กลุ่มเดียวกับ S2 แถวบน) • แถว "P4, Screw, Red, 500" → เติม "S3, Blake, Paris, 10" • แถว P2–P6 ทั้ง 6 แถว → เติม "S5, Adam, Athens, 30" ทั้งหมด — ตอนนี้ทุกแถวยืนเดี่ยวได้ ไม่ต้องอาศัยแถวบนแล้ว</li>
+          <li><strong>ทุกเซลล์เป็น Atomic</strong> — ตรวจทีละช่อง: ไม่มีช่องไหนยัดหลายค่า (เช่น ไม่มี "P3, P5" ในช่องเดียว) ✅</li>
+          <li><strong>กำหนด PK = (S#, P#)</strong> — พิสูจน์ด้วยข้อมูล: S# เดี่ยว ๆ ซ้ำ (S2 โผล่ 2 แถว, S5 โผล่ 6 แถว) → ระบุแถวไม่ได้ • P# เดี่ยว ๆ ก็ซ้ำ (P3 โผล่ 3 แถว) → ก็ไม่ได้ • แต่คู่ (S2,P3), (S2,P5), (S3,P3)... <strong>ไม่มีคู่ไหนซ้ำเลย</strong> → (S#, P#) ระบุแถวได้พอดี = PK</li>
         </ol>
-        <p>⚠️ ข้อสังเกต: 1NF <strong>ยังไม่ลดความซ้ำ</strong> — Jones/Paris ซ้ำ 2 แถว, Adam/Athens ซ้ำ 6 แถว, P3 Screw ซ้ำ 3 แถว — ความซ้ำพวกนี้คือสาเหตุที่ต้องไปต่อ 2NF</p>
+        <p>⚠️ ข้อสังเกต: 1NF <strong>ยังไม่ลดความซ้ำ</strong> — นับจริงในตาราง: "S2, Jones, Paris, 10" ซ้ำ 2 แถว, "S5, Adam, Athens, 30" ซ้ำ 6 แถว, "P3, Screw, Blue" ซ้ำ 3 แถว — แก้ชื่อ Jones ต้องแก้ 2 จุด, เพิ่มสินค้าใหม่ก็เพิ่มไม่ได้เพราะต้องมีคนสั่งก่อน — ความซ้ำพวกนี้คือสาเหตุที่ต้องไปต่อ 2NF</p>
       </div>
 <div class="term">
         <p><span class="term-word">📖 ศัพท์: Primary Key (PK) / Composite Key</span> <span class="term-read">— อ่านว่า "พรายมารี คีย์ / คีย์ผสม"</span></p>
@@ -198,12 +198,25 @@ flowchart LR
       <p class="mermaid-caption">ภาพที่ 2: FD ของตาราง 1NF — ไล่ถามทีละ Non-key ว่า "รู้แค่ส่วนเดียวของ PK ก็รู้ค่านี้ไหม?"</p>
 
       <div class="box box-mem">
-        <p class="box-title">🧠 ไล่ FD จริงด้วยข้อมูลในตาราง (ทำตามได้ในห้องสอบ)</p>
+        <p class="box-title">🧠 ไล่ FD จริงด้วยข้อมูลในตาราง — ใช้กฎเดียว: "เทียบแถวที่ค่าฝั่งซ้ายเท่ากัน"</p>
+        <p><strong>กฎ:</strong> มองหาแถวที่มีค่าฝั่งซ้าย (X) <strong>เท่ากัน</strong> — ถ้าฝั่งขวา (Y) เท่ากันทุกแถว = มี FD X → Y ✅ • ถ้าเจอแม้แต่คู่เดียวที่ X เท่ากันแต่ Y ต่าง = ไม่มี FD ❌</p>
+        <p><strong>① ทดสอบ S# → Sname, City, Status</strong> — มองแถวที่ S# ซ้ำกัน:</p>
         <ul>
-          <li>ดูแถว S1 กับ S2: <strong>S# = S1 → Sname คือ Smith เสมอ</strong> (ไม่ว่า P# อะไร) → <code>S# → Sname, City, Status</code> ❌ ขึ้นกับ "ส่วนเดียว" ของ PK = <strong>Partial</strong></li>
-          <li>ดู P3 ทุกแถว: <strong>P# = P3 → Pname คือ Screw, Color คือ Blue เสมอ</strong> → <code>P# → Pname, Color</code> ❌ <strong>Partial</strong></li>
-          <li>Qty ล่ะ? (S1,P1)=200 แต่ (S5,P1)=100 — S# เดิม P# ต่าง Qty ต่าง / (S2,P3)=400 แต่ (S3,P3)=200 — P# เดิม S# ต่าง Qty ต่าง → ต้องรู้<strong>ทั้งคู่</strong>จึงรู้ Qty = <code>(S#, P#) → Qty</code> ✅ <strong>FFD</strong> (Fully Functional Dependency)</li>
+          <li>S# = S2 มี 2 แถว: Sname = <strong>Jones, Paris, 10</strong> เหมือนกันทั้งคู่ ✓</li>
+          <li>S# = S5 มี 6 แถว: Sname = <strong>Adam, Athens, 30</strong> ทุกแถว ✓</li>
+          <li>→ รู้ S# = รู้ทั้งสามค่าทันที → <strong>มี FD จริง ❌ แต่เป็น Partial</strong> (รู้แค่ "ครึ่งเดียว" ของ PK ก็รู้แล้ว)</li>
         </ul>
+        <p><strong>② ทดสอบ P# → Pname, Color</strong> — มองแถวที่ P# ซ้ำกัน:</p>
+        <ul>
+          <li>P# = P3 มี 3 แถว: <strong>Screw / Blue</strong> เหมือนกันทั้ง 3 ✓ → <strong>มี FD จริง ❌ Partial</strong> เช่นกัน</li>
+        </ul>
+        <p><strong>③ ทดสอบ Qty — รู้แค่ตัวเดียวพอไหม?</strong> ใช้กฎเดียวกัน:</p>
+        <ul>
+          <li>รู้แค่ P#? ดูแถวที่ P# = P3 ทั้ง 3 แถว: Qty = <strong>400, 200, 200 → ไม่เท่ากัน!</strong> → รู้ P# อย่างเดียวเดา Qty ไม่ได้ ❌</li>
+          <li>รู้แค่ S#? ดูแถวที่ S# = S5 ทั้ง 6 แถว: Qty = <strong>100, 200, 200, 800, 500, 200 → ไม่เท่ากัน!</strong> → รู้ S# อย่างเดียวก็เดาไม่ได้ ❌</li>
+          <li>รู้ "คู่" (S#, P#) ล่ะ? แต่ละคู่มีแถวเดียวพอดี (ไม่มีคู่ไหนซ้ำกัน) → รู้คู่ = รู้ Qty เสมอ ✅</li>
+        </ul>
+        <p>→ <strong>สรุป:</strong> <code>(S#, P#) → Qty</code> ขึ้นกับ PK ทั้งก้อน = <strong>FFD</strong> ✅ • ส่วน S# → Sname กับ P# → Pname ขึ้นกับแค่ "บางส่วน" = <strong>Partial</strong> ❌ — นี่แหละคือเหตุผลที่ต้องสปลิตเป็น 2NF ตอนถัดไป</p>
       </div>
 <div class="term">
         <p><span class="term-word">📖 ศัพท์: FFD (Full Functional Dependency)</span> <span class="term-read">— อ่านว่า "เอฟเอฟดี (การขึ้นกันแบบสมบูรณ์)"</span></p>
@@ -306,9 +319,16 @@ flowchart LR
 
       <div class="box box-mem">
         <p class="box-title">🧠 หา Transitive ด้วยข้อมูลจริง (เห็นจากตารางเลย)</p>
-        <p>ดูตาราง S_2NF: <strong>London มี Status 20 เสมอ</strong> (ทั้ง S1 และ S4) • <strong>Paris มี Status 10 เสมอ</strong> (ทั้ง S2 และ S3) • Athens = 30<br>
-        แปลว่า <code>City → Status</code> (รู้เมือง = รู้สถานะ ไม่ต้องรู้รหัสพนักงาน) — เกิดสายโซ่ <code>S# → City → Status</code>
-        โดยที่ City และ Status เป็น Non-key ทั้งคู่ = <strong>Transitive Dependency ❌</strong></p>
+        <p>ดูตาราง S_2NF แล้วจัดกลุ่มตาม City — จะเห็นว่า <strong>City ตัวเดียวกัน = Status ตัวเดียวกันเสมอ:</strong></p>
+        <div class="tbl-wrap"><table class="tbl nowrap compact">
+          <tr><th>City</th><th>แถวที่ปรากฏ</th><th>Status ที่พบ</th></tr>
+          <tr><td>London</td><td>S1, S4</td><td><strong>20 ทั้งคู่</strong> ✓</td></tr>
+          <tr><td>Paris</td><td>S2, S3</td><td><strong>10 ทั้งคู่</strong> ✓</td></tr>
+          <tr><td>Athens</td><td>S5</td><td>30</td></tr>
+        </table></div>
+        <p>แปลว่า <code>City → Status</code> (รู้เมือง = รู้สถานะ ไม่ต้องรู้รหัสพนักงาน) — เกิดสายโซ่ <code>S# → City → Status</code>
+        โดยที่ City และ Status เป็น Non-key ทั้งคู่ = <strong>Transitive Dependency ❌</strong><br>
+        <strong>ทดสอบว่าเกิดปัญหาจริง:</strong> ถ้าโจทย์บอก "Paris เปลี่ยน Status เป็น 15" — ตารางนี้มี Paris อยู่ 2 แถว ต้องแก้ทั้ง 2 จุด ลืมจุดเดียวข้อมูลขัดแย้งทันที (S2 บอก 15 แต่ S3 บอก 10) — นี่คือ Update Anomaly ที่ยังค้างอยู่</p>
       </div>
 <div class="term">
         <p><span class="term-word">📖 ศัพท์: Transitive Dependency</span> <span class="term-read">— อ่านว่า "ทรานซิทีฟ ดีเพนเดนซี (การขึ้นกันเชิงส่งผ่าน)"</span></p>
@@ -340,9 +360,9 @@ flowchart LR
       <div class="box box-tip">
         <p class="box-title">✅ เปลี่ยนไปยังไง — สรุปการแปลง 2NF → 3NF</p>
         <ul>
-          <li><strong>สิ่งที่ย้าย:</strong> คอลัมน์ Status ออกจากตาราง S ไปรวมกับ City (Determinant ของมัน) ในตารางใหม่ City_Status</li>
-          <li><strong>สิ่งที่ได้:</strong> ถ้าโจทย์บอก "Paris เปลี่ยน Status เป็น 15" — แก้ <strong>1 แถว</strong>ใน City_Status (เดิมต้องแก้ทุกแถวของคน Paris + เสี่ยงข้อมูลขัดแย้ง)</li>
-          <li><strong>เพิ่มเมืองใหม่ได้:</strong> มีเมืองใหม่ที่ยังไม่มีซัพพลายเออร์ ก็เพิ่มใน City_Status ได้เลย (เดิม Insertion Anomaly)</li>
+          <li><strong>สิ่งที่ย้าย — ไล่จริง:</strong> คอลัมน์ Status ถูก "หัก" ออกจาก S (เหลือ S#, Sname, City) • คู่ City+Status ย้ายไปรวมกันในตารางใหม่ City_Status โดย City ที่เคยซ้ำ (London 2 แถว, Paris 2 แถว) ถูก<b>ยุบเหลือแถวเดียว</b> — เหลือ 3 แถว: (London,20), (Paris,10), (Athens,30)</li>
+          <li><strong>สิ่งที่ได้ — ทดสอบด้วยสถานการณ์เดิม:</strong> "Paris เปลี่ยน Status เป็น 15" → แก้ <strong>1 แถว</strong>ใน City_Status จบ (เดิมใน S_2NF ต้องแก้ 2 จุดและเสี่ยงขัดแย้ง)</li>
+          <li><strong>เพิ่มเมืองใหม่ได้:</strong> เมือง "Bangkok 40" ที่ยังไม่มีซัพพลายเออร์ เพิ่มใน City_Status ได้เลย (เดิมต้องรอมีคนสังกัดก่อน = Insertion Anomaly)</li>
           <li><strong>จำนวนตารางรวม:</strong> S • City_Status • P • SP = <strong>4 ตาราง</strong> — ผลลัพธ์สุดท้ายของ Live 0021</li>
         </ul>
       </div>
@@ -392,8 +412,9 @@ flowchart LR
       <div class="box box-mem">
         <p class="box-title">🧠 ไล่ FD + CK ให้ครบก่อนตัดสิน (สูตร BCNF)</p>
         <ul>
-          <li><strong>CK มี 2 ตัว:</strong> (Student_ID, Subject) และ (Student_ID, Advisor_Name) — ทั้งคู่ระบุแถวได้ (ลองดูข้อมูลประกอบ) → เลือก PK = (Student_ID, Subject)</li>
-          <li><strong>FD ที่เจอ:</strong> (Student_ID, Subject) → Advisor_Name ✅ ปกติ • <strong>Advisor_Name → Subject</strong> ❌ (อาจารย์ 1 คน = วิชาเดียว ดูจากข้อมูล: อ.เอ → Database เสมอ)</li>
+          <li><strong>พิสูจน์ CK ที่ 1 = (Student_ID, Subject):</strong> ดูข้อมูล — (6501001, Database), (6501001, OS), (6501002, Database) ไม่มีคู่ไหนซ้ำ → ระบุแถวได้ ✅</li>
+          <li><strong>พิสูจน์ CK ที่ 2 = (Student_ID, Advisor_Name):</strong> (6501001, อ.เอ), (6501001, อ.บี), (6501002, อ.ค) ก็ไม่ซ้ำเช่นกัน ✅ → เลือก PK = (Student_ID, Subject)</li>
+          <li><strong>FD ที่เจอจากข้อมูล:</strong> ดู Advisor_Name ทุกแถว — อ.เอ โผล่แค่กับ Database, อ.บี แค่กับ OS, อ.ค แค่กับ Database → <strong>อาจารย์ 1 คน = วิชาเดียวเสมอ</strong> = <code>Advisor_Name → Subject</code></li>
           <li><strong>3NF ยอมรับ:</strong> Subject เป็น "ส่วนหนึ่งของ CK" (prime attribute) จึงยังผ่าน 3NF<br>
           <strong>BCNF ไม่ยอม:</strong> Advisor_Name คือ Determinant แต่<strong>ไม่ใช่ CK ทั้งตัว</strong> → ไม่ผ่าน BCNF ❌</li>
         </ul>
@@ -470,9 +491,10 @@ flowchart LR
 
       <div class="box box-warn">
         <p class="box-title">❌ ปัญหา: ตารางเป็น "ผลคูณทุกคู่" (Cartesian Product)</p>
-        <p>อาจารย์ 2 คน × หนังสือ 2 เล่ม = <strong>4 แถวเป๊ะ ๆ</strong> — ข้อมูลจริงมีแค่ 2+2 = 4 ชิ้น แต่เก็บเป็น 4 คู่จับกัน
-        เพิ่มหนังสือ 1 เล่ม = ต้องเพิ่ม 2 แถว (หนึ่งแถวต่ออาจารย์) เพิ่มอาจารย์ 1 คน = อีก 2 แถว<br>
-        นี่คือ MVD: <code>Course →→ Teacher</code> และ <code>Course →→ Text_Book</code> ที่<strong>อิสระกันโดยสิ้นเชิง</strong></p>
+        <p>ไล่จากข้อมูลจริง: วิชา Physics มี <strong>อาจารย์ 2 คน</strong> (Green, Brown) และ <strong>หนังสือ 2 เล่ม</strong> (Basic, University Physics)
+        — ในตารางต้องมีครบทุกคู่: (Green, Basic), (Green, University), (Brown, Basic), (Brown, University) = <strong>2 × 2 = 4 แถวเป๊ะ ๆ</strong><br>
+        <strong>ลองเพิ่มของใหม่:</strong> เพิ่มหนังสือ 1 เล่ม = ต้องเพิ่ม 2 แถว (Green + Brown) • เพิ่มอาจารย์ 1 คน = ต้องเพิ่ม 3 แถว (ต่อหนังสือทุกเล่ม) — ยิ่งข้อมูลเยอะยิ่งบวม<br>
+        นี่คือ MVD: <code>Course →→ Teacher</code> และ <code>Course →→ Text_Book</code> ที่<strong>อิสระกันโดยสิ้นเชิง</strong> (อาจารย์ท่านไหนก็ใช้หนังสือเล่มไหนก็ได้ ไม่มีกฎห้าม)</p>
       </div>
 <div class="term">
         <p><span class="term-word">📖 ศัพท์: MVD (Multivalued Dependency)</span> <span class="term-read">— อ่านว่า "เอ็มวีดี (การขึ้นกันหลายค่า)"</span></p>
@@ -536,10 +558,14 @@ flowchart LR
       </table></div>
       <div class="box box-mem">
         <p class="box-title">🧠 เฉลยตามสูตร 4NF</p>
-        <p>ดูเนตรนภา: มี Skill {M.Excel, MySQL} และ Project {การวิยิมลาด, MIS} — ตารางมีครบทุกคู่ 2×2 = 4 แถว
+        <p><strong>ไล่จริงทีละคน:</strong> ดูเนตรนภา (มี 4 แถว) — Skill = {M.Excel, MySQL} และ Project = {การวิจัยตลาด, MIS}
+        ตารางมีครบทุกคู่ 2×2 = 4 แถวพอดี (M.Excel × ทั้งสองโปรเจกต์, MySQL × ทั้งสองโปรเจกต์)
+        ดูลุมฟา (มี 2 แถว) — Skill = {M.Word, M.Excel}, Project = {การวิจัยตลาด} ก็ครบ 2×1 = 2<br>
         = <code>Employee →→ Skill</code> และ <code>Employee →→ Project</code> โดยสองกลุ่มอิสระกัน → <strong>ไม่ผ่าน 4NF</strong> ❌<br>
-        <strong>Split:</strong> <code>Employee_Skill(Employee, Skill)</code> = {(ลุมฟา,M.Word), (ลุมฟา,M.Excel), (เนตรนภา,M.Excel), (เนตรนภา,MySQL)}
-        + <code>Employee_Project(Employee, Project)</code> = {(ลุมฟา,การวิจัยตลาด), (เนตรนภา,การวิจัยตลาด), (เนตรนภา,MIS)} — จาก 6 แถว เหลือ 4+3 แถว</p>
+        <strong>ทดสอบปัญหาจริง:</strong> เนตรนภาเรียนเพิ่ม Python = ต้องเพิ่ม <strong>2 แถว</strong> (ต่อโปรเจกต์ทั้งสองอัน) ทั้งที่แค่ "เรียน Python 1 อย่าง"<br>
+        <strong>Split:</strong> <code>Employee_Skill(Employee, Skill)</code> = {(ลุมฟา,M.Word), (ลุมฟา,M.Excel), (เนตรนภา,M.Excel), (เนตรนภา,MySQL)} — 4 แถว
+        + <code>Employee_Project(Employee, Project)</code> = {(ลุมฟา,การวิจัยตลาด), (เนตรนภา,การวิจัยตลาด), (เนตรนภา,MIS)} — 3 แถว
+        → เพิ่ม Python = เพิ่มแค่ 1 แถวพอ ✅ — JOIN กลับได้ 6 แถวเดิมเป๊ะ</p>
       </div>
       <figure class="diagram">
         <img src="assets/docpages/nf4ex_skillproj_p01.jpg" alt="โจทย์ 4NF ตัวจริงของอาจารย์ Employee Skill Project ลุมฟา เนตรนภา" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
