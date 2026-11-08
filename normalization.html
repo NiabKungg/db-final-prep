@@ -39,26 +39,26 @@
 
       <header class="page-head">
         <p class="crumb"><a href="index.html">หน้าแรก</a> / Normalization</p>
-        <h1>🧮 Normalization — จัดระเบียบตาราง 1NF ถึง 5NF</h1>
+        <h1>🧮 Normalization — เดินครบทุก NF พร้อมตารางก่อน–หลังทุกขั้น</h1>
         <div class="head-meta">
           <span class="badge">คะแนน 40 (มากที่สุด!)</span>
           <span class="badge">4 ข้อ: 1–3NF / BCNF / 4NF / 5NF</span>
-          <span class="badge gold">ตัวอย่างเดินจริงจากสไลด์อาจารย์ (Live 0021–0025)</span>
+          <span class="badge gold">ข้อมูลตารางจริงจากสไลด์อาจารย์ (Live 0021–0025)</span>
         </div>
       </header>
 
       <div class="box box-exam">
-        <p class="box-title">📝 ข้อสอบปีนี้ออก 4 ข้อ (40 คะแนน) — หัวใจของเทอมนี้</p>
-        <p>โจทย์จะให้ตารางมาแล้วให้เดินแต่ละ NF ว่า <strong>อะไรผิด ทำไม และสปลิตยังไง</strong>
-        หน้านี้เดินให้ดูครบทุกขั้นจาก<strong>ตัวอย่างจริงที่อาจารย์ใช้สอนในวิดีโอ Live 0021–0025</strong>
-        พร้อมวิดีโอต้นฉบับฝังไว้ให้ย้อนดูสไลด์ได้ และโจทย์ฝึกเพิ่มอีกชุด</p>
+        <p class="box-title">📝 ข้อสอบปีนี้ออก 4 ข้อ (40 คะแนน) — หน้านี้เดินให้ดูทุกขั้นแบบ "ตารางก่อน → ตารางหลัง"</p>
+        <p>โจทย์จะให้ตารางมาแล้วให้ตอบว่า <strong>ผิด NF ไหน เพราะอะไร และสปลิตยังไง</strong>
+        หน้านี้ใช้ตัวอย่างจริงของอาจารย์ (ตาราง SupplyPart จาก Live 0021) เดินครบทุกขั้น
+        โดยแสดง<strong>ตารางก่อนแปลง ตารางหลังแปลง และคำอธิบายว่าแต่ละคอลัมน์/แถวย้ายไปไหนเพราะอะไร</strong></p>
       </div>
 
       <h2>Normalization คืออะไร ทำไปทำไม</h2>
       <p><strong>Normalization</strong> คือ กระบวนการวิเคราะห์และปรับปรุงโครงสร้างตาราง (Relation) โดย<strong>ย่อย/สปลิต</strong>
       ตารางใหญ่ 1 ตาราง (Decomposition) ออกเป็นตารางย่อย ๆ ที่เชื่อมกันด้วย <strong>PK และ FK</strong>
       เพื่อ (1) <strong>ลดความซ้ำซ้อน</strong> (Minimum Redundancy) (2) <strong>กำจัด Anomalies</strong>
-      (Insertion/Deletion/Update) (3) ให้ข้อมูล<strong>ถูกต้อง 100%</strong> — แก้จุดเดียวจบ</p>
+      — Insertion (เพิ่มไม่ได้) / Deletion (ลบแล้วข้อมูลอื่นหาย) / Update (แก้หลายจุด) (3) ให้ข้อมูล<strong>ถูกต้อง 100%</strong></p>
 
       <div class="box box-analogy">
         <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
@@ -69,8 +69,8 @@
       <h2>แผนที่บันได Normal Form ทั้งหมด</h2>
       <pre class="mermaid">
 flowchart TD
-  UNF["🧾 UNF — ตารางดิบจากฟอร์ม/รายงาน<br>(ยังมีกลุ่มซ้ำ, เซลล์หลายค่า)"]
-  N1["1NF<br>ทุกเซลล์เป็นค่าเดียว (Atomic)<br>+ กำหนด Primary Key"]
+  UNF["🧾 UNF — ตารางดิบจากฟอร์ม/รายงาน<br>(ยังมีกลุ่มซ้ำ, เซลล์หลายค่า, ช่องว่าง)"]
+  N1["1NF<br>ทุกเซลล์เป็นค่าเดียว (Atomic)<br>+ เติมข้อมูลซ้ำให้เต็ม + กำหนด PK"]
   N2["2NF<br>ตัด Partial Dependency<br>(Non-key ต้องขึ้นกับ PK ทั้งก้อน)"]
   N3["3NF<br>ตัด Transitive Dependency<br>(Non-key ห้ามกำหนด Non-key)"]
   NBC["BCNF — เข้มกว่า 3NF<br>Determinant ของทุก FD<br>ต้องเป็น Candidate Key"]
@@ -81,86 +81,130 @@ flowchart TD
       <p class="mermaid-caption">ภาพที่ 1: บันได Normalization — ขึ้นทีละขั้น ต้องผ่านขั้นล่างก่อนเสมอ</p>
 
       <div class="box box-basics">
-        <p class="box-title">📚 พื้นฐานที่ต้องรู้ก่อนอ่านต่อ</p>
+        <p class="box-title">📚 ศัพท์ที่ต้องรู้ก่อนอ่านต่อ</p>
         <ul>
-          <li><strong>PK</strong> = คีย์หลักระบุแถวไม่ซ้ำ • <strong>CK (Candidate Key)</strong> = คีย์คู่แข่งทุกตัว • <strong>Non-key</strong> = คอลัมน์ที่ไม่ใช่คีย์ (ตัวปัญหา!)</li>
-          <li><strong>FD (X → Y)</strong> = รู้ค่า X 1 ค่า ระบุ Y ได้เพียงค่าเดียวเสมอ</li>
+          <li><strong>PK</strong> = คีย์หลักระบุแถวไม่ซ้ำ • <strong>CK (Candidate Key)</strong> = คีย์คู่แข่งทุกตัวที่ระบุแถวได้แบบน้อยที่สุด • <strong>Non-key</strong> = คอลัมน์ที่ไม่ใช่คีย์ (ตัวปัญหาของทุก NF!)</li>
+          <li><strong>FD (X → Y)</strong> = Functional Dependency: รู้ค่า X 1 ค่า ระบุค่า Y ได้<strong>เพียงค่าเดียวเสมอ</strong> เช่น รู้รหัสพนักงาน → รู้ชื่อ</li>
+          <li><strong>Determinant</strong> = ฝั่งซ้ายของ FD (ตัว X ที่กำหนดค่า)</li>
         </ul>
       </div>
 
       <hr class="sep">
 
-      <h2>🎯 ตัวอย่างหลักของอาจารย์ (Live 0021): ตาราง S-P-QTY — เดินครบ UNF → 3NF</h2>
-      <p>นี่คือ<strong>ตัวอย่างหลักที่อาจารย์ใช้สอน 1NF–3NF</strong> ในวิดีโอ Live 0021:
-      ตารางเดียวรวมข้อมูลซัพพลายเออร์ + สินค้า + การส่งมอบไว้ด้วยกัน
-      <code>R(S#, SNAME, STATUS, CITY, P#, PNAME, COLOR, WEIGHT, QTY)</code></p>
+      <h2>🎯 ตัวอย่างหลักของอาจารย์ (Live 0021): ตาราง SupplyPart — เดินครบ UNF → 3NF</h2>
+      <p>อาจารย์ใช้โจทย์ <strong>"ข้อมูล SupplyPart (ตัวแทนจำหน่ายสินค้า ทำรายการสั่งซื้อให้)"</strong>
+      ตารางเดียวรวมข้อมูลซัพพลายเออร์ + สินค้า + รายการสั่งซื้อ:
+      <code>R(S#, Sname, City, Status, P#, Pname, Color, Qty)</code></p>
 
-      <h3>ข้อมูลตัวอย่าง (จากสไลด์อาจารย์)</h3>
+      <figure class="diagram">
+        <img src="assets/slides/slide_0021_640.jpg" alt="สไลด์อาจารย์: ตาราง SupplyPart ตัวอย่างจริง พร้อมการเติมข้อมูลซ้ำแบบ 1NF" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 สไลด์จริงของอาจารย์ (Live 0021): ตารางเริ่มต้นก่อน 1NF — ช่องซัพพลายเออร์ว่างลอยในแถวที่สั่งซื้อหลายรายการ และปากกาเขียวคือการ "เติมข้อมูลซ้ำ" เพื่อทำ 1NF</figcaption>
+      </figure>
+
+      <h2>🔵 ขั้นที่ 1: UNF → 1NF (ทุกเซลล์ Atomic + เติมช่องว่างให้เต็ม)</h2>
+
+      <h3>📉 ตารางก่อนแปลง (UNF) — ตรงตามสไลด์อาจารย์</h3>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
         <tr><th>S#</th><th>Sname</th><th>City</th><th>Status</th><th>P#</th><th>Pname</th><th>Color</th><th>Qty</th></tr>
         <tr><td>S1</td><td>Smith</td><td>London</td><td>20</td><td>P1</td><td>Nut</td><td>Red</td><td>200</td></tr>
         <tr><td>S2</td><td>Jones</td><td>Paris</td><td>10</td><td>P3</td><td>Screw</td><td>Blue</td><td>400</td></tr>
-        <tr><td>S2</td><td>Jones</td><td>Paris</td><td>10</td><td>P5</td><td>Cam</td><td>Blue</td><td>100</td></tr>
+        <tr style="background:#fff1f0;"><td class="ts" style="color:#c62a30;">(ว่าง)</td><td></td><td></td><td></td><td>P5</td><td>Cam</td><td>Blue</td><td>100</td></tr>
         <tr><td>S3</td><td>Blake</td><td>Paris</td><td>10</td><td>P3</td><td>Screw</td><td>Blue</td><td>200</td></tr>
-        <tr><td>S3</td><td>Blake</td><td>Paris</td><td>10</td><td>P4</td><td>Screw</td><td>Red</td><td>500</td></tr>
+        <tr style="background:#fff1f0;"><td class="ts" style="color:#c62a30;">(ว่าง)</td><td></td><td></td><td></td><td>P4</td><td>Screw</td><td>Red</td><td>500</td></tr>
         <tr><td>S4</td><td>Clark</td><td>London</td><td>20</td><td>P6</td><td>Cog</td><td>Red</td><td>300</td></tr>
         <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P1</td><td>Nut</td><td>Red</td><td>100</td></tr>
-        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P2</td><td>Bolt</td><td>Green</td><td>200</td></tr>
-        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P3</td><td>Screw</td><td>Blue</td><td>200</td></tr>
-        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P4</td><td>Screw</td><td>Red</td><td>800</td></tr>
-        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P5</td><td>Cam</td><td>Blue</td><td>500</td></tr>
-        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P6</td><td>Cog</td><td>Red</td><td>200</td></tr>
+        <tr style="background:#fff1f0;"><td class="ts" style="color:#c62a30;">(ว่าง)</td><td></td><td></td><td></td><td>P2</td><td>Bolt</td><td>Green</td><td>200</td></tr>
+        <tr style="background:#fff1f0;"><td class="ts" style="color:#c62a30;">(ว่าง)</td><td></td><td></td><td></td><td>P3</td><td>Screw</td><td>Blue</td><td>200</td></tr>
+        <tr style="background:#fff1f0;"><td class="ts" style="color:#c62a30;">(ว่าง)</td><td></td><td></td><td></td><td>P4</td><td>Screw</td><td>Red</td><td>800</td></tr>
+        <tr style="background:#fff1f0;"><td class="ts" style="color:#c62a30;">(ว่าง)</td><td></td><td></td><td></td><td>P5</td><td>Cam</td><td>Blue</td><td>500</td></tr>
+        <tr style="background:#fff1f0;"><td class="ts" style="color:#c62a30;">(ว่าง)</td><td></td><td></td><td></td><td>P6</td><td>Cog</td><td>Red</td><td>200</td></tr>
       </table></div>
-      <p class="video-note">📌 นี่คือตาราง 1NF แล้ว (อาจารย์เริ่มจาก UNF ที่ S2/S3/S5 มีรายการสั่งซื้อหลายบรรทัดโดยช่องซัพพลายเออร์ว่าง แล้ว "เติมข้อมูลซ้ำลงในช่องว่างให้เต็ม" ตามที่ขีดเขียนสีเขียวในสไลด์) — สังเกตว่าข้อมูล Jones/Paris ซ้ำ และ P3 Screw ซ้ำถึง 3 แถว = ความซ้ำซ้อนที่ต้อง Normalize</p>
-      <figure class="diagram">
-        <img src="assets/slides/slide_0021_640.jpg" alt="สไลด์อาจารย์: ตาราง SupplyPart ตัวอย่างจริง พร้อมการเติมข้อมูลซ้ำแบบ 1NF" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
-        <figcaption>📷 สไลด์จริงของอาจารย์ (Live 0021): ข้อมูล SupplyPart — เห็นการ "เติมข้อมูลซ้ำลงช่องว่าง" เพื่อทำ 1NF ด้วยปากกาเขียว</figcaption>
-      </figure>
 
-      <h3>ขั้นที่ 1: ทำ 1NF — ทุกเซลล์ Atomic + กำหนด PK</h3>
-      <p>ตารางนี้ทุกเซลล์เป็นค่าเดียวแล้ว (เติมข้อมูลซ้ำให้เต็มทุกแถวเรียบร้อย)
-      จึง<strong>ผ่าน 1NF</strong> — เหลือกำหนด Primary Key: ต้องใช้คีย์ผสม <code>(S#, P#)</code>
-      เพราะ S# เดี่ยว ๆ ซ้ำ (S1 มี 2 แถว) และ P# เดี่ยว ๆ ก็ซ้ำ (P1 มี 2 แถว) ต้องใช้คู่กันถึงระบุแถวได้</p>
-
-      <h3>ขั้นที่ 2: วิเคราะห์ FD ทั้งหมด → เจอ Partial Dependency (ไม่ผ่าน 2NF)</h3>
-      <pre class="mermaid">
-flowchart LR
-  SP(("(S#, P#)<br>คีย์ผสม")) -->|"FFD ✅"| QTY["QTY"]
-  S["S#<br>(ส่วนเดียวของ PK)"] -.->|"Partial ❌"| SG["SNAME, STATUS, CITY"]
-  P["P#<br>(ส่วนเดียวของ PK)"] -.->|"Partial ❌"| PG["PNAME, COLOR, WEIGHT"]
-      </pre>
-      <p class="mermaid-caption">ภาพที่ 2: FD ของตาราง 1NF — QTY ต้องรู้ทั้ง S# และ P# (FFD) แต่ข้อมูลคนและข้อมูลสินค้าขึ้นกับ "ส่วนเดียว" ของคีย์</p>
-
-      <div class="box box-mem">
-        <p class="box-title">🧠 วิธีหา Partial ให้เร็ว (เทคนิคข้อสอบ)</p>
-        <p>ดูทีละคอลัมน์ Non-key แล้วถามว่า <strong>"รู้แค่ S# ก็รู้ค่านี้ไหม?"</strong> — Smith/STATUS/London ตอบใช่ = Partial ❌
-        <strong>"รู้แค่ P# ก็รู้ไหม?"</strong> — Nut/Red/12 ตอบใช่ = Partial ❌
-        ส่วน QTY ต้องรู้ทั้งคู่ถึงจะรู้ = FFD ✅</p>
+      <div class="box box-warn">
+        <p class="box-title">❌ ปัญหาของตารางนี้ (ยังไม่ผ่าน 1NF)</p>
+        <ul>
+          <li><strong>Repeating Group:</strong> ซัพพลายเออร์ 1 คนสั่งได้หลายสินค้า ทำให้เกิด "กลุ่มแถว" — แถวของ P5/P4/P2–P6 มีช่องซัพพลายเออร์<strong>ว่างลอย</strong> ไม่รู้ว่าเป็นสั่งของใคร</li>
+          <li><strong>แถวไม่เป็นอิสระ:</strong> แถว P5 Cam ต้องอาศัยอ่าน "แถวบน" ประกอบ จึงจะรู้ว่าเป็นของ S2 — ผิดหลักตาราง (แต่ละแถวต้องยืนเดี่ยวได้)</li>
+          <li><strong>ไม่มี PK:</strong> ยังระบุแถวด้วยคอลัมน์ใดคอลัมน์เดียวไม่ได้เลย</li>
+        </ul>
       </div>
 
-      <p><strong>แก้: สปลิตตาม FD — ได้ 3 ตาราง (ผ่าน 2NF)</strong></p>
+      <h3>📈 ตารางหลังแปลง (1NF) — เติมข้อมูลซ้ำลงทุกช่องว่าง</h3>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>S# 🔑</th><th>Sname</th><th>City</th><th>Status</th><th>P# 🔑</th><th>Pname</th><th>Color</th><th>Qty</th></tr>
+        <tr><td>S1</td><td>Smith</td><td>London</td><td>20</td><td>P1</td><td>Nut</td><td>Red</td><td>200</td></tr>
+        <tr><td>S2</td><td>Jones</td><td>Paris</td><td>10</td><td>P3</td><td>Screw</td><td>Blue</td><td>400</td></tr>
+        <tr style="background:#effaf3;"><td><strong>S2</strong></td><td><strong>Jones</strong></td><td><strong>Paris</strong></td><td><strong>10</strong></td><td>P5</td><td>Cam</td><td>Blue</td><td>100</td></tr>
+        <tr><td>S3</td><td>Blake</td><td>Paris</td><td>10</td><td>P3</td><td>Screw</td><td>Blue</td><td>200</td></tr>
+        <tr style="background:#effaf3;"><td><strong>S3</strong></td><td><strong>Blake</strong></td><td><strong>Paris</strong></td><td><strong>10</strong></td><td>P4</td><td>Screw</td><td>Red</td><td>500</td></tr>
+        <tr><td>S4</td><td>Clark</td><td>London</td><td>20</td><td>P6</td><td>Cog</td><td>Red</td><td>300</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td><td>P1</td><td>Nut</td><td>Red</td><td>100</td></tr>
+        <tr style="background:#effaf3;"><td><strong>S5</strong></td><td><strong>Adam</strong></td><td><strong>Athens</strong></td><td><strong>30</strong></td><td>P2</td><td>Bolt</td><td>Green</td><td>200</td></tr>
+        <tr style="background:#effaf3;"><td><strong>S5</strong></td><td><strong>Adam</strong></td><td><strong>Athens</strong></td><td><strong>30</strong></td><td>P3</td><td>Screw</td><td>Blue</td><td>200</td></tr>
+        <tr style="background:#effaf3;"><td><strong>S5</strong></td><td><strong>Adam</strong></td><td><strong>Athens</strong></td><td><strong>30</strong></td><td>P4</td><td>Screw</td><td>Red</td><td>800</td></tr>
+        <tr style="background:#effaf3;"><td><strong>S5</strong></td><td><strong>Adam</strong></td><td><strong>Athens</strong></td><td><strong>30</strong></td><td>P5</td><td>Cam</td><td>Blue</td><td>500</td></tr>
+        <tr style="background:#effaf3;"><td><strong>S5</strong></td><td><strong>Adam</strong></td><td><strong>Athens</strong></td><td><strong>30</strong></td><td>P6</td><td>Cog</td><td>Red</td><td>200</td></tr>
+      </table></div>
+      <p class="mermaid-caption">แถวสีเขียว = ช่องที่<strong>เดิมว่าง</strong> ถูก "เติมข้อมูลซ้ำของซัพพลายเออร์คนเดียวกัน" ลงไป (ตรงปากกาเขียวในสไลด์อาจารย์)</p>
+
+      <div class="box box-tip">
+        <p class="box-title">✅ เปลี่ยนไปยังไง — สรุปการแปลง UNF → 1NF</p>
+        <ol>
+          <li><strong>เติมข้อมูลซ้ำลงช่องว่าง</strong> — แถว P5 Cam ที่เคยว่าง ตอนนี้เป็น "S2, Jones, Paris, 10" ครบ → แต่ละแถวยืนเดี่ยวได้ ไม่ต้องอาศัยแถวบน</li>
+          <li><strong>ทุกเซลล์เป็น Atomic</strong> — 1 ช่อง = 1 ค่า ไม่มี "P3, P5" ยัดรวมกัน</li>
+          <li><strong>กำหนด PK = (S#, P#)</strong> — ต้องเป็นคีย์ผสม เพราะ S# เดี่ยว ๆ ซ้ำ (S2 มี 2 แถว, S5 มี 6 แถว) และ P# เดี่ยว ๆ ก็ซ้ำ (P3 มี 3 แถว) ต้องจับคู่กันถึงระบุแถวได้พอดี</li>
+        </ol>
+        <p>⚠️ ข้อสังเกต: 1NF <strong>ยังไม่ลดความซ้ำ</strong> — Jones/Paris ซ้ำ 2 แถว, Adam/Athens ซ้ำ 6 แถว, P3 Screw ซ้ำ 3 แถว — ความซ้ำพวกนี้คือสาเหตุที่ต้องไปต่อ 2NF</p>
+      </div>
+
+      <h2>🟣 ขั้นที่ 2: 1NF → 2NF (ตัด Partial Dependency)</h2>
+
+      <p><strong>ตารางก่อนแปลง</strong> = ตาราง 1NF ด้านบน (12 แถวรวมกันในตารางเดียว)
+      ขั้นนี้ไม่ได้เปลี่ยนข้อมูล แต่<strong>วิเคราะห์ FD แล้วสปลิตตาราง</strong></p>
+
+      <h3>🔍 วิเคราะห์ FD ทั้งหมดของตาราง 1NF</h3>
+      <pre class="mermaid">
+flowchart LR
+  SP(("(S#, P#)<br>Pk คีย์ผสม")) -->|"FFD ✅<br>รู้ทั้งคู่ถึงรู้ Qty"| QTY["Qty"]
+  S["S#<br>(ส่วนเดียวของ PK)"] -.->|"Partial ❌"| SG["Sname, City, Status"]
+  P["P#<br>(ส่วนเดียวของ PK)"] -.->|"Partial ❌"| PG["Pname, Color"]
+      </pre>
+      <p class="mermaid-caption">ภาพที่ 2: FD ของตาราง 1NF — ไล่ถามทีละ Non-key ว่า "รู้แค่ส่วนเดียวของ PK ก็รู้ค่านี้ไหม?"</p>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 ไล่ FD จริงด้วยข้อมูลในตาราง (ทำตามได้ในห้องสอบ)</p>
+        <ul>
+          <li>ดูแถว S1 กับ S2: <strong>S# = S1 → Sname คือ Smith เสมอ</strong> (ไม่ว่า P# อะไร) → <code>S# → Sname, City, Status</code> ❌ ขึ้นกับ "ส่วนเดียว" ของ PK = <strong>Partial</strong></li>
+          <li>ดู P3 ทุกแถว: <strong>P# = P3 → Pname คือ Screw, Color คือ Blue เสมอ</strong> → <code>P# → Pname, Color</code> ❌ <strong>Partial</strong></li>
+          <li>Qty ล่ะ? (S1,P1)=200 แต่ (S5,P1)=100 — S# เดิม P# ต่าง Qty ต่าง / (S2,P3)=400 แต่ (S3,P3)=200 — P# เดิม S# ต่าง Qty ต่าง → ต้องรู้<strong>ทั้งคู่</strong>จึงรู้ Qty = <code>(S#, P#) → Qty</code> ✅ <strong>FFD</strong> (Fully Functional Dependency)</li>
+        </ul>
+      </div>
+
+      <p><strong>แก้: สปลิตตาม Determinant — กลุ่ม FD ไหนขึ้นกับใคร ก็ไปอยู่ตารางของมัน</strong></p>
       <pre class="mermaid">
 flowchart TD
-  R["R 1NF(S#, P#, SNAME, STATUS, CITY, PNAME, COLOR, WEIGHT, QTY)<br>PK = (S#, P#)"]
-  R --> S2["S_2NF(S#, SNAME, STATUS, CITY)<br>PK: S#<br>เพราะ S# → SNAME, STATUS, CITY"]
-  R --> P2["P_2NF(P#, PNAME, COLOR, WEIGHT)<br>PK: P#<br>เพราะ P# → PNAME, COLOR, WEIGHT"]
-  R --> SP2["SP_2NF(S#, P#, QTY)<br>PK: (S#, P#)<br>เพราะ (S#, P#) → QTY"]
+  R["ตาราง 1NF(S#, Sname, City, Status, P#, Pname, Color, Qty)<br>PK = (S#, P#) — 12 แถว"]
+  R --> S2["S_2NF(S#, Sname, City, Status)<br>PK: S# — 5 แถว<br>เพราะ S# → Sname, City, Status"]
+  R --> P2["P_2NF(P#, Pname, Color)<br>PK: P# — 6 แถว<br>เพราะ P# → Pname, Color"]
+  R --> SP2["SP_2NF(S#, P#, Qty)<br>PK: (S#, P#) — 12 แถว<br>เพราะ (S#, P#) → Qty"]
       </pre>
-      <p class="mermaid-caption">ภาพที่ 3: ต้นไม้การสปลิต 2NF — แยกตาม Determinant ของแต่ละกลุ่ม FD</p>
+      <p class="mermaid-caption">ภาพที่ 3: ต้นไม้การสปลิต 2NF — 1 ตารางใหญ่กลายเป็น 3 ตารางย่อย</p>
 
-      <p>ผลลัพธ์เป็นตารางจริง:</p>
+      <h3>📈 ตารางหลังแปลง (2NF) — 3 ตาราง</h3>
+
+      <p><strong>ตารางที่ 1: S_2NF</strong> — คอลัมน์ที่ขึ้นกับ S# (Sname, City, Status) ย้ายมาอยู่กับ S# และ<strong>ตัดแถวซ้ำทิ้ง</strong> (Jones เคยซ้ำ 2 แถว เหลือ 1)</p>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">S_2NF — ข้อมูลซัพพลายเออร์ (จาก 12 แถว เหลือ 5 แถว)</caption>
-        <tr><th>S#</th><th>Sname</th><th>City</th><th>Status</th></tr>
+        <tr><th>S# 🔑</th><th>Sname</th><th>City</th><th>Status</th></tr>
         <tr><td>S1</td><td>Smith</td><td>London</td><td>20</td></tr>
         <tr><td>S2</td><td>Jones</td><td>Paris</td><td>10</td></tr>
         <tr><td>S3</td><td>Blake</td><td>Paris</td><td>10</td></tr>
         <tr><td>S4</td><td>Clark</td><td>London</td><td>20</td></tr>
         <tr><td>S5</td><td>Adam</td><td>Athens</td><td>30</td></tr>
       </table></div>
+
+      <p><strong>ตารางที่ 2: P_2NF</strong> — คอลัมน์ที่ขึ้นกับ P# (Pname, Color) ย้ายมาอยู่กับ P# และ<strong>ตัดแถวซ้ำทิ้ง</strong> (P3 เคยซ้ำ 3 แถว เหลือ 1)</p>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">P_2NF — ข้อมูลสินค้า (เหลือ 6 แถว ไม่ซ้ำเลย)</caption>
-        <tr><th>P#</th><th>Pname</th><th>Color</th></tr>
+        <tr><th>P# 🔑</th><th>Pname</th><th>Color</th></tr>
         <tr><td>P1</td><td>Nut</td><td>Red</td></tr>
         <tr><td>P2</td><td>Bolt</td><td>Green</td></tr>
         <tr><td>P3</td><td>Screw</td><td>Blue</td></tr>
@@ -168,9 +212,10 @@ flowchart TD
         <tr><td>P5</td><td>Cam</td><td>Blue</td></tr>
         <tr><td>P6</td><td>Cog</td><td>Red</td></tr>
       </table></div>
+
+      <p><strong>ตารางที่ 3: SP_2NF</strong> — เหลือเฉพาะคีย์ผสม + Qty (ข้อมูลที่ต้องรู้ทั้งคู่จึงรู้) — 12 แถวเท่าเดิมเพราะทุกแถวคือ 1 รายการสั่งซื้อจริง</p>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <caption style="caption-side:top;text-align:left;font-weight:700;padding:8px 4px;">SP_2NF — การสั่งซื้อ (คีย์ผสมเดิม + Qty)</caption>
-        <tr><th>S#</th><th>P#</th><th>Qty</th></tr>
+        <tr><th>S# 🔑</th><th>P# 🔑</th><th>Qty</th></tr>
         <tr><td>S1</td><td>P1</td><td>200</td></tr>
         <tr><td>S2</td><td>P3</td><td>400</td></tr>
         <tr><td>S2</td><td>P5</td><td>100</td></tr>
@@ -185,123 +230,184 @@ flowchart TD
         <tr><td>S5</td><td>P6</td><td>200</td></tr>
       </table></div>
 
-      <h3>ขั้นที่ 3: ตัด Transitive Dependency → ผ่าน 3NF</h3>
-      <p>พิจารณา <code>S_2NF(S#, SNAME, STATUS, CITY)</code> — พบว่า <strong>CITY (Non-key) กำหนดค่า STATUS (Non-key) ได้</strong>
-      เกิดสายโซ่ <code>S# → CITY → STATUS</code> — รู้ว่าเมืองอะไรก็รู้ STATUS ของเมืองนั้น</p>
-      <pre class="mermaid">
-flowchart LR
-  S2["S_2NF(S#, SNAME, STATUS, CITY)<br>พบ S# → CITY → STATUS ❌"]
-  S2 --> S3["S(S#, SNAME, CITY)<br>PK: S# • FK: CITY →"]
-  S2 --> C3["City_Status(CITY, STATUS)<br>PK: CITY<br>(London→20, Paris→10, Athens→30)"]
-      </pre>
-      <p class="mermaid-caption">ภาพที่ 4: สปลิต 3NF — ดึงคู่ CITY/STATUS ออกไปตั้งตารางใหม่</p>
+      <div class="box box-tip">
+        <p class="box-title">✅ เปลี่ยนไปยังไง — สรุปการแปลง 1NF → 2NF</p>
+        <ul>
+          <li><strong>ไม่มีข้อมูลหาย:</strong> คอลัมน์ทั้ง 8 ตัวถูกกระจายไป 3 ตารางครบ (S# ปรากฏทั้ง S_2NF และ SP_2NF เพราะเป็นคีย์ข้าง)</li>
+          <li><strong>แถวซ้ำถูกตัด:</strong> ข้อมูล Jones ที่เคยพิมพ์ซ้ำทุกครั้งที่สั่งของ ตอนนี้เหลือ 1 แถวใน S_2NF — แก้ชื่อจุดเดียวจบ (แก้ Update Anomaly)</li>
+          <li><strong>เพิ่มของใหม่ได้แล้ว:</strong> สินค้าใหม่ที่ยังไม่มีใครสั่ง เพิ่มใน P_2NF ได้เลย (แก้ Insertion Anomaly)</li>
+          <li><strong>แต่ยังไม่จบ!</strong> ใน S_2NF ยังมีความซ้ำแฝง: London/20 ซ้ำ 2 แถว, Paris/10 ซ้ำ 2 แถว — นี่คือเบาะแสของขั้น 3NF</li>
+        </ul>
+      </div>
 
-      <p><strong>ผลลัพธ์สุดท้าย 4 ตาราง — ผ่าน 3NF (และ BCNF) ตามสไลด์อาจารย์:</strong></p>
-      <pre class="mermaid">
-erDiagram
-  CITY ||--o{ S : "เมืองที่ตั้ง"
-  S ||--o{ SP : "ส่งมอบ"
-  P ||--o{ SP : "ถูกส่ง"
-  S {
-    string Snum PK
-    string SNAME
-    string CITY FK
-  }
-  CITY {
-    string CITY PK
-    int STATUS
-  }
-  P {
-    string Pnum PK
-    string PNAME
-    string COLOR
-    int WEIGHT
-  }
-  SP {
-    string Snum PK
-    string Pnum PK
-    int QTY
-  }
-      </pre>
-      <p class="mermaid-caption">ภาพที่ 5: ผลลัพธ์สุดท้าย S • City_Status • P • SP เชื่อมกันด้วย FK — ข้อมูลแต่ละเรื่องเก็บที่เดียว</p>
       <figure class="diagram">
         <img src="assets/slides/slide_0021_2890.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 2NF แยก 3 ตาราง S P SP" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
         <figcaption>📷 สไลด์จริง (Live 0021): ผลการแยก 2NF — S • P • SP สามตารางตาม FD ที่วิเคราะห์</figcaption>
       </figure>
-      <figure class="diagram">
-        <img src="assets/slides/slide_0021_3340.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 3NF พร้อมลูกศรชี้ความสัมพันธ์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
-        <figcaption>📷 สไลด์จริง (Live 0021): ผลลัพธ์ 3NF สุดท้าย — แยก City_Status ออกจาก S ตามสายโซ่ S# → CITY → STATUS</figcaption>
-      </figure>
+
+      <h2>🟠 ขั้นที่ 3: 2NF → 3NF (ตัด Transitive Dependency)</h2>
+
+      <p><strong>ตารางก่อนแปลง</strong> = S_2NF(S#, Sname, City, Status) — 5 แถว (P_2NF และ SP_2NF ไม่มีปัญหา ไม่ต้องแตะ)</p>
+
+      <h3>🔍 วิเคราะห์: เจอสายโซ่ Transitive</h3>
+      <pre class="mermaid">
+flowchart LR
+  S2["S_2NF(S#, Sname, City, Status)<br>พบสายโซ่ S# → City → Status ❌"]
+  S2 --> S3["S(S#, Sname, City)<br>PK: S# • FK: City →"]
+  S2 --> C3["City_Status(City, Status)<br>PK: City"]
+      </pre>
+      <p class="mermaid-caption">ภาพที่ 4: สปลิต 3NF — ดึงคู่ City/Status ออกไปตั้งตารางใหม่</p>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 หา Transitive ด้วยข้อมูลจริง (เห็นจากตารางเลย)</p>
+        <p>ดูตาราง S_2NF: <strong>London มี Status 20 เสมอ</strong> (ทั้ง S1 และ S4) • <strong>Paris มี Status 10 เสมอ</strong> (ทั้ง S2 และ S3) • Athens = 30<br>
+        แปลว่า <code>City → Status</code> (รู้เมือง = รู้สถานะ ไม่ต้องรู้รหัสพนักงาน) — เกิดสายโซ่ <code>S# → City → Status</code>
+        โดยที่ City และ Status เป็น Non-key ทั้งคู่ = <strong>Transitive Dependency ❌</strong></p>
+      </div>
+
+      <h3>📈 ตารางหลังแปลง (3NF) — S ถูกแบ่งเป็น 2 ตาราง</h3>
+
+      <p><strong>ตารางใหม่ที่ 1: S</strong> — เหมือน S_2NF แต่<strong>หักคอลัมน์ Status ออก</strong> (เพราะ Status ย้ายไปอยู่กับ City แล้ว) และ City กลายเป็น FK</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>S# 🔑</th><th>Sname</th><th>City 🔗FK</th></tr>
+        <tr><td>S1</td><td>Smith</td><td>London</td></tr>
+        <tr><td>S2</td><td>Jones</td><td>Paris</td></tr>
+        <tr><td>S3</td><td>Blake</td><td>Paris</td></tr>
+        <tr><td>S4</td><td>Clark</td><td>London</td></tr>
+        <tr><td>S5</td><td>Adam</td><td>Athens</td></tr>
+      </table></div>
+
+      <p><strong>ตารางใหม่ที่ 2: City_Status</strong> — คู่ City/Status ที่ถูกดึงออกมา <strong>ตัดแถวซ้ำทิ้ง</strong> (London เคยซ้ำ 2 → เหลือ 1)</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>City 🔑</th><th>Status</th></tr>
+        <tr><td>London</td><td>20</td></tr>
+        <tr><td>Paris</td><td>10</td></tr>
+        <tr><td>Athens</td><td>30</td></tr>
+      </table></div>
+
+      <p><strong>P และ SP</strong> — ค้างจาก 2NF ได้เลย (ไม่มี Transitive: Pname/Color ขึ้นกับ P# โดยตรง, Qty ขึ้นกับคีย์ผสมโดยตรง)</p>
 
       <div class="box box-tip">
-        <p class="box-title">✅ พิสูจน์ว่าดีขึ้นจริง (ตอบคำถาม "ทำไมต้อง Normalize")</p>
+        <p class="box-title">✅ เปลี่ยนไปยังไง — สรุปการแปลง 2NF → 3NF</p>
         <ul>
-          <li><strong>เปลี่ยนชื่อ Smith</strong> → แก้ 1 แถวใน S (เดิมแก้ 2 แถว)</li>
-          <li><strong>เพิ่มสินค้าใหม่ P3 ที่ยังไม่มีใครส่ง</strong> → เพิ่มใน P ได้เลย (เดิม Insert Anomaly ทำไม่ได้)</li>
-          <li><strong>ลบ S5 Adams</strong> → ข้อมูล P5 Cam ยังอยู่ใน P (เดิม Deletion Anomaly หายทั้งสินค้า)</li>
+          <li><strong>สิ่งที่ย้าย:</strong> คอลัมน์ Status ออกจากตาราง S ไปรวมกับ City (Determinant ของมัน) ในตารางใหม่ City_Status</li>
+          <li><strong>สิ่งที่ได้:</strong> ถ้าโจทย์บอก "Paris เปลี่ยน Status เป็น 15" — แก้ <strong>1 แถว</strong>ใน City_Status (เดิมต้องแก้ทุกแถวของคน Paris + เสี่ยงข้อมูลขัดแย้ง)</li>
+          <li><strong>เพิ่มเมืองใหม่ได้:</strong> มีเมืองใหม่ที่ยังไม่มีซัพพลายเออร์ ก็เพิ่มใน City_Status ได้เลย (เดิม Insertion Anomaly)</li>
+          <li><strong>จำนวนตารางรวม:</strong> S • City_Status • P • SP = <strong>4 ตาราง</strong> — ผลลัพธ์สุดท้ายของ Live 0021</li>
         </ul>
       </div>
 
-      <p class="video-note">🎬 วิดีโอต้นฉบับของอาจารย์: <a href="https://www.youtube.com/watch?v=jxWHagxEvFQ" target="_blank" rel="noopener">KRIS : Live - 0021 : Normalization [ 1NF 2NF 3NF ]</a></p>
+      <pre class="mermaid">
+erDiagram
+  CITY ||--o{ S : "เมืองที่ตั้ง"
+  S ||--o{ SP : "สั่งซื้อ"
+  P ||--o{ SP : "ถูกสั่ง"
+  S {
+    string Snum PK
+    string Sname
+    string City FK
+  }
+  CITY {
+    string City PK
+    int Status
+  }
+  P {
+    string Pnum PK
+    string Pname
+    string Color
+  }
+  SP {
+    string Snum PK
+    string Pnum PK
+    int Qty
+  }
+      </pre>
+      <p class="mermaid-caption">ภาพที่ 5: ผลลัพธ์สุดท้าย 4 ตาราง (ER) — CITY → S → SP ← P เชื่อมด้วย FK</p>
+
+      <figure class="diagram">
+        <img src="assets/slides/slide_0021_3340.jpg" alt="สไลด์อาจารย์: ผลลัพธ์ 3NF พร้อมลูกศรชี้ความสัมพันธ์" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
+        <figcaption>📷 สไลด์จริง (Live 0021): ผลลัพธ์ 3NF สุดท้ายของอาจารย์ — S, City_Status, P, SP พร้อมลูกศรความสัมพันธ์</figcaption>
+      </figure>
 
       <hr class="sep">
 
       <h2>🔴 BCNF — ตัวอย่างอาจารย์ (Live 0022): ตาราง Advisor</h2>
-      <p>ตาราง <code>Advisor(Student_ID, Subject, Advisor_Name)</code> — นิสิต 1 คนเรียนได้หลายวิชา,
+      <p><strong>BCNF</strong> = 3NF ที่เข้มขึ้น: <strong>ฝั่งซ้าย (Determinant) ของทุก FD ต้องเป็น Candidate Key เท่านั้น</strong>
+      — กรณีทั่วไปหลังทำ 3NF จบแล้วมักผ่าน BCNF อัตโนมัติ (เช่น 4 ตาราง SupplyPart ด้านบนผ่านหมด)
+      แต่ถ้าโจทย์มี FD แปลก ๆ ที่ Determinant ไม่ใช่คีย์ ก็จะไม่ผ่าน — ตัวอย่างคือตาราง Advisor</p>
+
+      <p>ตาราง <code>Advisor(Student_ID, Subject, Advisor_Name)</code> — เงื่อนไขธุรกิจ: นิสิต 1 คนเรียนได้หลายวิชา,
       วิชาหนึ่งมีอาจารย์ที่ปรึกษาได้หลายคน, <strong>อาจารย์ 1 คนเป็นที่ปรึกษาได้วิชาเดียว</strong></p>
 
+      <h3>📉 ตารางก่อนแปลง (ผ่าน 3NF แล้ว แต่ยังไม่ผ่าน BCNF)</h3>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <tr><th>Student_ID</th><th>Subject</th><th>Advisor_Name</th></tr>
+        <tr><th>Student_ID 🔑</th><th>Subject 🔑</th><th>Advisor_Name</th></tr>
         <tr><td>6501001</td><td>Database</td><td>อ.เอ</td></tr>
         <tr><td>6501001</td><td>OS</td><td>อ.บี</td></tr>
         <tr><td>6501002</td><td>Database</td><td>อ.ค</td></tr>
       </table></div>
 
-      <p><strong>หา Candidate Key:</strong> ได้ 2 ตัว — <code>(Student_ID, Subject)</code> และ <code>(Student_ID, Advisor_Name)</code>
-      → เลือก PK = <code>(Student_ID, Subject)</code> ผ่าน 3NF แล้ว (ไม่มี Non-key กำหนด Non-key)</p>
-
-      <p><strong>แต่ BCNF ไม่ผ่าน!</strong> เพราะเจอ FD <code>Advisor_Name → Subject</code> (อาจารย์ 1 คน = วิชาเดียว)
-      โดย <strong>Advisor_Name ไม่ใช่ Candidate Key</strong></p>
-      <pre class="mermaid">
-flowchart LR
-  A["Student_ID"] --> J(("(Student_ID, Subject)<br>= PK ✅"))
-  B["Subject"] --> J
-  J --> N["Advisor_Name"]
-  N -.->|"❌ Advisor_Name → Subject<br>Determinant ไม่ใช่ CK!"| B
-      </pre>
-      <p class="mermaid-caption">ภาพที่ 6: จุดพังของ BCNF — Advisor_Name กำหนด Subject ทั้งที่ไม่ใช่ CK (3NF ยอมรับกรณีนี้เพราะ Subject เป็นส่วนหนึ่งของ PK แต่ BCNF ไม่ยอม)</p>
-
-      <p><strong>แก้: แยกฝั่ง Determinant ออกไปตั้งตารางใหม่ (ตามสไลด์อาจารย์)</strong></p>
-      <pre class="mermaid">
-flowchart TD
-  OLD["Advisor(Student_ID, Subject, Advisor_Name)<br>ผ่าน 3NF แต่ไม่ผ่าน BCNF"]
-  OLD --> T1["Advisor_Subject(Advisor_Name, Subject)<br>PK: Advisor_Name ✅"]
-  OLD --> T2["Student_Advisor(Student_ID, Advisor_Name*)<br>PK: (Student_ID, Advisor_Name)"]
-      </pre>
-      <p class="mermaid-caption">ภาพที่ 7: สปลิต BCNF — ตอนนี้ Determinant ทุกตัวกลายเป็น PK ของตารางตัวเองหมด</p>
-
       <div class="box box-mem">
-        <p class="box-title">🧠 3NF vs BCNF ในหนึ่งบรรทัด (ออกถามความต่างบ่อยมาก)</p>
-        <p><strong>3NF:</strong> ยอมให้ X→Y โดย X ไม่ใช่ CK <em>ได้</em> ถ้า Y เป็นส่วนหนึ่งของ Candidate Key<br>
-        <strong>BCNF:</strong> <em>ห้ามเด็ดขาด</em> — ฝั่งซ้ายของทุก FD ต้องเป็น CK เท่านั้น
-        ดังนั้น <strong>ผ่าน BCNF = ผ่าน 3NF เสมอ แต่ย้อนกลับไม่จริง</strong></p>
+        <p class="box-title">🧠 ไล่ FD + CK ให้ครบก่อนตัดสิน (สูตร BCNF)</p>
+        <ul>
+          <li><strong>CK มี 2 ตัว:</strong> (Student_ID, Subject) และ (Student_ID, Advisor_Name) — ทั้งคู่ระบุแถวได้ (ลองดูข้อมูลประกอบ) → เลือก PK = (Student_ID, Subject)</li>
+          <li><strong>FD ที่เจอ:</strong> (Student_ID, Subject) → Advisor_Name ✅ ปกติ • <strong>Advisor_Name → Subject</strong> ❌ (อาจารย์ 1 คน = วิชาเดียว ดูจากข้อมูล: อ.เอ → Database เสมอ)</li>
+          <li><strong>3NF ยอมรับ:</strong> Subject เป็น "ส่วนหนึ่งของ CK" (prime attribute) จึงยังผ่าน 3NF<br>
+          <strong>BCNF ไม่ยอม:</strong> Advisor_Name คือ Determinant แต่<strong>ไม่ใช่ CK ทั้งตัว</strong> → ไม่ผ่าน BCNF ❌</li>
+        </ul>
+      </div>
+
+      <h3>📈 ตารางหลังแปลง (BCNF) — แยกฝั่ง Determinant ออกไปตั้งตารางใหม่</h3>
+
+      <p><strong>ตารางที่ 1: Advisor_Subject</strong> — เอา FD ที่มีปัญหา (Advisor_Name → Subject) ไปตั้งตารางใหม่ โดย Advisor_Name กลายเป็น PK (ผ่าน BCNF ทันทีเพราะเป็นคีย์ของตัวเอง)</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Advisor_Name 🔑</th><th>Subject</th></tr>
+        <tr><td>อ.เอ</td><td>Database</td></tr>
+        <tr><td>อ.บี</td><td>OS</td></tr>
+        <tr><td>อ.ค</td><td>Database</td></tr>
+      </table></div>
+
+      <p><strong>ตารางที่ 2: Student_Advisor</strong> — เก็บความสัมพันธ์ "นิสิตคนไหนมีที่ปรึกษาคนไหน" (คีย์ผสมเดิม แต่เอา Subject ออก)</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Student_ID 🔑</th><th>Advisor_Name 🔑🔗FK</th></tr>
+        <tr><td>6501001</td><td>อ.เอ</td></tr>
+        <tr><td>6501001</td><td>อ.บี</td></tr>
+        <tr><td>6501002</td><td>อ.ค</td></tr>
+      </table></div>
+
+      <div class="box box-tip">
+        <p class="box-title">✅ เปลี่ยนไปยังไง — สรุปการแปลง 3NF → BCNF</p>
+        <ul>
+          <li><strong>สิ่งที่ย้าย:</strong> คู่ Subject ย้ายไปอยู่กับ Determinant ของมัน (Advisor_Name) — ตรงข้ามกับ 3NF ที่ "ถูกกำหนด" ย้ายไปอยู่กับ Determinant เหมือนกัน แต่ครั้งนี้ Subject เป็นส่วนหนึ่งของ PK เดิม จึงต้องเอาออกจากคีย์ผสมด้วย</li>
+          <li><strong>ข้อมูลไม่หาย:</strong> นิสิต 6501001 มีอ.เอ (Database) ยังตามได้จาก 2 ตาราง: Student_Advisor บอกว่า 6501001 → อ.เอ แล้ว Advisor_Subject บอกว่า อ.เอ → Database</li>
+          <li><strong>ข้อสังเกต:</strong> ทั้ง 2 ตารางมีจำนวนแถวเท่าตารางเดิม (3 แถว) — BCNF ไม่ได้ลดแถว แต่แยก "ข้อมูลอิสระ" (อาจารย์สอนวิชาอะไร) ออกจาก "ข้อมูลความสัมพันธ์" (ใครมีที่ปรึกษาคนไหน)</li>
+        </ul>
       </div>
 
       <figure class="diagram">
         <img src="assets/slides/slide_0022_1650.jpg" alt="สไลด์อาจารย์: FD diagram มือเขียนของ SupplyPart พร้อมการขีดฆ่า S# to STATUS" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
-        <figcaption>📷 สไลด์จริง (Live 0022): อาจารย์เขียน FD ทั้งหมดของ SupplyPart — ขีดฆ่าแดง S# → STATUS เพราะเป็น Transitive (ผ่าน CITY) และวงกลมแดงโต้ง "ถ้านิยาม S# เป็น PK จะไม่ผ่าน BCNF ถ้ายังเก็บ CITY/STATUS ไว้ในตารางเดียวกัน"</figcaption>
+        <figcaption>📷 สไลด์จริง (Live 0022): อาจารย์เขียน FD ทั้งหมดของ SupplyPart — ขีดฆ่าแดง S# → STATUS เพราะเป็น Transitive (ผ่าน CITY) พร้อมโน้ต "ถ้านิยาม S# เป็น PK จะยังเก็บ CITY/STATUS ไว้ด้วยกันไม่ได้"</figcaption>
       </figure>
       <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=VYe97bKa5JI" target="_blank" rel="noopener">Live 0022 [BCNF]</a></p>
+
+      <div class="box box-mem">
+        <p class="box-title">🧠 3NF vs BCNF ในหนึ่งบรรทัด (ออกถามความต่างบ่อยมาก)</p>
+        <p><strong>3NF:</strong> ยอมให้ X→Y โดย X ไม่ใช่ CK <em>ได้</em> ถ้า Y เป็นส่วนหนึ่งของ Candidate Key<br>
+        <strong>BCNF:</strong> <em>ห้ามเด็ดขาด</em> — ดังนั้น <strong>ผ่าน BCNF = ผ่าน 3NF เสมอ แต่ย้อนกลับไม่จริง</strong></p>
+      </div>
 
       <hr class="sep">
 
       <h2>🟠 4NF — ตัวอย่างอาจารย์ (Live 0023): ตาราง CTX</h2>
+      <p><strong>4NF</strong> = BCNF + ไม่มี Multi-valued Dependency (MVD) ที่ไม่จำเป็น
+      — <strong>MVD (X →→ Y)</strong> คือ รู้ X 1 ค่า ได้<strong>เซตของ Y หลายค่า</strong> โดย Y เป็นอิสระจากคอลัมน์อื่น (Z) ในตารางโดยสิ้นเชิง</p>
+
       <p>ตาราง <code>CTX(Course, Teacher, Text_Book)</code> — วิชาหนึ่งมีอาจารย์สอนหลายคน และมีหนังสือแนะนำหลายเล่ม
       <strong>อาจารย์กับหนังสือไม่เกี่ยวข้องกันเอง</strong> (อาจารย์ท่านไหนก็ใช้หนังสือได้ทุกเล่ม)</p>
 
-      <h3>ข้อมูลจริงจากสไลด์อาจารย์ — เห็นปัญหาชัด ๆ</h3>
+      <h3>📉 ตารางก่อนแปลง (ผ่าน BCNF แล้ว — แต่ยังไม่ผ่าน 4NF)</h3>
       <div class="tbl-wrap"><table class="tbl nowrap compact">
-        <tr><th>Course</th><th>Teacher</th><th>Text_Book</th></tr>
+        <tr><th>Course 🔑</th><th>Teacher 🔑</th><th>Text_Book 🔑</th></tr>
         <tr><td>Physics</td><td>Green</td><td>Basic Physics</td></tr>
         <tr><td>Physics</td><td>Green</td><td>University Physics</td></tr>
         <tr><td>Physics</td><td>Brown</td><td>Basic Physics</td></tr>
@@ -309,25 +415,35 @@ flowchart TD
       </table></div>
 
       <div class="box box-warn">
-        <p class="box-title">⚠️ ปัญหา: ต้องเก็บผลคูณทุกคู่ (Cartesian Product)</p>
-        <p>อาจารย์ 2 คน × หนังสือ 2 เล่ม = <strong>4 แถวเป๊ะ ๆ</strong> — เพิ่มหนังสือ 1 เล่ม = ต้องเพิ่ม 2 แถว (หนึ่งแถวต่ออาจารย์)
-        เพิ่มอาจารย์ 1 คน = เพิ่ม 2 แถว (หนึ่งแถวต่อหนังสือ) — แถวพวกนี้เกิดจาก
-        <strong>MVD: <code>Course →→ Teacher</code> และ <code>Course →→ Text_Book</code></strong> ที่อิสระกันโดยสิ้นเชิง</p>
+        <p class="box-title">❌ ปัญหา: ตารางเป็น "ผลคูณทุกคู่" (Cartesian Product)</p>
+        <p>อาจารย์ 2 คน × หนังสือ 2 เล่ม = <strong>4 แถวเป๊ะ ๆ</strong> — ข้อมูลจริงมีแค่ 2+2 = 4 ชิ้น แต่เก็บเป็น 4 คู่จับกัน
+        เพิ่มหนังสือ 1 เล่ม = ต้องเพิ่ม 2 แถว (หนึ่งแถวต่ออาจารย์) เพิ่มอาจารย์ 1 คน = อีก 2 แถว<br>
+        นี่คือ MVD: <code>Course →→ Teacher</code> และ <code>Course →→ Text_Book</code> ที่<strong>อิสระกันโดยสิ้นเชิง</strong></p>
       </div>
 
-      <p><strong>แก้: แยก MVD ทั้งสองออกจากกัน (ตามสไลด์อาจารย์)</strong></p>
-      <pre class="mermaid">
-flowchart TD
-  CTX["CTX(Course, Teacher, Text_Book)<br>Course →→ Teacher • Course →→ Text_Book<br>(อิสระกัน → ผลคูณจับคู่หลอก)"]
-  CTX --> T["Course_Teacher(Course, Teacher)<br>Physics-Green, Physics-Brown"]
-  CTX --> B["Course_Book(Course, Text_Book)<br>Physics-Basic Physics<br>Physics-University Physics"]
-      </pre>
-      <p class="mermaid-caption">ภาพที่ 8: สปลิต 4NF — จาก 4 แถว (2×2) เหลือ 2+2 แถว ข้อมูลเท่าเดิมแต่ไม่มีแถวจับคู่หลอก</p>
+      <h3>📈 ตารางหลังแปลง (4NF) — แยก 2 กลุ่มที่อิสระกันออกจากกัน</h3>
 
-      <div class="box box-analogy">
-        <p class="box-title">🔍 เปรียบเทียบให้เห็นภาพ</p>
-        <p>เหมือนร้านไอศกรีม 2 สาขา × 3 รสชาติที่ขายครบทุกสาขา — เก็บเป็นตารางเดียวต้องมี 6 แถวแม้ไม่มีความหมายคู่กัน
-        4NF บังคับแยก "สาขา" กับ "รสชาติ" คนละตาราง แล้วถ้าต้องการคู่ทั้งหมดค่อย JOIN (ได้ผลเท่าเดิมเป๊ะ)</p>
+      <p><strong>ตารางที่ 1: Course_Teacher</strong> — เหลือเฉพาะ "วิชา ↔ อาจารย์" (จาก 4 แถว เหลือ 2)</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Course 🔑</th><th>Teacher 🔑</th></tr>
+        <tr><td>Physics</td><td>Green</td></tr>
+        <tr><td>Physics</td><td>Brown</td></tr>
+      </table></div>
+
+      <p><strong>ตารางที่ 2: Course_Book</strong> — เหลือเฉพาะ "วิชา ↔ หนังสือ" (จาก 4 แถว เหลือ 2)</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Course 🔑</th><th>Text_Book 🔑</th></tr>
+        <tr><td>Physics</td><td>Basic Physics</td></tr>
+        <tr><td>Physics</td><td>University Physics</td></tr>
+      </table></div>
+
+      <div class="box box-tip">
+        <p class="box-title">✅ เปลี่ยนไปยังไง — สรุปการแปลง BCNF → 4NF</p>
+        <ul>
+          <li><strong>สิ่งที่ย้าย:</strong> Teacher กับ Text_Book แยกย้ายคนละตาราง (เดิมอยู่ด้วยกันใน 1 ตาราง) — เพราะสองอย่างนี้<strong>ไม่มีอะไรเกี่ยวข้องกัน</strong> การจับคู่กันในตารางเดิมจึงเป็นข้อมูลหลอก</li>
+          <li><strong>พิสูจน์ไม่หาย:</strong> ถ้าต้องการคู่ทั้งหมด ก็ JOIN สองตารางกลับ = ได้ 4 แถวเดิมเป๊ะ (2×2) — ข้อมูลเท่าเดิม 100%</li>
+          <li><strong>เพิ่มง่าย:</strong> อาจารย์ใหม่ 1 คน = เพิ่ม 1 แถวใน Course_Teacher พอ (เดิมต้องเพิ่ม 2 แถว)</li>
+        </ul>
       </div>
 
       <figure class="diagram">
@@ -336,58 +452,99 @@ flowchart TD
       </figure>
       <figure class="diagram">
         <img src="assets/slides/slide_0023_2470.jpg" alt="สไลด์อาจารย์: การ split CTX เป็นสองตาราง Course Teacher และ Course Text" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
-        <figcaption>📷 สไลด์จริง (Live 0023): การ Split เป็น Course_Teacher + Course_Text — ตัวอย่างที่อาจารย์เติมเอง (มะระ เรียนวิชา a, b, c) อยู่ในสไลด์เดียวกัน</figcaption>
+        <figcaption>📷 สไลด์จริง (Live 0023): การ Split เป็น Course_Teacher + Course_Text — พร้อมโจทย์ฝึกของอาจารย์ (มะระ เรียนวิชา a, b, c)</figcaption>
       </figure>
       <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=RCtYZ7AE6AU" target="_blank" rel="noopener">Live 0023 [4NF]</a></p>
 
+      <h3>🏋️ โจทย์ฝึกจริงของอาจารย์ (Live 0025): ตาราง Employee-Skill-Project</h3>
+      <p>อาจารย์ยกโจทย์นี้ให้ผู้เรียนลองตอบ — <strong>"ตารางนี้อยู่ใน 4NF หรือไม่? ถ้าไม่ จง Split"</strong></p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Employee 🔑</th><th>Skill 🔑</th><th>Project 🔑</th></tr>
+        <tr><td>ลุมฟา</td><td>M.Word</td><td>การวิเยิมลาด</td></tr>
+        <tr><td>ลุมฟา</td><td>M.Excel</td><td>การวิเยิมลาด</td></tr>
+        <tr><td>เนตรนภา</td><td>M.Excel</td><td>การวิเยิมลาด</td></tr>
+        <tr><td>เนตรนภา</td><td>M.Excel</td><td>MIS</td></tr>
+        <tr><td>เนตรนภา</td><td>MySQL</td><td>การวิเยิมลาด</td></tr>
+        <tr><td>เนตรนภา</td><td>MySQL</td><td>MIS</td></tr>
+      </table></div>
+      <div class="box box-mem">
+        <p class="box-title">🧠 เฉลยตามสูตร 4NF</p>
+        <p>ดูเนตรนภา: มี Skill {M.Excel, MySQL} และ Project {การวิยิมลาด, MIS} — ตารางมีครบทุกคู่ 2×2 = 4 แถว
+        = <code>Employee →→ Skill</code> และ <code>Employee →→ Project</code> โดยสองกลุ่มอิสระกัน → <strong>ไม่ผ่าน 4NF</strong> ❌<br>
+        <strong>Split:</strong> <code>Employee_Skill(Employee, Skill)</code> = {(ลุมฟา,M.Word), (ลุมฟา,M.Excel), (เนตรนภา,M.Excel), (เนตรนภา,MySQL)}
+        + <code>Employee_Project(Employee, Project)</code> = {(ลุมฟา,การวิยิมลาด), (เนตรนภา,การวิยิมลาด), (เนตรนภา,MIS)} — จาก 6 แถว เหลือ 4+3 แถว</p>
+      </div>
+
       <hr class="sep">
 
-      <h2>🟣 5NF — ตัวอย่างอาจารย์ (Live 0025): ตาราง SPJ</h2>
-      <p>ตาราง <code>SPJ(Supplier, Part, Project)</code> — ใครส่งชิ้นส่วนอะไรให้โครงการไหน
-      ความสัมพันธ์<strong>สามเส้า (Ternary)</strong> ที่แยกแต่ละคู่แล้ว JOIN กลับ <strong>ไม่ครบตารางเดิม</strong> ต้องเก็บครบ 3 คู่
-      → เกิด Join Dependency: <code>*((Supplier, Part), (Part, Project), (Supplier, Project))</code></p>
+      <h2>🟣 5NF — ตัวอย่างอาจารย์ (Live 0025): Join Dependency สามเส้า</h2>
+      <p><strong>5NF (PJNF)</strong> = 4NF + ไม่มี Join Dependency (JD) ที่ไม่จำเป็น
+      — ตารางต้อง<strong>ไม่สามารถ</strong>แตกเป็น n ตารางย่อย (n ≥ 3) แล้ว JOIN กลับมาได้ตารางเดิม 100%
+      เว้นแต่การแตกนั้น lossless จริง ๆ</p>
 
-      <pre class="mermaid">
-flowchart TD
-  SPJ["SPJ(Supplier, Part, Project)<br>Join Dependency 3 ทาง"]
-  SPJ --> SP["Supplier_Part(Supplier, Part)<br>ใครส่งอะไร"]
-  SPJ --> PJ["Part_Project(Part, Project)<br>อะไรใช้ในโปรเจกต์ไหน"]
-  SPJ --> SJ["Supplier_Project(Supplier, Project)<br>ใครรับผิดชอบโปรเจกต์ไหน"]
-  SP --> J(("Natural Join<br>ทั้ง 3 ตาราง<br>= ตารางเดิม 100%<br>(Lossless)"))
-  PJ --> J
-  SJ --> J
-      </pre>
-      <p class="mermaid-caption">ภาพที่ 9: สปลิต 5NF — ห้ามแตกแค่ 2 ตาราง เพราะจะเกิดข้อมูลหลอก (Spurious Tuples) ตอน JOIN กลับ</p>
+      <p>ความสัมพันธ์<strong>สามเส้า (Ternary)</strong>: ใคร (Supplier) ส่งชิ้นส่วนอะไร (Part) ให้โครงการไหน (Project)
+      — เกิด JD: <code>*((Supplier, Part), (Part, Project), (Supplier, Project))</code></p>
 
-      <h3>ทำไมแตก 2 ตารางไม่พอ? — พิสูจน์ด้วยข้อมูล</h3>
-      <p>สมมติ SPJ มี 4 แถว: <code>(S1,P1,J1)</code> <code>(S1,P1,J2)</code> <code>(S1,P2,J1)</code> <code>(S2,P1,J1)</code></p>
-      <ul>
-        <li>แตกเป็น SP ⋈ PJ จะได้แถวเพิ่มมา <code>(S2, P1, J2)</code> ❌ — เพราะ (S2,P1) เจอ (P1,J2)
-        ทั้งที่ข้อมูลจริงไม่เคยมี S2 ส่ง P1 ให้ J2 → <strong>Spurious Tuple (ข้อมูลหลอก)</strong></li>
-        <li>แตกครบ 3 ตารางแล้ว JOIN ทั้งหมด → ได้ตารางเดิม 4 แถวพอดี ✅ (เพราะ SJ ไม่มี (S2,J2) มาตัดแถวหลอกทิ้ง)</li>
-      </ul>
+      <h3>📉 ตารางก่อนแปลง (ผ่าน 4NF แล้ว — แต่ยังแตก 5NF ได้)</h3>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Supplier 🔑</th><th>Part 🔑</th><th>Project 🔑</th></tr>
+        <tr><td>S1</td><td>P1</td><td>J1</td></tr>
+        <tr><td>S1</td><td>P1</td><td>J2</td></tr>
+        <tr><td>S1</td><td>P2</td><td>J1</td></tr>
+        <tr><td>S2</td><td>P1</td><td>J1</td></tr>
+      </table></div>
+
+      <h3>📈 ตารางหลังแปลง (5NF) — แตกครบทั้ง 3 คู่</h3>
+
+      <p><strong>ตารางที่ 1: Supplier_Part</strong> — ใครส่งอะไร (จากตารางเดิม เอาเฉพาะ 2 คอลัมน์แรก + ตัดซ้ำ)</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Supplier 🔑</th><th>Part 🔑</th></tr>
+        <tr><td>S1</td><td>P1</td></tr>
+        <tr><td>S1</td><td>P2</td></tr>
+        <tr><td>S2</td><td>P1</td></tr>
+      </table></div>
+
+      <p><strong>ตารางที่ 2: Part_Project</strong> — อะไรใช้ในโปรเจกต์ไหน</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Part 🔑</th><th>Project 🔑</th></tr>
+        <tr><td>P1</td><td>J1</td></tr>
+        <tr><td>P1</td><td>J2</td></tr>
+        <tr><td>P2</td><td>J1</td></tr>
+      </table></div>
+
+      <p><strong>ตารางที่ 3: Supplier_Project</strong> — ใครรับผิดชอบโปรเจกต์ไหน</p>
+      <div class="tbl-wrap"><table class="tbl nowrap compact">
+        <tr><th>Supplier 🔑</th><th>Project 🔑</th></tr>
+        <tr><td>S1</td><td>J1</td></tr>
+        <tr><td>S1</td><td>J2</td></tr>
+        <tr><td>S2</td><td>J1</td></tr>
+      </table></div>
+
+      <div class="box box-warn">
+        <p class="box-title">⚠️ ทำไมแตกแค่ 2 ตารางไม่พอ? — พิสูจน์ด้วยข้อมูล</p>
+        <p>ลองแตกแค่ SP ⋈ PJ (เอา Supplier_Project ทิ้ง):<br>
+        (S2, P1) จาก SP เจอ (P1, J2) จาก PJ → เกิดแถวใหม่ <code>(S2, P1, J2)</code> ❌<br>
+        ทั้งที่ข้อมูลจริง<strong>ไม่เคยมี</strong> S2 ส่ง P1 ให้ J2 — นี่คือ <strong>Spurious Tuple (ข้อมูลหลอก)</strong><br>
+        แต่พอ JOIN ครบทั้ง 3 ตาราง SJ จะไม่มี (S2, J2) มาให้ แถวหลอกถูกตัดทิ้ง → ได้ตารางเดิม 4 แถวพอดี ✅ (Lossless)</p>
+      </div>
 
       <div class="box box-analogy">
         <p class="box-title">🔍 เปรียบเทียบ: 4NF vs 5NF</p>
-        <p><strong>4NF</strong> = จับคู่<strong>สองเส้า</strong>ที่อิสระกัน → แยกเป็น 2 ตาราง<br>
+        <p><strong>4NF</strong> = จับคู่<strong>สองเส้า</strong>ที่อิสระกัน → แยกเป็น 2 ตาราง จบ<br>
         <strong>5NF</strong> = <strong>สามเส้า</strong> ที่แยกแล้ว JOIN กลับไม่ครบถ้าขาดคู่ใดคู่หนึ่ง → ต้องแตกครบทั้ง 3 คู่พร้อมกัน
         เหมือนจับคู่เดท 3 เส้า ที่รู้แค่ "A ชอบ B" กับ "B ชอบ C" ไม่พอ ต้องรู้ "A ชอบ C" ด้วยถึงจะสรุปถูก</p>
       </div>
 
-      <figure class="diagram">
-        <img src="assets/slides/slide_0025_2880.jpg" alt="สไลด์อาจารย์: ตารางฝึก Employee Skill Project ลุมฟา เนตรนภา ถามว่า 4NF หรือไม่ และให้ Split" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;">
-        <figcaption>📷 โจทย์ฝึกจริงของอาจารย์ (Live 0025): ตาราง Employee-Skill-Project — ลุมฟา/เนตรนภา มีทักษะและโปรเจกต์หลายรายการ อาจารย์ถามว่า <b>"อยู่ใน 4NF หรือไม่? แล้ว Split ยังไง?"</b> — ลองทำตามเช็คลิสต์ด้านบน: เนตรนภา →→ {M.Excel, MySQL} และ →→ {การวิเยิมลาด, MIS} โดยสองกลุ่มอิสระกัน = MVD → แยกเป็น Employee_Skill + Employee_Project</figcaption>
-      </figure>
       <p class="video-note">🎬 วิดีโอต้นฉบับ: <a href="https://www.youtube.com/watch?v=ab8Yl7gf3Vk" target="_blank" rel="noopener">Live 0025 [5NF]</a> • ทบทวนรวม: <a href="https://www.youtube.com/watch?v=h-TxER9iLEA" target="_blank" rel="noopener">Live 0024 Review 1NF-4NF</a></p>
 
       <hr class="sep">
 
       <h2>✅ เช็คลิสต์เดินข้อสอบ (ท่องติดตัว)</h2>
       <ol class="steps">
-        <li><span class="step-title">1NF — ทุกเซลล์ Atomic หรือยัง?</span><p>มีช่องเก็บหลายค่า / กลุ่มซ้ำ? → เติมข้อมูลซ้ำให้เต็ม แยกแถวละ 1 ค่า แล้วกำหนด PK (มักเป็นคีย์ผสม)</p></li>
-        <li><span class="step-title">2NF — PK เป็นคีย์ผสมไหม? มี Partial ไหม?</span><p>ถามทีละ Non-key: "รู้แค่ส่วนเดียวของ PK ก็รู้ค่านี้ไหม?" ใช่ → สปลิตตาม Determinant</p></li>
-        <li><span class="step-title">3NF — มี Non-key กำหนด Non-key ไหม?</span><p>หาสายโซ่ X → Y → Z โดย X = PK, Y/Z = Non-key → ดึง Y+Z ออกไปตั้งตารางใหม่ (Y เป็น PK ใหม่)</p></li>
-        <li><span class="step-title">BCNF — Determinant ทุกตัวเป็น CK ไหม?</span><p>ลิสต์ FD ทั้งหมด + CK ทั้งหมด เจอ FD ที่ฝั่งซ้ายไม่ใช่ CK → แยกตารางให้มัน</p></li>
+        <li><span class="step-title">1NF — ทุกเซลล์ Atomic หรือยัง?</span><p>มีช่องเก็บหลายค่า / กลุ่มซ้ำ / ช่องว่างลอย? → เติมข้อมูลซ้ำให้เต็ม แยกแถวละ 1 ค่า แล้วกำหนด PK (มักเป็นคีย์ผสม)</p></li>
+        <li><span class="step-title">2NF — PK เป็นคีย์ผสมไหม? มี Partial ไหม?</span><p>ถามทีละ Non-key: "รู้แค่ส่วนเดียวของ PK ก็รู้ค่านี้ไหม?" ใช่ → สปลิตตาม Determinant (คอลัมน์ที่ขึ้นกับส่วนไหน ไปอยู่ตารางของส่วนนั้น)</p></li>
+        <li><span class="step-title">3NF — มี Non-key กำหนด Non-key ไหม?</span><p>หาสายโซ่ X → Y → Z โดย X = PK, Y/Z = Non-key → ดึง Y+Z ออกไปตั้งตารางใหม่ (Y เป็น PK ใหม่, Z ย้ายตาม, X เหลือ FK ชี้ Y)</p></li>
+        <li><span class="step-title">BCNF — Determinant ทุกตัวเป็น CK ไหม?</span><p>ลิสต์ FD ทั้งหมด + CK ทั้งหมด เจอ FD ที่ฝั่งซ้ายไม่ใช่ CK → แยกตารางให้มัน (ฝั่งซ้ายกลายเป็น PK ใหม่)</p></li>
         <li><span class="step-title">4NF — มีข้อมูล 2 กลุ่มอิสระกันแต่หลายค่าไหม?</span><p>X →→ Y และ X →→ Z โดย Y⊥Z → แยก 2 ตาราง (เห็น "ผลคูณจับคู่ครบทุกแถว" = สัญญาณ MVD)</p></li>
         <li><span class="step-title">5NF — เป็นความสัมพันธ์ 3 เส้าไหม?</span><p>แตกครบ 3 คู่: (A,B) (B,C) (A,C) — แตก 2 ตารางจะเกิด Spurious Tuples</p></li>
       </ol>
@@ -418,13 +575,13 @@ flowchart TD
           <code>Product(Prod_ID*, Prod_Name, Unit_Price)</code>, <code>Order_Item(Order_ID*, Prod_ID*, Qty)</code></p>
           <p><strong>3NF — ตัด Transitive ใน Order_Hdr:</strong> พบสายโซ่ <code>Order_ID → Cust_ID → Cust_Name, Cust_Phone</code><br>
           แยก: <code>Customer(Cust_ID*, Cust_Name, Cust_Phone)</code> และเหลือ <code>Orders(Order_ID*, Order_Date, Cust_ID→FK)</code></p>
-          <p><strong>คำตอบ 4 ตาราง:</strong> Customer, Product, Orders, Order_Item — โครงเดียวกับตัวอย่าง S-P-QTY ของอาจารย์ทุกประการ!</p>
+          <p><strong>คำตอบ 4 ตาราง:</strong> Customer, Product, Orders, Order_Item — โครงเดียวกับตัวอย่าง SupplyPart ของอาจารย์ทุกประการ!</p>
         </div>
       </details>
 
       <details class="sol"><summary>โจทย์ที่ 3 (BCNF): Enroll2(Std_ID, Course, Instructor) โดยอาจารย์ 1 คนสอนวิชาเดียว (Instructor → Course) PK=(Std_ID, Course) — ผ่าน 3NF แต่จงทำ BCNF</summary>
         <div class="sol-body">
-          <p><strong>CK:</strong> (Std_ID, Course) และ (Std_ID, Instructor) — โครงเดียวกับตัวอย่าง Advisor ของอาจารย์<br>
+          <p><strong>CK:</strong> (Std_ID, Course) และ (Std_ID, Instructor) — โครงเดียวกับตัวอย่าง Advisor<br>
           <strong>ปัญหา:</strong> <code>Instructor → Course</code> ฝั่งซ้ายไม่ใช่ CK ❌<br>
           <strong>แก้:</strong> <code>Instructor_Course(Instructor*, Course)</code> + <code>Enroll_Std(Std_ID*, Instructor*)</code>
           — ตอนนี้ Determinant ทุกตัวเป็น PK ของตารางตัวเอง ✅ ผ่าน BCNF</p>
@@ -435,7 +592,7 @@ flowchart TD
         <div class="sol-body">
           <p>เกิด MVD: <code>Student_ID →→ Hobby</code> และ <code>Student_ID →→ Language</code> (อิสระกัน → ตารางเป็นผลคูณทุกคู่)<br>
           <strong>แก้:</strong> <code>Student_Hobby(Student_ID*, Hobby*)</code> + <code>Student_Lang(Student_ID*, Language*)</code><br>
-          สังเกตโครงเดียวกับ CTX(Course, Teacher, Text_Book) ของอาจารย์</p>
+          สังเกตโครงเดียวกับ CTX(Course, Teacher, Text_Book) และโจทย์ ลุมฟา/เนตรนภา ของอาจารย์</p>
         </div>
       </details>
 
@@ -450,27 +607,27 @@ flowchart TD
 
       <h3>🎬 แบบทดสอบด่วน</h3>
       <div class="quiz" data-answer="1">
-        <p class="quiz-q"><span class="qno">Q1</span>ในตัวอย่าง S-P-QTY ของอาจารย์ ข้อใดคือ Partial Dependency?</p>
+        <p class="quiz-q"><span class="qno">Q1</span>ในตัวอย่าง SupplyPart ของอาจารย์ ข้อใดคือ Partial Dependency?</p>
         <div class="quiz-opts">
-          <button class="quiz-opt">(S#, P#) → QTY</button>
-          <button class="quiz-opt">S# → SNAME, STATUS, CITY</button>
-          <button class="quiz-opt">S# → CITY → STATUS</button>
-          <button class="quiz-opt">P# → QTY</button>
+          <button class="quiz-opt">(S#, P#) → Qty</button>
+          <button class="quiz-opt">S# → Sname, City, Status</button>
+          <button class="quiz-opt">S# → City → Status</button>
+          <button class="quiz-opt">P# → Qty</button>
         </div>
-        <p class="quiz-explain">เฉลย ข้อ 2 — SNAME/STATUS/CITY รู้ได้จาก S# เพียงอย่างเดียว ซึ่งเป็น "ส่วนเดียว" ของ PK ผสม (S#, P#) = Partial ❌ (ข้อ 1 คือ FFD ✅ ข้อ 3 คือ Transitive ข้อ 4 ไม่จริง เพราะ P# เดี่ยว ๆ รู้ QTY ไม่ได้)</p>
+        <p class="quiz-explain">เฉลย ข้อ 2 — Sname/City/Status รู้ได้จาก S# เพียงอย่างเดียว ซึ่งเป็น "ส่วนเดียว" ของ PK ผสม (S#, P#) = Partial ❌ (ข้อ 1 คือ FFD ✅ ข้อ 3 คือ Transitive ข้อ 4 ไม่จริง เพราะ P# เดี่ยว ๆ รู้ Qty ไม่ได้)</p>
       </div>
       <div class="quiz" data-answer="2">
-        <p class="quiz-q"><span class="qno">Q2</span>ในขั้น 3NF ของตัวอย่าง S-P-QTY อาจารย์สปลิต S_2NF เพราะเหตุใด?</p>
+        <p class="quiz-q"><span class="qno">Q2</span>ในขั้น 3NF ของตัวอย่าง SupplyPart อาจารย์สปลิต S_2NF เพราะเหตุใด?</p>
         <div class="quiz-opts">
-          <button class="quiz-opt">เพราะ SNAME ขึ้นกับ S# เพียงอย่างเดียว</button>
-          <button class="quiz-opt">เพราะ QTY ขึ้นกับคีย์ผสม</button>
-          <button class="quiz-opt">เพราะ S# → CITY → STATUS เป็น Transitive Dependency</button>
-          <button class="quiz-opt">เพราะ CITY มีหลายค่าในเซลล์เดียว</button>
+          <button class="quiz-opt">เพราะ Sname ขึ้นกับ S# เพียงอย่างเดียว</button>
+          <button class="quiz-opt">เพราะ Qty ขึ้นกับคีย์ผสม</button>
+          <button class="quiz-opt">เพราะ S# → City → Status เป็น Transitive Dependency</button>
+          <button class="quiz-opt">เพราะ City มีหลายค่าในเซลล์เดียว</button>
         </div>
-        <p class="quiz-explain">เฉลย ข้อ 3 — CITY (Non-key) กำหนด STATUS (Non-key) ได้ เกิดสายโซ่ผ่าน Non-key จึงดึง City_Status(CITY, STATUS) ออกไป (ข้อ 1 คือปัญหา 2NF ที่แก้ไปแล้ว)</p>
+        <p class="quiz-explain">เฉลย ข้อ 3 — City (Non-key) กำหนด Status (Non-key) ได้ (London=20, Paris=10, Athens=30 เสมอ) เกิดสายโซ่ผ่าน Non-key จึงดึง City_Status(City, Status) ออกไป (ข้อ 1 คือปัญหา 2NF ที่แก้ไปแล้ว)</p>
       </div>
       <div class="quiz" data-answer="0">
-        <p class="quiz-q"><span class="qno">Q3</span>ตาราง CTX(Physics × 2 อาจารย์ × 2 หนังสือ = 4 แถว) ผ่าน BCNF แล้วแต่ยังเก็บผลคูณจับคู่ครบทุกแถว — ขาด NF ไหน?</p>
+        <p class="quiz-q"><span class="qno">Q3</span>ตาราง CTX (Physics × 2 อาจารย์ × 2 หนังสือ = 4 แถว) ผ่าน BCNF แล้วแต่ยังเก็บผลคูณจับคู่ครบทุกแถว — ขาด NF ไหน?</p>
         <div class="quiz-opts">
           <button class="quiz-opt">4NF — เพราะมี MVD ที่อิสระกัน (Course →→ Teacher, Course →→ Text_Book)</button>
           <button class="quiz-opt">2NF — เพราะ Teacher ขึ้นกับ Course เดี่ยว ๆ</button>
